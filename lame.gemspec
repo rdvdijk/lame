@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
   gem.version       = LAME::VERSION
   gem.authors       = ["Roel van Dijk"]
   gem.email         = ["roel@rustradio.org"]
-  gem.description   = %q{FFI powered library for the LAME MP3 encoder library.}
+  gem.description   = %q{FFI powered library for the LAME MP3 encoder.}
   gem.summary       = %q{Easily encode MP3 files using the LAME MP3 encoder.}
   gem.homepage      = "http://github.com/rdvdijk/lame"
 

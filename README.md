@@ -1,6 +1,6 @@
 # LAME
 
-FFI powered library for the [LAME MP3 encoder](http://lame.sourceforge.net/) library.
+FFI powered library for the [LAME MP3 encoder](http://lame.sourceforge.net/).
 
 ## Installation
 
