@@ -5,7 +5,7 @@ require 'lame/version'
 
 Gem::Specification.new do |gem|
   gem.name          = "lame"
-  gem.version       = Lame::VERSION
+  gem.version       = LAME::VERSION
   gem.authors       = ["Roel van Dijk"]
   gem.email         = ["roel@rustradio.org"]
   gem.description   = %q{FFI powered library for the LAME MP3 encoder library.}
@@ -16,4 +16,9 @@ Gem::Specification.new do |gem|
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
+
+  gem.add_dependency "ffi"
+
+  gem.add_development_dependency "rspec"
+  gem.add_development_dependency "pry"
 end
