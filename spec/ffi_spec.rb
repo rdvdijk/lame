@@ -203,7 +203,132 @@ module LAME
         LAME.lame_set_asm_optimizations(@flags_pointer, 1, 2).should eql 1
       end
 
+      it "gets copyright mark" do
+        LAME.lame_get_copyright(@flags_pointer).should eql 0
+      end
+
+      it "marks as copyright" do
+        LAME.lame_set_copyright(@flags_pointer, 1).should eql 0
+        LAME.lame_get_copyright(@flags_pointer).should eql 1
+      end
+
+      it "gets original mark" do
+        LAME.lame_get_original(@flags_pointer).should eql 1
+      end
+
+      it "marks as original" do
+        LAME.lame_set_original(@flags_pointer, 0).should eql 0
+        LAME.lame_get_original(@flags_pointer).should eql 0
+      end
+
+      it "gets error protection" do
+        LAME.lame_get_error_protection(@flags_pointer).should eql 0
+      end
+
+      it "sets error protection" do
+        LAME.lame_set_error_protection(@flags_pointer, 1).should eql 0
+        LAME.lame_get_error_protection(@flags_pointer).should eql 1
+      end
+
+      it "gets extension mark" do
+        LAME.lame_get_extension(@flags_pointer).should eql 0
+      end
+
+      it "marks as extension" do
+        LAME.lame_set_extension(@flags_pointer, 1).should eql 0
+        LAME.lame_get_extension(@flags_pointer).should eql 1
+      end
+
+      it "gets strict ISO" do
+        LAME.lame_get_strict_ISO(@flags_pointer).should eql 2 # ?
+      end
+
+      it "sets strict ISO" do
+        LAME.lame_set_strict_ISO(@flags_pointer, 1).should eql 0
+        LAME.lame_get_strict_ISO(@flags_pointer).should eql 1
+      end
+
+      it "gets disable reservoir" do
+        LAME.lame_get_disable_reservoir(@flags_pointer).should eql 0
+      end
+
+      it "sets disable reservoir" do
+        LAME.lame_set_disable_reservoir(@flags_pointer, 1).should eql 0
+        LAME.lame_get_disable_reservoir(@flags_pointer).should eql 1
+      end
+
+      it "gets quant comp" do
+        LAME.lame_get_quant_comp(@flags_pointer).should eql -1
+      end
+
+      it "sets quant comp" do
+        LAME.lame_set_quant_comp(@flags_pointer, 1).should eql 0
+        LAME.lame_get_quant_comp(@flags_pointer).should eql 1
+      end
+
+      it "gets quant comp short" do
+        LAME.lame_get_quant_comp_short(@flags_pointer).should eql -1
+      end
+
+      it "sets quant comp short" do
+        LAME.lame_set_quant_comp_short(@flags_pointer, 1).should eql 0
+        LAME.lame_get_quant_comp_short(@flags_pointer).should eql 1
+      end
+
+      it "gets experimentalX" do
+        LAME.lame_get_experimentalX(@flags_pointer).should eql -1
+      end
+
+      it "sets experimentalX" do
+        LAME.lame_set_experimentalX(@flags_pointer, 1).should eql 0
+        LAME.lame_get_experimentalX(@flags_pointer).should eql 1
+      end
+
+      it "gets experimentalY" do
+        LAME.lame_get_experimentalY(@flags_pointer).should eql 0
+      end
+
+      it "sets experimentalY" do
+        LAME.lame_set_experimentalY(@flags_pointer, 1).should eql 0
+        LAME.lame_get_experimentalY(@flags_pointer).should eql 1
+      end
+
+      it "gets experimentalZ" do
+        LAME.lame_get_experimentalZ(@flags_pointer).should eql 0
+      end
+
+      it "sets experimentalZ" do
+        LAME.lame_set_experimentalZ(@flags_pointer, 1).should eql 0
+        LAME.lame_get_experimentalZ(@flags_pointer).should eql 1
+      end
+
+      it "gets exp nspsytune" do
+        LAME.lame_get_exp_nspsytune(@flags_pointer).should eql 0
+      end
+
+      it "sets exp nspsytune" do
+        LAME.lame_set_exp_nspsytune(@flags_pointer, 1).should eql 0
+        LAME.lame_get_exp_nspsytune(@flags_pointer).should eql 1
+      end
+
+      it "gets msfix" do
+        LAME.lame_get_msfix(@flags_pointer).should eql -1.0
+      end
+
+      it "sets msfix" do
+        LAME.lame_set_msfix(@flags_pointer, 1.2).should eql nil
+        LAME.lame_get_msfix(@flags_pointer).should be_within(0.00001).of(1.2)
+      end
     end
+
+      # it "gets X" do
+      #   LAME.lame_get_X(@flags_pointer).should eql 0
+      # end
+
+      # it "sets X" do
+      #   LAME.lame_set_X(@flags_pointer, 1).should eql 0
+      #   LAME.lame_get_X(@flags_pointer).should eql 1
+      # end
 
     context "initialization" do
 
