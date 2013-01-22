@@ -24,8 +24,9 @@ describe "Encoding" do
 
         # read samples (ranges from -32k to +32k)
         read_buffer.samples.each.with_index do |(left, right), index|
-          left_buffer.put_short(index, left)
-          right_buffer.put_short(index, right)
+          byte_offset = index * 2
+          left_buffer.put_short(byte_offset, left)
+          right_buffer.put_short(byte_offset, right)
         end
         input_buffer_size = read_buffer.samples.size
 
