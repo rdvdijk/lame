@@ -36,6 +36,10 @@ module LAME
         LAME.lame_init_params(@flags_pointer)
       end
 
+      it "gets the framesize" do
+        LAME.lame_get_framesize(@flags_pointer).should eql 1152
+      end
+
       context "encoding" do
         it "encodes short-buffers" do
           length = 4096
