@@ -185,9 +185,16 @@ module LAME
   attach_function :get_lame_os_bitness,         [], :string
 
   # encoding
-  attach_function :lame_encode_buffer,      [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
-  # UNTESTED!
-  attach_function :lame_encode_buffer_int,  [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer,                         [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer_interleaved,             [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer_float,                   [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer_ieee_float,              [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer_interleaved_ieee_float,  [:pointer, :pointer, :int, :pointer, :int],           :int
+  attach_function :lame_encode_buffer_ieee_double,             [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer_interleaved_ieee_double, [:pointer, :pointer, :int, :pointer, :int],           :int
+  attach_function :lame_encode_buffer_long,                    [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer_long2,                   [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer_int,                     [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
 
   # flushing
   attach_function :lame_encode_flush,       [:pointer, :pointer, :int], :int
