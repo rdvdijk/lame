@@ -200,6 +200,20 @@ module LAME
   attach_function :lame_encode_flush,       [:pointer, :pointer, :int], :int
   attach_function :lame_encode_flush_nogap, [:pointer, :pointer, :int], :int
 
+  # bitstream
+  attach_function :lame_init_bitstream, [:pointer], :int
+
+  # TODO: statistics (multi-dimensional arrays..)
+  # attach_function :lame_bitrate_hist,             [:pointer, :pointer], :void
+  # attach_function :lame_bitrate_kbps,             [:pointer, :pointer], :void
+  # attach_function :lame_stereo_mode_hist,         [:pointer, :pointer], :void
+  # attach_function :lame_bitrate_stereo_mode_hist, [:pointer, :pointer], :void
+  # attach_function :lame_block_type_hist,          [:pointer, :pointer], :void
+  # attach_function :lame_bitrate_block_type_hist,  [:pointer, :pointer], :void
+
+  # TODO: needs file pointer
+  attach_function :lame_mp3_tags_fid, [:pointer], :void
+
   # closing
   attach_function :lame_close,              [:pointer], :int
 

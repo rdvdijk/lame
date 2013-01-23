@@ -13,9 +13,15 @@ module LAME
     end
 
     context "initialization" do
+
       it "initializes the parameters" do
         LAME.lame_init_params(@flags_pointer).should eql 0
       end
+
+      it "inits the bitstream" do
+        LAME.lame_init_bitstream(@flags_pointer).should eql 0
+      end
+
     end
 
     context "encoding" do
