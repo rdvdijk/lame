@@ -233,7 +233,7 @@ module LAME
   # NOTE: needs a file pointer, will be deprecated (?)
   # attach_function :lame_mp3_tags_fid, [:pointer], :void
 
-  attach_function :lame_get_lametag_frame, [:global_flags, :pointer, :size_t], :size_t
+  attach_function :lame_get_lametag_frame, [:global_flags, :buffer_out, :size_t], :size_t
 
   # closing
   attach_function :lame_close, [:global_flags], :int

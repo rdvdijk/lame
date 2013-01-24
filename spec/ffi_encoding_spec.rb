@@ -143,6 +143,24 @@ module LAME
         end
       end
 
+      context "lametag frame" do
+        let(:input_type) { :short }
+
+        it "creates a lametag frame" do
+          # encode something so there is a lametag frame with VBR info
+          # (0..input_buffer_size).each do |index|
+          #   input_buffer_left.put_short(index, rand(2**15)-2**14)
+          #   input_buffer_right.put_short(index, rand(2**15)-2**14)
+          # end
+
+          LAME.lame_encode_buffer(@flags_pointer, input_buffer_left, input_buffer_right, input_buffer_size, output_buffer, output_buffer_size)
+
+          frame_size = LAME.lame_get_lametag_frame(@flags_pointer, output_buffer, output_buffer_size)
+          #p output_buffer.get_bytes(0, frame_size)
+          frame_size.should eql 417
+        end
+      end
+
       context "closing" do
         it "closes" do
           LAME.lame_close(@flags_pointer).should eql 0
