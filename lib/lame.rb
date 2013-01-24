@@ -235,4 +235,40 @@ module LAME
   # closing
   attach_function :lame_close, [:global_flags], :int
 
+  # TODO: decoding
+
+  # TODO: figure out:
+  #attach_function :id3tag_genre_list(void (*handler)(int, const char *, void *), void*  cookie);
+  # TODO: test:
+  attach_function :id3tag_init,                     [:global_flags], :void
+  attach_function :id3tag_add_v2,                   [:global_flags], :void
+  attach_function :id3tag_v1_only,                  [:global_flags], :void
+  attach_function :id3tag_v2_only,                  [:global_flags], :void
+  attach_function :id3tag_space_v1,                 [:global_flags], :void
+  attach_function :id3tag_pad_v2,                   [:global_flags], :void
+  attach_function :id3tag_set_pad,                  [:global_flags, :size_t], :void
+  attach_function :id3tag_set_title,                [:global_flags, :string], :void
+  attach_function :id3tag_set_artist,               [:global_flags, :string], :void
+  attach_function :id3tag_set_album,                [:global_flags, :string], :void
+  attach_function :id3tag_set_year,                 [:global_flags, :string], :void
+  attach_function :id3tag_set_comment,              [:global_flags, :string], :void
+  attach_function :id3tag_set_track,                [:global_flags, :string], :int
+  attach_function :id3tag_set_genre,                [:global_flags, :string], :int
+  attach_function :id3tag_set_fieldvalue,           [:global_flags, :string], :int
+  attach_function :id3tag_set_albumart,             [:global_flags, :buffer_in, :size_t], :int
+  attach_function :lame_get_id3v1_tag,              [:global_flags, :buffer_out, :size_t], :size_t
+  attach_function :lame_get_id3v2_tag,              [:global_flags, :buffer_out, :size_t], :size_t
+  attach_function :lame_set_write_id3tag_automatic, [:global_flags, :int], :void
+  attach_function :lame_get_write_id3tag_automatic, [:global_flags], :int
+  # experimental id3:
+  #attach_function :id3tag_set_textinfo_latin1,      [:global_flags, :string, :string], :int
+  #attach_function :id3tag_set_comment_latin1,       [:global_flags, :string, :string, :string], :int
+  #attach_function :id3tag_set_fieldvalue_utf16,     [:global_flags, :pointer], :int
+  #attach_function :id3tag_set_textinfo_utf16,       [:global_flags, :string, :pointer], :int
+  #attach_function :id3tag_set_comment_utf16,        [:global_flags, :string, :pointer, :pointer], :int
+
+  # tables
+  attach_function :lame_get_bitrate,    [:int, :int], :int
+  attach_function :lame_get_samplerate, [:int, :int], :int
+
 end

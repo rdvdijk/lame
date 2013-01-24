@@ -12,6 +12,9 @@ describe "Encoding" do
     flags_pointer = LAME.lame_init
     LAME.lame_init_params(flags_pointer)
 
+    LAME.id3tag_init(flags_pointer) # needed?
+    LAME.id3tag_set_title(flags_pointer, "foo")
+
     # number of samples to read
     framesize = LAME.lame_get_framesize(flags_pointer)
 
