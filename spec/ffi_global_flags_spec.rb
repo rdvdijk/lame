@@ -454,10 +454,45 @@ module LAME
         end
 
         # TODO: test when we have implemented lame_set_msgf
-        xit "prints inernals" do
+        xit "prints internals" do
           LAME.lame_print_internals(@flags_pointer)
         end
       end
+    end
+
+    context "tables" do
+
+      it "has the bitrate table" do
+        table = (0...3).map do |mpeg_version|
+                  (0...16).map do |table_index|
+                    LAME.lame_get_bitrate(mpeg_version, table_index)
+                  end
+                end
+        expected = [
+          [0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, -1],
+          [0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, -1],
+          [0, 8, 16, 24, 32, 40, 48, 56, 64, -1, -1, -1, -1, -1, -1, -1]
+        ]
+
+        table.should eql expected
+      end
+
+      it "has the samplerate table" do
+        table = (0...3).map do |mpeg_version|
+                  (0...4).map do |table_index|
+                    LAME.lame_get_samplerate(mpeg_version, table_index)
+                  end
+                end
+
+        expected = [
+          [22050, 24000, 16000, -1],
+          [44100, 48000, 32000, -1],
+          [11025, 12000, 8000, -1]
+        ]
+
+        table.should eql expected
+      end
+
     end
 
   end
