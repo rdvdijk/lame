@@ -426,7 +426,6 @@ module LAME
           LAME.get_lame_os_bitness.should eql "64bits"
         end
 
-
         context "numerical version" do
 
           let(:version) { LAME.get_lame_version_numerical(@flags_pointer) }
@@ -465,6 +464,16 @@ module LAME
           it "has features" do
             version[:features].should eql ""
           end
+        end
+
+        # TODO: test when we have implemented lame_set_msgf
+        xit "prints config" do
+          LAME.lame_print_config(@flags_pointer)
+        end
+
+        # TODO: test when we have implemented lame_set_msgf
+        xit "prints inernals" do
+          LAME.lame_print_internals(@flags_pointer)
         end
       end
     end

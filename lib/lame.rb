@@ -7,8 +7,10 @@ require 'pry'
 module LAME
 
   extend FFI::Library
-  #ffi_lib "libmp3lame"
-  ffi_lib "/Users/roel/code/personal/lame/lame-3.99.5/libmp3lame/.libs/libmp3lame.0.dylib"
+  ffi_lib "libmp3lame"
+  #ffi_lib "/Users/roel/code/personal/lame/lame-3.99.5/libmp3lame/.libs/libmp3lame.0.dylib"
+
+  typedef :pointer, :global_flags
 
   enum :vbr_mode, [
     :vbr_off, 0,
@@ -35,157 +37,157 @@ module LAME
   # These `attach_function` declarations are in the order of lame.h:
 
   # initialization
-  attach_function :lame_init, [], :pointer
+  attach_function :lame_init, [], :global_flags
 
   # global flags
-  attach_function :lame_set_num_samples,        [:pointer, :ulong],  :int
-  attach_function :lame_get_num_samples,        [:pointer],          :ulong
-  attach_function :lame_set_in_samplerate,      [:pointer, :int],    :int
-  attach_function :lame_get_in_samplerate,      [:pointer],          :int
-  attach_function :lame_set_num_channels,       [:pointer, :int],    :int
-  attach_function :lame_get_num_channels,       [:pointer],          :int
-  attach_function :lame_set_scale,              [:pointer, :float],  :int
-  attach_function :lame_get_scale,              [:pointer],          :float
-  attach_function :lame_set_scale_left,         [:pointer, :float],  :int
-  attach_function :lame_get_scale_left,         [:pointer],          :float
-  attach_function :lame_set_scale_right,        [:pointer, :float],  :int
-  attach_function :lame_get_scale_right,        [:pointer],          :float
-  attach_function :lame_set_out_samplerate,     [:pointer, :int],    :int
-  attach_function :lame_get_out_samplerate,     [:pointer],          :int
-  attach_function :lame_set_analysis,           [:pointer, :int],    :int
-  attach_function :lame_get_analysis,           [:pointer],          :int
-  attach_function :lame_set_bWriteVbrTag,       [:pointer, :int],    :int
-  attach_function :lame_get_bWriteVbrTag,       [:pointer],          :int
-  attach_function :lame_set_decode_only,        [:pointer, :int],    :int
-  attach_function :lame_get_decode_only,        [:pointer],          :int
-  attach_function :lame_set_quality,            [:pointer, :int],    :int
-  attach_function :lame_get_quality,            [:pointer],          :int
-  attach_function :lame_set_mode,               [:pointer, :int],    :int
-  attach_function :lame_get_mode,               [:pointer],          :int
-  attach_function :lame_set_force_ms,           [:pointer, :int],    :int
-  attach_function :lame_get_force_ms,           [:pointer],          :int
-  attach_function :lame_set_free_format,        [:pointer, :int],    :int
-  attach_function :lame_get_free_format,        [:pointer],          :int
-  attach_function :lame_set_findReplayGain,     [:pointer, :int],    :int
-  attach_function :lame_get_findReplayGain,     [:pointer],          :int
-  attach_function :lame_set_decode_on_the_fly,  [:pointer, :int],    :int
-  attach_function :lame_get_decode_on_the_fly,  [:pointer],          :int
-  attach_function :lame_set_nogap_total,        [:pointer, :int],    :int
-  attach_function :lame_get_nogap_total,        [:pointer],          :int
-  attach_function :lame_set_nogap_currentindex, [:pointer, :int],    :int
-  attach_function :lame_get_nogap_currentindex, [:pointer],          :int
+  attach_function :lame_set_num_samples,        [:global_flags, :ulong],  :int
+  attach_function :lame_get_num_samples,        [:global_flags],          :ulong
+  attach_function :lame_set_in_samplerate,      [:global_flags, :int],    :int
+  attach_function :lame_get_in_samplerate,      [:global_flags],          :int
+  attach_function :lame_set_num_channels,       [:global_flags, :int],    :int
+  attach_function :lame_get_num_channels,       [:global_flags],          :int
+  attach_function :lame_set_scale,              [:global_flags, :float],  :int
+  attach_function :lame_get_scale,              [:global_flags],          :float
+  attach_function :lame_set_scale_left,         [:global_flags, :float],  :int
+  attach_function :lame_get_scale_left,         [:global_flags],          :float
+  attach_function :lame_set_scale_right,        [:global_flags, :float],  :int
+  attach_function :lame_get_scale_right,        [:global_flags],          :float
+  attach_function :lame_set_out_samplerate,     [:global_flags, :int],    :int
+  attach_function :lame_get_out_samplerate,     [:global_flags],          :int
+  attach_function :lame_set_analysis,           [:global_flags, :int],    :int
+  attach_function :lame_get_analysis,           [:global_flags],          :int
+  attach_function :lame_set_bWriteVbrTag,       [:global_flags, :int],    :int
+  attach_function :lame_get_bWriteVbrTag,       [:global_flags],          :int
+  attach_function :lame_set_decode_only,        [:global_flags, :int],    :int
+  attach_function :lame_get_decode_only,        [:global_flags],          :int
+  attach_function :lame_set_quality,            [:global_flags, :int],    :int
+  attach_function :lame_get_quality,            [:global_flags],          :int
+  attach_function :lame_set_mode,               [:global_flags, :int],    :int
+  attach_function :lame_get_mode,               [:global_flags],          :int
+  attach_function :lame_set_force_ms,           [:global_flags, :int],    :int
+  attach_function :lame_get_force_ms,           [:global_flags],          :int
+  attach_function :lame_set_free_format,        [:global_flags, :int],    :int
+  attach_function :lame_get_free_format,        [:global_flags],          :int
+  attach_function :lame_set_findReplayGain,     [:global_flags, :int],    :int
+  attach_function :lame_get_findReplayGain,     [:global_flags],          :int
+  attach_function :lame_set_decode_on_the_fly,  [:global_flags, :int],    :int
+  attach_function :lame_get_decode_on_the_fly,  [:global_flags],          :int
+  attach_function :lame_set_nogap_total,        [:global_flags, :int],    :int
+  attach_function :lame_get_nogap_total,        [:global_flags],          :int
+  attach_function :lame_set_nogap_currentindex, [:global_flags, :int],    :int
+  attach_function :lame_get_nogap_currentindex, [:global_flags],          :int
   # TODO: Callbacks
-  # attach_function :lame_set_errorf,             [:pointer, :pointer],   :int
-  # attach_function :lame_set_debugf,             [:pointer, :pointer],   :int
-  # attach_function :lame_set_msgf,               [:pointer, :pointer],   :int
-  attach_function :lame_set_brate,              [:pointer, :int],    :int
-  attach_function :lame_get_brate,              [:pointer],          :int
-  attach_function :lame_set_compression_ratio,  [:pointer, :int],    :int
-  attach_function :lame_get_compression_ratio,  [:pointer],          :int
-  attach_function :lame_set_preset,             [:pointer, :int],    :int
-  attach_function :lame_set_asm_optimizations,  [:pointer, :int, :int], :int
-  attach_function :lame_set_copyright,          [:pointer, :int],    :int
-  attach_function :lame_get_copyright,          [:pointer],          :int
-  attach_function :lame_set_original,           [:pointer, :int],    :int
-  attach_function :lame_get_original,           [:pointer],          :int
-  attach_function :lame_set_error_protection,   [:pointer, :int],    :int
-  attach_function :lame_get_error_protection,   [:pointer],          :int
-  attach_function :lame_set_extension,          [:pointer, :int],    :int
-  attach_function :lame_get_extension,          [:pointer],          :int
-  attach_function :lame_set_strict_ISO,         [:pointer, :int],    :int
-  attach_function :lame_get_strict_ISO,         [:pointer],          :int
+  # attach_function :lame_set_errorf,             [:global_flags, :global_flags],   :int
+  # attach_function :lame_set_debugf,             [:global_flags, :global_flags],   :int
+  # attach_function :lame_set_msgf,               [:global_flags, :global_flags],   :int
+  attach_function :lame_set_brate,              [:global_flags, :int],    :int
+  attach_function :lame_get_brate,              [:global_flags],          :int
+  attach_function :lame_set_compression_ratio,  [:global_flags, :int],    :int
+  attach_function :lame_get_compression_ratio,  [:global_flags],          :int
+  attach_function :lame_set_preset,             [:global_flags, :int],    :int
+  attach_function :lame_set_asm_optimizations,  [:global_flags, :int, :int], :int
+  attach_function :lame_set_copyright,          [:global_flags, :int],    :int
+  attach_function :lame_get_copyright,          [:global_flags],          :int
+  attach_function :lame_set_original,           [:global_flags, :int],    :int
+  attach_function :lame_get_original,           [:global_flags],          :int
+  attach_function :lame_set_error_protection,   [:global_flags, :int],    :int
+  attach_function :lame_get_error_protection,   [:global_flags],          :int
+  attach_function :lame_set_extension,          [:global_flags, :int],    :int
+  attach_function :lame_get_extension,          [:global_flags],          :int
+  attach_function :lame_set_strict_ISO,         [:global_flags, :int],    :int
+  attach_function :lame_get_strict_ISO,         [:global_flags],          :int
 
   # quantization/noise shaiping
-  attach_function :lame_set_disable_reservoir, [:pointer, :int],    :int
-  attach_function :lame_get_disable_reservoir, [:pointer],          :int
-  attach_function :lame_set_quant_comp,        [:pointer, :int],    :int
-  attach_function :lame_get_quant_comp,        [:pointer],          :int
-  attach_function :lame_set_quant_comp_short,  [:pointer, :int],    :int
-  attach_function :lame_get_quant_comp_short,  [:pointer],          :int
-  attach_function :lame_set_experimentalX,     [:pointer, :int],    :int
-  attach_function :lame_get_experimentalX,     [:pointer],          :int
-  attach_function :lame_set_experimentalY,     [:pointer, :int],    :int
-  attach_function :lame_get_experimentalY,     [:pointer],          :int
-  attach_function :lame_set_experimentalZ,     [:pointer, :int],    :int
-  attach_function :lame_get_experimentalZ,     [:pointer],          :int
-  attach_function :lame_set_exp_nspsytune,     [:pointer, :int],    :int
-  attach_function :lame_get_exp_nspsytune,     [:pointer],          :int
-  attach_function :lame_set_msfix,             [:pointer, :double], :void
-  attach_function :lame_get_msfix,             [:pointer],          :float
+  attach_function :lame_set_disable_reservoir, [:global_flags, :int],    :int
+  attach_function :lame_get_disable_reservoir, [:global_flags],          :int
+  attach_function :lame_set_quant_comp,        [:global_flags, :int],    :int
+  attach_function :lame_get_quant_comp,        [:global_flags],          :int
+  attach_function :lame_set_quant_comp_short,  [:global_flags, :int],    :int
+  attach_function :lame_get_quant_comp_short,  [:global_flags],          :int
+  attach_function :lame_set_experimentalX,     [:global_flags, :int],    :int
+  attach_function :lame_get_experimentalX,     [:global_flags],          :int
+  attach_function :lame_set_experimentalY,     [:global_flags, :int],    :int
+  attach_function :lame_get_experimentalY,     [:global_flags],          :int
+  attach_function :lame_set_experimentalZ,     [:global_flags, :int],    :int
+  attach_function :lame_get_experimentalZ,     [:global_flags],          :int
+  attach_function :lame_set_exp_nspsytune,     [:global_flags, :int],    :int
+  attach_function :lame_get_exp_nspsytune,     [:global_flags],          :int
+  attach_function :lame_set_msfix,             [:global_flags, :double], :void
+  attach_function :lame_get_msfix,             [:global_flags],          :float
 
   # VBR
-  attach_function :lame_set_VBR,                   [:pointer, :vbr_mode], :int
-  attach_function :lame_get_VBR,                   [:pointer],            :vbr_mode
-  attach_function :lame_set_VBR_q,                 [:pointer, :int],      :int
-  attach_function :lame_get_VBR_q,                 [:pointer],            :int
-  attach_function :lame_set_VBR_quality,           [:pointer, :float],    :int
-  attach_function :lame_get_VBR_quality,           [:pointer],            :float
-  attach_function :lame_set_VBR_mean_bitrate_kbps, [:pointer, :int],      :int
-  attach_function :lame_get_VBR_mean_bitrate_kbps, [:pointer],            :int
-  attach_function :lame_set_VBR_min_bitrate_kbps,  [:pointer, :int],      :int
-  attach_function :lame_get_VBR_min_bitrate_kbps,  [:pointer],            :int
-  attach_function :lame_set_VBR_max_bitrate_kbps,  [:pointer, :int],      :int
-  attach_function :lame_get_VBR_max_bitrate_kbps,  [:pointer],            :int
-  attach_function :lame_set_VBR_hard_min,          [:pointer, :int],      :int
-  attach_function :lame_get_VBR_hard_min,          [:pointer],            :int
+  attach_function :lame_set_VBR,                   [:global_flags, :vbr_mode], :int
+  attach_function :lame_get_VBR,                   [:global_flags],            :vbr_mode
+  attach_function :lame_set_VBR_q,                 [:global_flags, :int],      :int
+  attach_function :lame_get_VBR_q,                 [:global_flags],            :int
+  attach_function :lame_set_VBR_quality,           [:global_flags, :float],    :int
+  attach_function :lame_get_VBR_quality,           [:global_flags],            :float
+  attach_function :lame_set_VBR_mean_bitrate_kbps, [:global_flags, :int],      :int
+  attach_function :lame_get_VBR_mean_bitrate_kbps, [:global_flags],            :int
+  attach_function :lame_set_VBR_min_bitrate_kbps,  [:global_flags, :int],      :int
+  attach_function :lame_get_VBR_min_bitrate_kbps,  [:global_flags],            :int
+  attach_function :lame_set_VBR_max_bitrate_kbps,  [:global_flags, :int],      :int
+  attach_function :lame_get_VBR_max_bitrate_kbps,  [:global_flags],            :int
+  attach_function :lame_set_VBR_hard_min,          [:global_flags, :int],      :int
+  attach_function :lame_get_VBR_hard_min,          [:global_flags],            :int
 
   # Filtering control
-  attach_function :lame_set_lowpassfreq,   [:pointer, :int], :int
-  attach_function :lame_get_lowpassfreq,   [:pointer],       :int
-  attach_function :lame_set_lowpasswidth,  [:pointer, :int], :int
-  attach_function :lame_get_lowpasswidth,  [:pointer],       :int
-  attach_function :lame_set_highpassfreq,  [:pointer, :int], :int
-  attach_function :lame_get_highpassfreq,  [:pointer],       :int
-  attach_function :lame_set_highpasswidth, [:pointer, :int], :int
-  attach_function :lame_get_highpasswidth, [:pointer],       :int
+  attach_function :lame_set_lowpassfreq,   [:global_flags, :int], :int
+  attach_function :lame_get_lowpassfreq,   [:global_flags],       :int
+  attach_function :lame_set_lowpasswidth,  [:global_flags, :int], :int
+  attach_function :lame_get_lowpasswidth,  [:global_flags],       :int
+  attach_function :lame_set_highpassfreq,  [:global_flags, :int], :int
+  attach_function :lame_get_highpassfreq,  [:global_flags],       :int
+  attach_function :lame_set_highpasswidth, [:global_flags, :int], :int
+  attach_function :lame_get_highpasswidth, [:global_flags],       :int
 
   # psycho acoustics
-  attach_function :lame_set_ATHonly,           [:pointer, :int],   :int
-  attach_function :lame_get_ATHonly,           [:pointer],         :int
-  attach_function :lame_set_ATHshort,          [:pointer, :int],   :int
-  attach_function :lame_get_ATHshort,          [:pointer],         :int
-  attach_function :lame_set_noATH,             [:pointer, :int],   :int
-  attach_function :lame_get_noATH,             [:pointer],         :int
-  attach_function :lame_set_ATHtype,           [:pointer, :int],   :int
-  attach_function :lame_get_ATHtype,           [:pointer],         :int
-  attach_function :lame_set_ATHlower,          [:pointer, :float], :int
-  attach_function :lame_get_ATHlower,          [:pointer],         :float
-  attach_function :lame_set_athaa_type,        [:pointer, :int],   :int
-  attach_function :lame_get_athaa_type,        [:pointer],         :int
-  attach_function :lame_set_athaa_sensitivity, [:pointer, :float], :int
-  attach_function :lame_get_athaa_sensitivity, [:pointer],         :float
+  attach_function :lame_set_ATHonly,           [:global_flags, :int],   :int
+  attach_function :lame_get_ATHonly,           [:global_flags],         :int
+  attach_function :lame_set_ATHshort,          [:global_flags, :int],   :int
+  attach_function :lame_get_ATHshort,          [:global_flags],         :int
+  attach_function :lame_set_noATH,             [:global_flags, :int],   :int
+  attach_function :lame_get_noATH,             [:global_flags],         :int
+  attach_function :lame_set_ATHtype,           [:global_flags, :int],   :int
+  attach_function :lame_get_ATHtype,           [:global_flags],         :int
+  attach_function :lame_set_ATHlower,          [:global_flags, :float], :int
+  attach_function :lame_get_ATHlower,          [:global_flags],         :float
+  attach_function :lame_set_athaa_type,        [:global_flags, :int],   :int
+  attach_function :lame_get_athaa_type,        [:global_flags],         :int
+  attach_function :lame_set_athaa_sensitivity, [:global_flags, :float], :int
+  attach_function :lame_get_athaa_sensitivity, [:global_flags],         :float
 
   # blocks
-  attach_function :lame_set_allow_diff_short,   [:pointer, :int],   :int
-  attach_function :lame_get_allow_diff_short,   [:pointer],         :int
-  attach_function :lame_set_useTemporal,        [:pointer, :int],   :int
-  attach_function :lame_get_useTemporal,        [:pointer],         :int
-  attach_function :lame_set_interChRatio,       [:pointer, :float], :int
-  attach_function :lame_get_interChRatio,       [:pointer],         :float
-  attach_function :lame_set_no_short_blocks,    [:pointer, :int],   :int
-  attach_function :lame_get_no_short_blocks,    [:pointer],         :int
-  attach_function :lame_set_force_short_blocks, [:pointer, :int],   :int
-  attach_function :lame_get_force_short_blocks, [:pointer],         :int
-  attach_function :lame_set_emphasis,           [:pointer, :int],   :int
-  attach_function :lame_get_emphasis,           [:pointer],         :int
+  attach_function :lame_set_allow_diff_short,   [:global_flags, :int],   :int
+  attach_function :lame_get_allow_diff_short,   [:global_flags],         :int
+  attach_function :lame_set_useTemporal,        [:global_flags, :int],   :int
+  attach_function :lame_get_useTemporal,        [:global_flags],         :int
+  attach_function :lame_set_interChRatio,       [:global_flags, :float], :int
+  attach_function :lame_get_interChRatio,       [:global_flags],         :float
+  attach_function :lame_set_no_short_blocks,    [:global_flags, :int],   :int
+  attach_function :lame_get_no_short_blocks,    [:global_flags],         :int
+  attach_function :lame_set_force_short_blocks, [:global_flags, :int],   :int
+  attach_function :lame_get_force_short_blocks, [:global_flags],         :int
+  attach_function :lame_set_emphasis,           [:global_flags, :int],   :int
+  attach_function :lame_get_emphasis,           [:global_flags],         :int
 
   # internal variables
-  attach_function :lame_get_version,              [:pointer], :int
-  attach_function :lame_get_encoder_delay,        [:pointer], :int
-  attach_function :lame_get_encoder_padding,      [:pointer], :int
-  attach_function :lame_get_framesize,            [:pointer], :int
-  attach_function :lame_get_mf_samples_to_encode, [:pointer], :int
-  attach_function :lame_get_size_mp3buffer,       [:pointer], :int
-  attach_function :lame_get_frameNum,             [:pointer], :int
-  attach_function :lame_get_totalframes,          [:pointer], :int
-  attach_function :lame_get_RadioGain,            [:pointer], :int
-  attach_function :lame_get_AudiophileGain,       [:pointer], :int
-  attach_function :lame_get_PeakSample,           [:pointer], :float
-  attach_function :lame_get_noclipGainChange,     [:pointer], :int
-  attach_function :lame_get_noclipScale,          [:pointer], :float
+  attach_function :lame_get_version,              [:global_flags], :int
+  attach_function :lame_get_encoder_delay,        [:global_flags], :int
+  attach_function :lame_get_encoder_padding,      [:global_flags], :int
+  attach_function :lame_get_framesize,            [:global_flags], :int
+  attach_function :lame_get_mf_samples_to_encode, [:global_flags], :int
+  attach_function :lame_get_size_mp3buffer,       [:global_flags], :int
+  attach_function :lame_get_frameNum,             [:global_flags], :int
+  attach_function :lame_get_totalframes,          [:global_flags], :int
+  attach_function :lame_get_RadioGain,            [:global_flags], :int
+  attach_function :lame_get_AudiophileGain,       [:global_flags], :int
+  attach_function :lame_get_PeakSample,           [:global_flags], :float
+  attach_function :lame_get_noclipGainChange,     [:global_flags], :int
+  attach_function :lame_get_noclipScale,          [:global_flags], :float
 
   # initializing parameters
-  attach_function :lame_init_params, [:pointer], :int
+  attach_function :lame_init_params, [:global_flags], :int
 
   # version
   attach_function :get_lame_version,            [], :string
@@ -195,39 +197,45 @@ module LAME
   attach_function :get_lame_url,                [], :string
   attach_function :get_lame_os_bitness,         [], :string
 
-  attach_function :get_lame_version_numerical,  [:pointer], Version.by_value
+  attach_function :get_lame_version_numerical,  [:global_flags], Version.by_value
+
+  # TODO: test when we have implemented lame_set_msgf
+  attach_function :lame_print_config,    [:global_flags], :void
+  attach_function :lame_print_internals, [:global_flags], :void
 
   # encoding
-  attach_function :lame_encode_buffer,                         [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
-  attach_function :lame_encode_buffer_interleaved,             [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
-  attach_function :lame_encode_buffer_float,                   [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
-  attach_function :lame_encode_buffer_ieee_float,              [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
-  attach_function :lame_encode_buffer_interleaved_ieee_float,  [:pointer, :pointer, :int, :pointer, :int],           :int
-  attach_function :lame_encode_buffer_ieee_double,             [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
-  attach_function :lame_encode_buffer_interleaved_ieee_double, [:pointer, :pointer, :int, :pointer, :int],           :int
-  attach_function :lame_encode_buffer_long,                    [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
-  attach_function :lame_encode_buffer_long2,                   [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
-  attach_function :lame_encode_buffer_int,                     [:pointer, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer,                         [:global_flags, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer_interleaved,             [:global_flags, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer_float,                   [:global_flags, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer_ieee_float,              [:global_flags, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer_interleaved_ieee_float,  [:global_flags, :pointer, :int, :pointer, :int],           :int
+  attach_function :lame_encode_buffer_ieee_double,             [:global_flags, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer_interleaved_ieee_double, [:global_flags, :pointer, :int, :pointer, :int],           :int
+  attach_function :lame_encode_buffer_long,                    [:global_flags, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer_long2,                   [:global_flags, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer_int,                     [:global_flags, :pointer, :pointer, :int, :pointer, :int], :int
 
   # flushing
-  attach_function :lame_encode_flush,       [:pointer, :pointer, :int], :int
-  attach_function :lame_encode_flush_nogap, [:pointer, :pointer, :int], :int
+  attach_function :lame_encode_flush,       [:global_flags, :pointer, :int], :int
+  attach_function :lame_encode_flush_nogap, [:global_flags, :pointer, :int], :int
 
   # bitstream
-  attach_function :lame_init_bitstream, [:pointer], :int
+  attach_function :lame_init_bitstream, [:global_flags], :int
 
   # TODO: statistics (multi-dimensional arrays..)
-  # attach_function :lame_bitrate_hist,             [:pointer, :pointer], :void
-  # attach_function :lame_bitrate_kbps,             [:pointer, :pointer], :void
-  # attach_function :lame_stereo_mode_hist,         [:pointer, :pointer], :void
-  # attach_function :lame_bitrate_stereo_mode_hist, [:pointer, :pointer], :void
-  # attach_function :lame_block_type_hist,          [:pointer, :pointer], :void
-  # attach_function :lame_bitrate_block_type_hist,  [:pointer, :pointer], :void
+  # attach_function :lame_bitrate_hist,             [:global_flags, :pointer], :void
+  # attach_function :lame_bitrate_kbps,             [:global_flags, :pointer], :void
+  # attach_function :lame_stereo_mode_hist,         [:global_flags, :pointer], :void
+  # attach_function :lame_bitrate_stereo_mode_hist, [:global_flags, :pointer], :void
+  # attach_function :lame_block_type_hist,          [:global_flags, :pointer], :void
+  # attach_function :lame_bitrate_block_type_hist,  [:global_flags, :pointer], :void
 
-  # TODO: needs file pointer
-  attach_function :lame_mp3_tags_fid, [:pointer], :void
+  # needs a file pointer, will be deprecated (?)
+  # attach_function :lame_mp3_tags_fid, [:pointer], :void
+
+  attach_function :lame_get_lametag_frame, [:global_flags, :pointer, :size_t], :size_t
 
   # closing
-  attach_function :lame_close,              [:pointer], :int
+  attach_function :lame_close, [:global_flags], :int
 
 end
