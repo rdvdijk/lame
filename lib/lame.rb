@@ -10,7 +10,7 @@ module LAME
   #ffi_lib "libmp3lame"
   ffi_lib "/Users/roel/code/personal/lame/lame-3.99.5/libmp3lame/.libs/libmp3lame.0.dylib"
 
-  VBRMode = enum :vbr_mode, [
+  enum :vbr_mode, [
     :vbr_off, 0,
     :vbr_mt,
     :vbr_rh,
@@ -19,6 +19,18 @@ module LAME
     :vbr_max_indicator
     #:vbr_default, 4 # vbr_mtrh # two enums with value 4?
   ]
+
+  class Version < FFI::Struct
+    layout  :major, :int,
+      :minor, :int,
+      :alpha, :int,
+      :beta, :int,
+      :psy_major, :int,
+      :psy_minor, :int,
+      :psy_alpha, :int,
+      :psy_beta, :int,
+      :features, :string
+  end
 
   # These `attach_function` declarations are in the order of lame.h:
 
@@ -157,7 +169,6 @@ module LAME
   attach_function :lame_set_emphasis,           [:pointer, :int],   :int
   attach_function :lame_get_emphasis,           [:pointer],         :int
 
-  # TEST from here
   # internal variables
   attach_function :lame_get_version,              [:pointer], :int
   attach_function :lame_get_encoder_delay,        [:pointer], :int
@@ -183,6 +194,8 @@ module LAME
   attach_function :get_psy_version,             [], :string
   attach_function :get_lame_url,                [], :string
   attach_function :get_lame_os_bitness,         [], :string
+
+  attach_function :get_lame_version_numerical,  [:pointer], Version.by_value
 
   # encoding
   attach_function :lame_encode_buffer,                         [:pointer, :pointer, :pointer, :int, :pointer, :int], :int

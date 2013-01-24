@@ -425,6 +425,47 @@ module LAME
         it "has os bitness" do
           LAME.get_lame_os_bitness.should eql "64bits"
         end
+
+
+        context "numerical version" do
+
+          let(:version) { LAME.get_lame_version_numerical(@flags_pointer) }
+          it "has a major version" do
+            version[:major].should eql 3
+
+          end
+          it "has a minor version" do
+            version[:minor].should eql 99
+          end
+
+          it "has a alpha version" do
+            version[:alpha].should eql 0
+          end
+
+          it "has a beta version" do
+            version[:beta].should eql 0
+          end
+
+          it "has a psy_major version" do
+            version[:psy_major].should eql 1
+          end
+
+          it "has a psy_minor version" do
+            version[:psy_minor].should eql 0
+          end
+
+          it "has a psy_alpha version" do
+            version[:psy_alpha].should eql 0
+          end
+
+          it "has a psy_beta version" do
+            version[:psy_beta].should eql 0
+          end
+
+          it "has features" do
+            version[:features].should eql ""
+          end
+        end
       end
     end
 
