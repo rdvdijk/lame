@@ -55,6 +55,8 @@ describe "Encoding" do
 
     # close
     LAME.lame_close(flags_pointer)
+
+    Digest::MD5.hexdigest(File.read(mp3_path)).should eql "2316d0fbbdfebe143127542482a06e12"
   end
 
 end
