@@ -1,8 +1,5 @@
 require "ffi"
-
 require "lame/version"
-
-require 'pry'
 
 module LAME
 

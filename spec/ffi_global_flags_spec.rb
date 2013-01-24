@@ -11,24 +11,6 @@ module LAME
       LAME.lame_close(@flags_pointer)
     end
 
-    def test_get(flag, expected_value)
-      LAME.send(:"lame_get_#{flag}", @flags_pointer).should eql expected_value
-    end
-
-    def test_get_float(flag, expected_value)
-      LAME.send(:"lame_get_#{flag}", @flags_pointer).should be_within(0.00001).of(expected_value)
-    end
-
-    def test_set(flag, new_value, return_value = 0)
-      LAME.send(:"lame_set_#{flag}", @flags_pointer, new_value).should eql return_value
-      test_get(flag, new_value)
-    end
-
-    def test_set_float(flag, new_value, return_value = 0)
-      LAME.send(:"lame_set_#{flag}", @flags_pointer, new_value).should eql return_value
-      test_get_float(flag, new_value)
-    end
-
     context "global flags" do
 
       before do
@@ -36,93 +18,93 @@ module LAME
       end
 
       it "has a number of samples" do
-        test_get(:num_samples, 2**32-1)
-        test_set(:num_samples, 1)
+        LAME.should have_flag(:num_samples).with_value(2**32-1).for(@flags_pointer)
+        LAME.should be_able_to_set(:num_samples).to(1).for(@flags_pointer)
       end
 
       it "has an input samplerate" do
-        test_get(:in_samplerate, 44100)
-        test_set(:in_samplerate, 22050)
+        LAME.should have_flag(:in_samplerate).with_value(44100).for(@flags_pointer)
+        LAME.should be_able_to_set(:in_samplerate).to(22050).for(@flags_pointer)
       end
 
       it "has a number of channels" do
-        test_get(:num_channels, 2)
-        test_set(:num_channels, 1)
+        LAME.should have_flag(:num_channels).with_value(2).for(@flags_pointer)
+        LAME.should be_able_to_set(:num_channels).to(1).for(@flags_pointer)
       end
 
       it "has a scale" do
-        test_get_float(:scale, 0.95)
-        test_set_float(:scale, 2.0)
+        LAME.should have_flag(:scale).with_value(0.95).for(@flags_pointer)
+        LAME.should be_able_to_set(:scale).to(2.0).for(@flags_pointer)
       end
 
       it "has a scale_left" do
-        test_get(:scale_left, 1.0)
-        test_set(:scale_left, 2.0)
+        LAME.should have_flag(:scale_left).with_value(1.0).for(@flags_pointer)
+        LAME.should be_able_to_set(:scale_left).to(2.0).for(@flags_pointer)
       end
 
       it "has a scale_right" do
-        test_get(:scale_right, 1.0)
-        test_set(:scale_right, 2.0)
+        LAME.should have_flag(:scale_right).with_value(1.0).for(@flags_pointer)
+        LAME.should be_able_to_set(:scale_right).to(2.0).for(@flags_pointer)
       end
 
       it "has a output samplerate" do
-        test_get(:out_samplerate, 44100)
-        test_set(:out_samplerate, 48000)
+        LAME.should have_flag(:out_samplerate).with_value(44100).for(@flags_pointer)
+        LAME.should be_able_to_set(:out_samplerate).to(48000).for(@flags_pointer)
       end
 
       it "has an analysis" do
-        test_get(:analysis, 0)
-        test_set(:analysis, 1)
+        LAME.should have_flag(:analysis).with_value(0).for(@flags_pointer)
+        LAME.should be_able_to_set(:analysis).to(1).for(@flags_pointer)
       end
 
       it "has bWriteVbrTag" do
-        test_get(:bWriteVbrTag, 1)
-        test_set(:bWriteVbrTag, 0)
+        LAME.should have_flag(:bWriteVbrTag).with_value(1).for(@flags_pointer)
+        LAME.should be_able_to_set(:bWriteVbrTag).to(0).for(@flags_pointer)
       end
 
       it "has decode only" do
-        test_get(:decode_only, 0)
-        test_set(:decode_only, 1)
+        LAME.should have_flag(:decode_only).with_value(0).for(@flags_pointer)
+        LAME.should be_able_to_set(:decode_only).to(1).for(@flags_pointer)
       end
 
       it "has a quality" do
-        test_get(:quality, 3)
-        test_set(:quality, 1)
+        LAME.should have_flag(:quality).with_value(3).for(@flags_pointer)
+        LAME.should be_able_to_set(:quality).to(1).for(@flags_pointer)
       end
 
       it "has a mode" do
-        test_get(:mode, 1)
-        test_set(:mode, 2)
+        LAME.should have_flag(:mode).with_value(1).for(@flags_pointer)
+        LAME.should be_able_to_set(:mode).to(2).for(@flags_pointer)
       end
 
       it "has force ms" do
-        test_get(:force_ms, 0)
-        test_set(:force_ms, 1)
+        LAME.should have_flag(:force_ms).with_value(0).for(@flags_pointer)
+        LAME.should be_able_to_set(:force_ms).to(1).for(@flags_pointer)
       end
 
       it "has free format" do
-        test_get(:free_format, 0)
-        test_set(:free_format, 1)
+        LAME.should have_flag(:free_format).with_value(0).for(@flags_pointer)
+        LAME.should be_able_to_set(:free_format).to(1).for(@flags_pointer)
       end
 
       it "has find replay gain" do
-        test_get(:findReplayGain, 0)
-        test_set(:findReplayGain, 1)
+        LAME.should have_flag(:findReplayGain).with_value(0).for(@flags_pointer)
+        LAME.should be_able_to_set(:findReplayGain).to(1).for(@flags_pointer)
       end
 
       it "has decode on the fly" do
-        test_get(:decode_on_the_fly, 0)
-        test_set(:decode_on_the_fly, 1)
+        LAME.should have_flag(:decode_on_the_fly).with_value(0).for(@flags_pointer)
+        LAME.should be_able_to_set(:decode_on_the_fly).to(1).for(@flags_pointer)
       end
 
       it "has nogap total" do
-        test_get(:nogap_total, 0)
-        test_set(:nogap_total, 1)
+        LAME.should have_flag(:nogap_total).with_value(0).for(@flags_pointer)
+        LAME.should be_able_to_set(:nogap_total).to(1).for(@flags_pointer)
       end
 
       it "has nogap current index" do
-        test_get(:nogap_currentindex, 0)
-        test_set(:nogap_currentindex, 1)
+        LAME.should have_flag(:nogap_currentindex).with_value(0).for(@flags_pointer)
+        LAME.should be_able_to_set(:nogap_currentindex).to(1).for(@flags_pointer)
       end
 
       # TODO:
@@ -131,13 +113,13 @@ module LAME
       it "sets msgf"
 
       it "has a brate" do
-        test_get(:brate, 128)
-        test_set(:brate, 192)
+        LAME.should have_flag(:brate).with_value(128).for(@flags_pointer)
+        LAME.should be_able_to_set(:brate).to(192).for(@flags_pointer)
       end
 
       it "has a compression ratio" do
-        test_get(:compression_ratio, 1)
-        #test_set(:compression_ratio, 11.025) # can't set it..?
+        LAME.should have_flag(:compression_ratio).with_value(1).for(@flags_pointer)
+        #LAME.should be_able_to_set(:compression_ratio).to(11.025).for(@flags_pointer) # can't set it..?
       end
 
       it "has a preset" do
@@ -149,255 +131,255 @@ module LAME
       end
 
       it "has a copyright mark" do
-        test_get(:copyright, 0)
-        test_set(:copyright, 1)
+        LAME.should have_flag(:copyright).with_value(0).for(@flags_pointer)
+        LAME.should be_able_to_set(:copyright).to(1).for(@flags_pointer)
       end
 
       it "has an original mark" do
-        test_get(:original, 1)
-        test_set(:original, 0)
+        LAME.should have_flag(:original).with_value(1).for(@flags_pointer)
+        LAME.should be_able_to_set(:original).to(0).for(@flags_pointer)
       end
 
       it "has error protection" do
-        test_get(:error_protection, 0)
-        test_set(:error_protection, 1)
+        LAME.should have_flag(:error_protection).with_value(0).for(@flags_pointer)
+        LAME.should be_able_to_set(:error_protection).to(1).for(@flags_pointer)
       end
 
       it "has extension mark" do
-        test_get(:extension, 0)
-        test_set(:extension, 1)
+        LAME.should have_flag(:extension).with_value(0).for(@flags_pointer)
+        LAME.should be_able_to_set(:extension).to(1).for(@flags_pointer)
       end
 
       it "has strict ISO" do
-        test_get(:strict_ISO, 2) # ?
-        test_set(:strict_ISO, 1)
+        LAME.should have_flag(:strict_ISO).with_value(2).for(@flags_pointer) # ?
+        LAME.should be_able_to_set(:strict_ISO).to(1).for(@flags_pointer)
       end
 
 
       context "quantization/noise shaping" do
 
         it "has disable reservoir" do
-          test_get(:disable_reservoir, 0)
-          test_set(:disable_reservoir, 1)
+          LAME.should have_flag(:disable_reservoir).with_value(0).for(@flags_pointer)
+          LAME.should be_able_to_set(:disable_reservoir).to(1).for(@flags_pointer)
         end
 
         it "has quant comp" do
-          test_get(:quant_comp, 9)
-          test_set(:quant_comp, 11)
+          LAME.should have_flag(:quant_comp).with_value(9).for(@flags_pointer)
+          LAME.should be_able_to_set(:quant_comp).to(11).for(@flags_pointer)
         end
 
         it "has quant comp short" do
-          test_get(:quant_comp_short, 9)
-          test_set(:quant_comp_short, 11)
+          LAME.should have_flag(:quant_comp_short).with_value(9).for(@flags_pointer)
+          LAME.should be_able_to_set(:quant_comp_short).to(11).for(@flags_pointer)
         end
 
         it "has experimentalX" do
-          test_get(:experimentalX, 9)
-          test_set(:experimentalX, 11)
+          LAME.should have_flag(:experimentalX).with_value(9).for(@flags_pointer)
+          LAME.should be_able_to_set(:experimentalX).to(11).for(@flags_pointer)
         end
 
         it "has experimentalY" do
-          test_get(:experimentalY, 0)
-          test_set(:experimentalY, 1)
+          LAME.should have_flag(:experimentalY).with_value(0).for(@flags_pointer)
+          LAME.should be_able_to_set(:experimentalY).to(1).for(@flags_pointer)
         end
 
         it "has experimentalZ" do
-          test_get(:experimentalZ, 0)
-          test_set(:experimentalZ, 1)
+          LAME.should have_flag(:experimentalZ).with_value(0).for(@flags_pointer)
+          LAME.should be_able_to_set(:experimentalZ).to(1).for(@flags_pointer)
         end
 
         it "has exp nspsytune" do
-          test_get(:exp_nspsytune, 1)
-          test_set(:exp_nspsytune, 0)
+          LAME.should have_flag(:exp_nspsytune).with_value(1).for(@flags_pointer)
+          LAME.should be_able_to_set(:exp_nspsytune).to(0).for(@flags_pointer)
         end
 
         it "has msfix" do
-          test_get_float(:msfix, 1.95)
-          test_set_float(:msfix, 1.55, nil)
+          LAME.should have_flag(:msfix).with_value(1.95).for(@flags_pointer)
+          LAME.should be_able_to_set(:msfix).to(1.55).and_return(nil).for(@flags_pointer)
         end
       end
 
       context "VBR" do
         it "has VBR mode" do
-          test_get(:VBR, :vbr_off)
-          test_set(:VBR, :vbr_mt)
+          LAME.should have_flag(:VBR).with_value(:vbr_off).for(@flags_pointer)
+          LAME.should be_able_to_set(:VBR).to(:vbr_mt).for(@flags_pointer)
         end
 
         it "has VBR q" do
-          test_get(:VBR_q, 4)
-          test_set(:VBR_q, 5)
+          LAME.should have_flag(:VBR_q).with_value(4).for(@flags_pointer)
+          LAME.should be_able_to_set(:VBR_q).to(5).for(@flags_pointer)
         end
 
         it "has VBR quality" do
-          test_get_float(:VBR_quality, 4.0)
-          test_set_float(:VBR_quality, 5.0)
+          LAME.should have_flag(:VBR_quality).with_value(4.0).for(@flags_pointer)
+          LAME.should be_able_to_set(:VBR_quality).to(5.0).for(@flags_pointer)
         end
 
         it "has VBR mean bitrate kbps" do
-          test_get(:VBR_mean_bitrate_kbps, 128)
-          test_set(:VBR_mean_bitrate_kbps, 192)
+          LAME.should have_flag(:VBR_mean_bitrate_kbps).with_value(128).for(@flags_pointer)
+          LAME.should be_able_to_set(:VBR_mean_bitrate_kbps).to(192).for(@flags_pointer)
         end
 
         it "has VBR min bitrate kbps" do
-          test_get(:VBR_min_bitrate_kbps, 0)
-          test_set(:VBR_min_bitrate_kbps, 128)
+          LAME.should have_flag(:VBR_min_bitrate_kbps).with_value(0).for(@flags_pointer)
+          LAME.should be_able_to_set(:VBR_min_bitrate_kbps).to(128).for(@flags_pointer)
         end
 
         it "has VBR max bitrate kbps" do
-          test_get(:VBR_max_bitrate_kbps, 0)
-          test_set(:VBR_max_bitrate_kbps, 256)
+          LAME.should have_flag(:VBR_max_bitrate_kbps).with_value(0).for(@flags_pointer)
+          LAME.should be_able_to_set(:VBR_max_bitrate_kbps).to(256).for(@flags_pointer)
         end
 
         it "has VBR hard min bitrate kbps" do
-          test_get(:VBR_hard_min, 0)
-          test_set(:VBR_hard_min, 1)
+          LAME.should have_flag(:VBR_hard_min).with_value(0).for(@flags_pointer)
+          LAME.should be_able_to_set(:VBR_hard_min).to(1).for(@flags_pointer)
         end
       end
 
       context "filtering control" do
         it "has lowpassfreq" do
-          test_get(:lowpassfreq, 17000)
-          test_set(:lowpassfreq, 18000)
+          LAME.should have_flag(:lowpassfreq).with_value(17000).for(@flags_pointer)
+          LAME.should be_able_to_set(:lowpassfreq).to(18000).for(@flags_pointer)
         end
 
         it "has lowpasswidth" do
-          test_get(:lowpasswidth, -1)
-          test_set(:lowpasswidth, 200)
+          LAME.should have_flag(:lowpasswidth).with_value(-1).for(@flags_pointer)
+          LAME.should be_able_to_set(:lowpasswidth).to(200).for(@flags_pointer)
         end
 
         it "has highpassfreq" do
-          test_get(:highpassfreq, 0)
-          test_set(:highpassfreq, -1)
+          LAME.should have_flag(:highpassfreq).with_value(0).for(@flags_pointer)
+          LAME.should be_able_to_set(:highpassfreq).to(-1).for(@flags_pointer)
         end
 
         it "has highpasswidth" do
-          test_get(:highpasswidth, -1)
-          test_set(:highpasswidth, 200)
+          LAME.should have_flag(:highpasswidth).with_value(-1).for(@flags_pointer)
+          LAME.should be_able_to_set(:highpasswidth).to(200).for(@flags_pointer)
         end
       end
 
       context "psycho acoustics" do
         it "has ATHonly" do
-          test_get(:ATHonly, 0)
-          test_set(:ATHonly, 1)
+          LAME.should have_flag(:ATHonly).with_value(0).for(@flags_pointer)
+          LAME.should be_able_to_set(:ATHonly).to(1).for(@flags_pointer)
         end
 
         it "has ATHshort" do
-          test_get(:ATHshort, 0)
-          test_set(:ATHshort, 1)
+          LAME.should have_flag(:ATHshort).with_value(0).for(@flags_pointer)
+          LAME.should be_able_to_set(:ATHshort).to(1).for(@flags_pointer)
         end
 
         it "has noATH" do
-          test_get(:noATH, 0)
-          test_set(:noATH, 1)
+          LAME.should have_flag(:noATH).with_value(0).for(@flags_pointer)
+          LAME.should be_able_to_set(:noATH).to(1).for(@flags_pointer)
         end
 
         it "has ATHtype" do
-          test_get(:ATHtype, 4)
-          test_set(:ATHtype, 5)
+          LAME.should have_flag(:ATHtype).with_value(4).for(@flags_pointer)
+          LAME.should be_able_to_set(:ATHtype).to(5).for(@flags_pointer)
         end
 
         it "has ATHlower" do
-          test_get_float(:ATHlower, 3.0)
-          test_set_float(:ATHlower, 4.0)
+          LAME.should have_flag(:ATHlower).with_value(3.0).for(@flags_pointer)
+          LAME.should be_able_to_set(:ATHlower).to(4.0).for(@flags_pointer)
         end
 
         it "has athaa type" do
-          test_get(:athaa_type, -1)
-          test_set(:athaa_type, 1)
+          LAME.should have_flag(:athaa_type).with_value(-1).for(@flags_pointer)
+          LAME.should be_able_to_set(:athaa_type).to(1).for(@flags_pointer)
         end
 
         it "has athaa sensitivity" do
-          test_get_float(:athaa_sensitivity, 0.0)
-          test_set_float(:athaa_sensitivity, 0.0)
+          LAME.should have_flag(:athaa_sensitivity).with_value(0.0).for(@flags_pointer)
+          LAME.should be_able_to_set(:athaa_sensitivity).to(1.0).for(@flags_pointer)
         end
       end
 
       context "blocks" do
         it "has allow diff short" do
-          test_get(:allow_diff_short, 0)
-          test_set(:allow_diff_short, 1)
+          LAME.should have_flag(:allow_diff_short).with_value(0).for(@flags_pointer)
+          LAME.should be_able_to_set(:allow_diff_short).to(1).for(@flags_pointer)
         end
 
         it "has useTemporal" do
-          test_get(:useTemporal, 1)
-          test_set(:useTemporal, 0)
+          LAME.should have_flag(:useTemporal).with_value(1).for(@flags_pointer)
+          LAME.should be_able_to_set(:useTemporal).to(0).for(@flags_pointer)
         end
 
         it "has interChRatio" do
-          test_get_float(:interChRatio, 0.0002)
-          test_set_float(:interChRatio, 0.0003)
+          LAME.should have_flag(:interChRatio).with_value(0.0002).for(@flags_pointer)
+          LAME.should be_able_to_set(:interChRatio).to(0.0003).for(@flags_pointer)
         end
 
         it "has no short blocks" do
-          test_get(:no_short_blocks, 0)
-          test_set(:no_short_blocks, 1)
+          LAME.should have_flag(:no_short_blocks).with_value(0).for(@flags_pointer)
+          LAME.should be_able_to_set(:no_short_blocks).to(1).for(@flags_pointer)
         end
 
         it "has force short blocks" do
-          test_get(:force_short_blocks, 0)
-          test_set(:force_short_blocks, 1)
+          LAME.should have_flag(:force_short_blocks).with_value(0).for(@flags_pointer)
+          LAME.should be_able_to_set(:force_short_blocks).to(1).for(@flags_pointer)
         end
 
         it "has emphasis" do
-          test_get(:emphasis, 0)
-          test_set(:emphasis, 1)
+          LAME.should have_flag(:emphasis).with_value(0).for(@flags_pointer)
+          LAME.should be_able_to_set(:emphasis).to(1).for(@flags_pointer)
         end
       end
 
       context "internal variables" do
         it "has a version" do
-          test_get(:version, 1)
+          LAME.should have_getter(:version).with_value(1).for(@flags_pointer)
         end
 
         it "has encoder delay" do
-          test_get(:encoder_delay, 576)
+          LAME.should have_getter(:encoder_delay).with_value(576).for(@flags_pointer)
         end
 
         it "has encoder padding" do
-          test_get(:encoder_padding, 0)
+          LAME.should have_getter(:encoder_padding).with_value(0).for(@flags_pointer)
         end
 
         it "has framesize" do
-          test_get(:framesize, 1152)
+          LAME.should have_getter(:framesize).with_value(1152).for(@flags_pointer)
         end
 
         it "has mf samples to encode" do
-          test_get(:mf_samples_to_encode, 1728)
+          LAME.should have_getter(:mf_samples_to_encode).with_value(1728).for(@flags_pointer)
         end
 
         # this produces a the 'stange error flushing buffer' warning
         # fix when "set_errorf" works so we can suppress the warning
         xit "has size mp3buffer" do
-          test_get(:size_mp3buffer, 834)
+          LAME.should have_getter(:size_mp3buffer).with_value(834).for(@flags_pointer)
         end
 
         it "has frameNum" do
-          test_get(:frameNum, 0)
+          LAME.should have_getter(:frameNum).with_value(0).for(@flags_pointer)
         end
 
         it "has totalframes" do
-          test_get(:totalframes, 3728272)
+          LAME.should have_getter(:totalframes).with_value(3728272).for(@flags_pointer)
         end
 
         it "has RatioGain" do
-          test_get(:RadioGain, 0)
+          LAME.should have_getter(:RadioGain).with_value(0).for(@flags_pointer)
         end
 
         it "has AudiophileGain" do
-          test_get(:AudiophileGain, 0)
+          LAME.should have_getter(:AudiophileGain).with_value(0).for(@flags_pointer)
         end
 
         it "has PeakSample" do
-          test_get_float(:PeakSample, 0.0)
+          LAME.should have_getter(:PeakSample).with_value(0.0).for(@flags_pointer)
         end
 
         it "has noclipGainChange" do
-          test_get(:noclipGainChange, 0)
+          LAME.should have_getter(:noclipGainChange).with_value(0).for(@flags_pointer)
         end
 
         it "has noclipScale" do
-          test_get_float(:noclipScale, -1.0)
+          LAME.should have_getter(:noclipScale).with_value(-1.0).for(@flags_pointer)
         end
       end
 
