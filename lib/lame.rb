@@ -204,16 +204,16 @@ module LAME
   attach_function :lame_print_internals, [:global_flags], :void
 
   # encoding
-  attach_function :lame_encode_buffer,                         [:global_flags, :pointer, :pointer, :int, :pointer, :int], :int
-  attach_function :lame_encode_buffer_interleaved,             [:global_flags, :pointer, :pointer, :int, :pointer, :int], :int
-  attach_function :lame_encode_buffer_float,                   [:global_flags, :pointer, :pointer, :int, :pointer, :int], :int
-  attach_function :lame_encode_buffer_ieee_float,              [:global_flags, :pointer, :pointer, :int, :pointer, :int], :int
-  attach_function :lame_encode_buffer_interleaved_ieee_float,  [:global_flags, :pointer, :int, :pointer, :int],           :int
-  attach_function :lame_encode_buffer_ieee_double,             [:global_flags, :pointer, :pointer, :int, :pointer, :int], :int
-  attach_function :lame_encode_buffer_interleaved_ieee_double, [:global_flags, :pointer, :int, :pointer, :int],           :int
-  attach_function :lame_encode_buffer_long,                    [:global_flags, :pointer, :pointer, :int, :pointer, :int], :int
-  attach_function :lame_encode_buffer_long2,                   [:global_flags, :pointer, :pointer, :int, :pointer, :int], :int
-  attach_function :lame_encode_buffer_int,                     [:global_flags, :pointer, :pointer, :int, :pointer, :int], :int
+  attach_function :lame_encode_buffer,                         [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
+  attach_function :lame_encode_buffer_interleaved,             [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
+  attach_function :lame_encode_buffer_float,                   [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
+  attach_function :lame_encode_buffer_ieee_float,              [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
+  attach_function :lame_encode_buffer_interleaved_ieee_float,  [:global_flags, :buffer_in,             :int, :buffer_out, :int],           :int
+  attach_function :lame_encode_buffer_ieee_double,             [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
+  attach_function :lame_encode_buffer_interleaved_ieee_double, [:global_flags, :buffer_in,             :int, :buffer_out, :int],           :int
+  attach_function :lame_encode_buffer_long,                    [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
+  attach_function :lame_encode_buffer_long2,                   [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
+  attach_function :lame_encode_buffer_int,                     [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
 
   # flushing
   attach_function :lame_encode_flush,       [:global_flags, :pointer, :int], :int
@@ -230,7 +230,7 @@ module LAME
   # attach_function :lame_block_type_hist,          [:global_flags, :pointer], :void
   # attach_function :lame_bitrate_block_type_hist,  [:global_flags, :pointer], :void
 
-  # needs a file pointer, will be deprecated (?)
+  # NOTE: needs a file pointer, will be deprecated (?)
   # attach_function :lame_mp3_tags_fid, [:pointer], :void
 
   attach_function :lame_get_lametag_frame, [:global_flags, :pointer, :size_t], :size_t
