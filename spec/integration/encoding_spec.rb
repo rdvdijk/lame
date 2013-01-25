@@ -3,12 +3,15 @@ require 'wavefile'
 
 describe "Encoding" do
 
-  it "encodes a wav file" do
-    wav_path = File.expand_path(File.join(File.dirname(__FILE__), 'files/example2.wav'))
-    mp3_path = File.expand_path(File.join(File.dirname(__FILE__), 'files/example2.mp3'))
-    reader = WaveFile::Reader.new(wav_path)
+  let(:wav_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/example2.wav')) }
+  let(:mp3_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/example2.mp3')) }
 
-    # setup
+  let(:wav_reader) { WaveFile::Reader.new(wav_path) }
+
+  # This test serves as an example how to use the LAME API
+  it "encodes a wav file" do
+
+   # setup
     flags_pointer = LAME.lame_init
     LAME.lame_init_params(flags_pointer)
 
@@ -27,7 +30,7 @@ describe "Encoding" do
     buffer = FFI::MemoryPointer.new(:uchar, buffer_size)
 
     File.open(mp3_path, "wb") do |file|
-      reader.each_buffer(framesize) do |read_buffer|
+      wav_reader.each_buffer(framesize) do |read_buffer|
 
         # read samples (ranges from -32k to +32k)
         read_buffer.samples.each.with_index do |(left, right), index|
@@ -37,7 +40,7 @@ describe "Encoding" do
         end
         input_buffer_size = read_buffer.samples.size
 
-        # encode to mp3
+        # encode to mp3 frame
         size = LAME.lame_encode_buffer(
           flags_pointer,
           left_buffer, right_buffer, input_buffer_size,
@@ -48,15 +51,20 @@ describe "Encoding" do
         file.write buffer.get_bytes(0, size)
       end
 
-      # wrap up
+      # flush final frame
       size = LAME.lame_encode_flush(flags_pointer, buffer, buffer_size)
+      file.write buffer.get_bytes(0, size)
+
+      # write "lametag" frame with extra info
+      size = LAME.lame_get_lametag_frame(flags_pointer, buffer, buffer_size)
+      file.seek(0)
       file.write buffer.get_bytes(0, size)
     end
 
     # close
     LAME.lame_close(flags_pointer)
 
-    Digest::MD5.hexdigest(File.read(mp3_path)).should eql "2316d0fbbdfebe143127542482a06e12"
+    Digest::MD5.hexdigest(File.read(mp3_path)).should eql "84a1ce7994bb4a54fc13fb5381ebac40"
   end
 
 end

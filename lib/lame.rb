@@ -239,7 +239,7 @@ module LAME
 
   # TODO: figure out:
   #attach_function :id3tag_genre_list(void (*handler)(int, const char *, void *), void*  cookie);
-  # TODO: test:
+
   attach_function :id3tag_init,                     [:global_flags], :void
   attach_function :id3tag_add_v2,                   [:global_flags], :void
   attach_function :id3tag_v1_only,                  [:global_flags], :void
