@@ -47,9 +47,9 @@ describe "ID3 tags" do
     end
   end
 
-  xit "adds id3v2 tags if configured to" do
+  it "adds id3v2 tags if configured to" do
+    pending "We have to prepend the MP3 file with the id3v2 frame.."
     LAME.id3tag_add_v2(@flags_pointer)
-    # Have to prepend the file with the id3v2 frame ourselves..
   end
 
   private
