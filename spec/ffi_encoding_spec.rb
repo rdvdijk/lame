@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'pry'
 
 module LAME
   describe "FFI calls" do
@@ -157,6 +158,58 @@ module LAME
           frame_size = LAME.lame_get_lametag_frame(@flags_pointer, output_buffer, output_buffer_size)
           #p output_buffer.get_bytes(0, frame_size)
           frame_size.should eql 417
+        end
+      end
+
+      context "history statistics" do
+        let(:input_type) { :short }
+
+        before do
+          LAME.lame_encode_buffer(@flags_pointer, input_buffer_left, input_buffer_right, input_buffer_size, output_buffer, output_buffer_size)
+        end
+
+        it "has bitrate history" do
+          bitrate_count_ptr = FFI::MemoryPointer.new(:int, 14)
+          LAME.lame_bitrate_hist(@flags_pointer, bitrate_count_ptr)
+
+          bitrate_count = bitrate_count_ptr.read_array_of_int(14)
+          # 9th = 128 (see below)
+          bitrate_count.should eql [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+        end
+
+        it "has bitrate kbps" do
+          bitrate_kbps_ptr = FFI::MemoryPointer.new(:int, 14)
+          LAME.lame_bitrate_kbps(@flags_pointer, bitrate_kbps_ptr)
+
+          bitrate_kbps = bitrate_kbps_ptr.read_array_of_int(14)
+          # 9th = 128 (see bitrate table, without 0)
+          bitrate_kbps.should eql [32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320]
+        end
+
+        it "has stereo mode hist" do
+          stereo_mode_hist_ptr = FFI::MemoryPointer.new(:int, 4)
+          LAME.lame_stereo_mode_hist(@flags_pointer, stereo_mode_hist_ptr)
+
+          stereo_mode_hist = stereo_mode_hist_ptr.read_array_of_int(4)
+          # see lame.h for meaning
+          stereo_mode_hist.should eql [0, 0, 1, 0]
+        end
+
+        it "has bitrate stereo mode hist" do
+          pending "multi-dimensional array"
+        end
+
+        it "has block type hist" do
+          block_type_hist_ptr = FFI::MemoryPointer.new(:int, 6)
+          LAME.lame_block_type_hist(@flags_pointer, block_type_hist_ptr)
+
+          block_type_hist = block_type_hist_ptr.read_array_of_int(6)
+          # see lame.h for meaning
+          block_type_hist.should eql [4, 0, 0, 0, 0, 4]
+        end
+
+        it "has bitrate block type hist" do
+          pending "multi-dimensional array"
         end
       end
 

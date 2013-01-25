@@ -73,10 +73,13 @@ module LAME
   attach_function :lame_get_nogap_total,        [:global_flags],          :int
   attach_function :lame_set_nogap_currentindex, [:global_flags, :int],    :int
   attach_function :lame_get_nogap_currentindex, [:global_flags],          :int
-  # TODO: Callbacks
-  # attach_function :lame_set_errorf,             [:global_flags, :global_flags],   :int
-  # attach_function :lame_set_debugf,             [:global_flags, :global_flags],   :int
-  # attach_function :lame_set_msgf,               [:global_flags, :global_flags],   :int
+
+  # the :pointer is a va_list, FFI doesn't support that in callbacks..
+  callback :log_function, [:string, :pointer], :void
+  attach_function :lame_set_errorf,             [:global_flags, :log_function],   :int
+  attach_function :lame_set_debugf,             [:global_flags, :log_function],   :int
+  attach_function :lame_set_msgf,               [:global_flags, :log_function],   :int
+
   attach_function :lame_set_brate,              [:global_flags, :int],    :int
   attach_function :lame_get_brate,              [:global_flags],          :int
   attach_function :lame_set_compression_ratio,  [:global_flags, :int],    :int
@@ -220,11 +223,11 @@ module LAME
   attach_function :lame_init_bitstream, [:global_flags], :int
 
   # TODO: statistics (multi-dimensional arrays..)
-  # attach_function :lame_bitrate_hist,             [:global_flags, :pointer], :void
-  # attach_function :lame_bitrate_kbps,             [:global_flags, :pointer], :void
-  # attach_function :lame_stereo_mode_hist,         [:global_flags, :pointer], :void
+  attach_function :lame_bitrate_hist,             [:global_flags, :pointer], :void
+  attach_function :lame_bitrate_kbps,             [:global_flags, :pointer], :void
+  attach_function :lame_stereo_mode_hist,         [:global_flags, :pointer], :void
   # attach_function :lame_bitrate_stereo_mode_hist, [:global_flags, :pointer], :void
-  # attach_function :lame_block_type_hist,          [:global_flags, :pointer], :void
+  attach_function :lame_block_type_hist,          [:global_flags, :pointer], :void
   # attach_function :lame_bitrate_block_type_hist,  [:global_flags, :pointer], :void
 
   # NOTE: needs a file pointer, will be deprecated (?)
@@ -237,9 +240,8 @@ module LAME
 
   # TODO: decoding
 
-  # TODO: figure out:
-  #attach_function :id3tag_genre_list(void (*handler)(int, const char *, void *), void*  cookie);
-
+  callback :genre_callback, [:int, :string, :pointer], :void
+  attach_function :id3tag_genre_list, [:genre_callback, :pointer], :void
   attach_function :id3tag_init,                     [:global_flags], :void
   attach_function :id3tag_add_v2,                   [:global_flags], :void
   attach_function :id3tag_v1_only,                  [:global_flags], :void

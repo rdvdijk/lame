@@ -12,6 +12,20 @@ module LAME
       LAME.lame_close(@flags_pointer)
     end
 
+    it "has all the genres" do
+      genres = {}
+
+      genre_collector_callback = FFI::Function.new(:void, [:int, :string, :pointer]) do |id, name, _|
+        genres[id] = name
+      end
+
+      LAME.id3tag_genre_list(genre_collector_callback, nil)
+
+      genres.should have(148).items
+      genres[0].should eql "Blues"
+      genres[147].should eql "SynthPop"
+    end
+
     it "initializes" do
       LAME.id3tag_init(@flags_pointer).should eql nil
     end

@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'pry'
 
 module LAME
   describe "FFI calls to global flags" do
@@ -9,6 +10,22 @@ module LAME
 
     after do
       LAME.lame_close(@flags_pointer)
+    end
+
+    it "sets msgf" do
+      callback = FFI::Function.new(:void, [:string, :pointer]) do |format, arguments|
+        # the :pointer is a va_list, FFI doesn't support that in callbacks..
+        # puts format
+      end
+
+      LAME.lame_set_msgf(@flags_pointer, callback).should eql 0
+      LAME.lame_set_errorf(@flags_pointer, callback).should eql 0
+      LAME.lame_set_debugf(@flags_pointer, callback).should eql 0
+
+      LAME.lame_init_params(@flags_pointer)
+
+      LAME.lame_print_config(@flags_pointer)
+      LAME.lame_print_internals(@flags_pointer)
     end
 
     context "global flags" do
@@ -107,10 +124,9 @@ module LAME
         LAME.should be_able_to_set(:nogap_currentindex).to(1).for(@flags_pointer)
       end
 
-      # TODO:
-      it "sets errorf"
-      it "sets debugf"
-      it "sets msgf"
+      # lame_set_errorf
+      # lame_set_debugf
+      # lame_set_msgf
 
       it "has a brate" do
         LAME.should have_flag(:brate).with_value(128).for(@flags_pointer)
@@ -348,11 +364,7 @@ module LAME
           LAME.should have_getter(:mf_samples_to_encode).with_value(1728).for(@flags_pointer)
         end
 
-        # this produces a the 'stange error flushing buffer' warning
-        # fix when "set_errorf" works so we can suppress the warning
-        xit "has size mp3buffer" do
-          LAME.should have_getter(:size_mp3buffer).with_value(834).for(@flags_pointer)
-        end
+        # mp3buffer (see below)
 
         it "has frameNum" do
           LAME.should have_getter(:frameNum).with_value(0).for(@flags_pointer)
@@ -448,16 +460,33 @@ module LAME
           end
         end
 
-        # TODO: test when we have implemented lame_set_msgf
-        xit "prints config" do
-          LAME.lame_print_config(@flags_pointer)
+      end
+    end
+
+    context "with custom logging" do
+
+      it "has size mp3buffer" do
+        # this call produces a 'stange error flushing buffer' warning, suppress it:
+        callback = FFI::Function.new(:void, [:string, :pointer]) do |format, arguments|
+          # do nothing
         end
 
-        # TODO: test when we have implemented lame_set_msgf
-        xit "prints internals" do
-          LAME.lame_print_internals(@flags_pointer)
-        end
+        LAME.lame_set_errorf(@flags_pointer, callback)
+        LAME.lame_init_params(@flags_pointer)
+
+        LAME.should have_getter(:size_mp3buffer).with_value(834).for(@flags_pointer)
       end
+
+      it "prints config" do
+        pending "we need to be able to tweak logging to be able to test this"
+        LAME.lame_print_config(@flags_pointer)
+      end
+
+      it "prints internals" do
+        pending "we need to be able to tweak logging to be able to test this"
+        LAME.lame_print_internals(@flags_pointer)
+      end
+
     end
 
     context "tables" do
