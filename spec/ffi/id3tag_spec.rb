@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'pry'
 
 module LAME
   describe "FFI calls to id3tag setters" do
@@ -15,7 +14,7 @@ module LAME
     it "has all the genres" do
       genres = {}
 
-      genre_collector_callback = FFI::Function.new(:void, [:int, :string, :pointer]) do |id, name, _|
+      genre_collector_callback = ::FFI::Function.new(:void, [:int, :string, :pointer]) do |id, name, _|
         genres[id] = name
       end
 
@@ -93,7 +92,7 @@ module LAME
       buffer_size = 1024
 
       # fake JPG image
-      buffer = FFI::MemoryPointer.new(:char, buffer_size)
+      buffer = ::FFI::MemoryPointer.new(:char, buffer_size)
       buffer.put_char(0, 0xff)
       buffer.put_char(1, 0xd8)
 
@@ -102,7 +101,7 @@ module LAME
 
     it "creates id3v1 tag" do
       buffer_size = 1024
-      buffer = FFI::MemoryPointer.new(:uchar, buffer_size)
+      buffer = ::FFI::MemoryPointer.new(:uchar, buffer_size)
       LAME.id3tag_set_title(@flags_pointer, "foo")
       LAME.id3tag_set_album(@flags_pointer, "bar")
       LAME.lame_get_id3v1_tag(@flags_pointer, buffer, buffer_size).should eql 128
@@ -110,7 +109,7 @@ module LAME
 
     it "creates id3v2 tag" do
       buffer_size = 1024
-      buffer = FFI::MemoryPointer.new(:uchar, buffer_size)
+      buffer = ::FFI::MemoryPointer.new(:uchar, buffer_size)
       LAME.id3tag_add_v2(@flags_pointer)
       LAME.id3tag_set_title(@flags_pointer, "foo")
       LAME.id3tag_set_album(@flags_pointer, "bar")

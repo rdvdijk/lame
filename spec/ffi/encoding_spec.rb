@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'pry'
 
 module LAME
   describe "FFI calls" do
@@ -32,12 +31,12 @@ module LAME
 
       let(:input_buffer_size) { LAME.lame_get_framesize(@flags_pointer) * 2 }
 
-      let(:input_buffer_left)  { FFI::MemoryPointer.new(input_type, input_buffer_size) }
-      let(:input_buffer_right) { FFI::MemoryPointer.new(input_type, input_buffer_size) }
-      let(:input_buffer_interleaved) { FFI::MemoryPointer.new(input_type, input_buffer_size*2) }
+      let(:input_buffer_left)  { ::FFI::MemoryPointer.new(input_type, input_buffer_size) }
+      let(:input_buffer_right) { ::FFI::MemoryPointer.new(input_type, input_buffer_size) }
+      let(:input_buffer_interleaved) { ::FFI::MemoryPointer.new(input_type, input_buffer_size*2) }
 
       let(:output_buffer_size) { (128*1024)+16384 } # see LAME_MAXMP3BUFFER in lame.h
-      let(:output_buffer)      { FFI::MemoryPointer.new(:uchar, output_buffer_size) }
+      let(:output_buffer)      { ::FFI::MemoryPointer.new(:uchar, output_buffer_size) }
 
       context "encoding" do
 
@@ -169,7 +168,7 @@ module LAME
         end
 
         it "has bitrate history" do
-          bitrate_count_ptr = FFI::MemoryPointer.new(:int, 14)
+          bitrate_count_ptr = ::FFI::MemoryPointer.new(:int, 14)
           LAME.lame_bitrate_hist(@flags_pointer, bitrate_count_ptr)
 
           bitrate_count = bitrate_count_ptr.read_array_of_int(14)
@@ -178,7 +177,7 @@ module LAME
         end
 
         it "has bitrate kbps" do
-          bitrate_kbps_ptr = FFI::MemoryPointer.new(:int, 14)
+          bitrate_kbps_ptr = ::FFI::MemoryPointer.new(:int, 14)
           LAME.lame_bitrate_kbps(@flags_pointer, bitrate_kbps_ptr)
 
           bitrate_kbps = bitrate_kbps_ptr.read_array_of_int(14)
@@ -187,7 +186,7 @@ module LAME
         end
 
         it "has stereo mode hist" do
-          stereo_mode_hist_ptr = FFI::MemoryPointer.new(:int, 4)
+          stereo_mode_hist_ptr = ::FFI::MemoryPointer.new(:int, 4)
           LAME.lame_stereo_mode_hist(@flags_pointer, stereo_mode_hist_ptr)
 
           stereo_mode_hist = stereo_mode_hist_ptr.read_array_of_int(4)
@@ -200,7 +199,7 @@ module LAME
         end
 
         it "has block type hist" do
-          block_type_hist_ptr = FFI::MemoryPointer.new(:int, 6)
+          block_type_hist_ptr = ::FFI::MemoryPointer.new(:int, 6)
           LAME.lame_block_type_hist(@flags_pointer, block_type_hist_ptr)
 
           block_type_hist = block_type_hist_ptr.read_array_of_int(6)

@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'pry'
 
 module LAME
   describe "FFI calls to global flags" do
@@ -13,7 +12,7 @@ module LAME
     end
 
     it "sets msgf" do
-      callback = FFI::Function.new(:void, [:string, :pointer]) do |format, arguments|
+      callback = ::FFI::Function.new(:void, [:string, :pointer]) do |format, arguments|
         # the :pointer is a va_list, FFI doesn't support that in callbacks..
         # puts format
       end
@@ -467,7 +466,7 @@ module LAME
 
       it "has size mp3buffer" do
         # this call produces a 'stange error flushing buffer' warning, suppress it:
-        callback = FFI::Function.new(:void, [:string, :pointer]) do |format, arguments|
+        callback = ::FFI::Function.new(:void, [:string, :pointer]) do |format, arguments|
           # do nothing
         end
 
