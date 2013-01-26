@@ -8,6 +8,10 @@ RSpec.configure do |config|
   config.order = 'random'
 end
 
+def pointer_from_string(str)
+  ::FFI::MemoryPointer.from_string(str)
+end
+
 module SetterGetter
   def has_getter?(lame, flag)
     lame.respond_to?(:"lame_get_#{flag}")

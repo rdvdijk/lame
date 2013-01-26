@@ -225,14 +225,14 @@ module LAME
         attach_function :id3tag_space_v1,                 [:global_flags], :void
         attach_function :id3tag_pad_v2,                   [:global_flags], :void
         attach_function :id3tag_set_pad,                  [:global_flags, :size_t], :void
-        attach_function :id3tag_set_title,                [:global_flags, :string], :void
-        attach_function :id3tag_set_artist,               [:global_flags, :string], :void
-        attach_function :id3tag_set_album,                [:global_flags, :string], :void
-        attach_function :id3tag_set_year,                 [:global_flags, :string], :void
-        attach_function :id3tag_set_comment,              [:global_flags, :string], :void
-        attach_function :id3tag_set_track,                [:global_flags, :string], :int
-        attach_function :id3tag_set_genre,                [:global_flags, :string], :int
-        attach_function :id3tag_set_fieldvalue,           [:global_flags, :string], :int
+        attach_function :id3tag_set_title,                [:global_flags, :pointer], :void
+        attach_function :id3tag_set_artist,               [:global_flags, :pointer], :void
+        attach_function :id3tag_set_album,                [:global_flags, :pointer], :void
+        attach_function :id3tag_set_year,                 [:global_flags, :pointer], :void
+        attach_function :id3tag_set_comment,              [:global_flags, :pointer], :void
+        attach_function :id3tag_set_track,                [:global_flags, :pointer], :int
+        attach_function :id3tag_set_genre,                [:global_flags, :pointer], :int
+        attach_function :id3tag_set_fieldvalue,           [:global_flags, :pointer], :int
         attach_function :id3tag_set_albumart,             [:global_flags, :buffer_in, :size_t], :int
         attach_function :lame_get_id3v1_tag,              [:global_flags, :buffer_out, :size_t], :size_t
         attach_function :lame_get_id3v2_tag,              [:global_flags, :buffer_out, :size_t], :size_t

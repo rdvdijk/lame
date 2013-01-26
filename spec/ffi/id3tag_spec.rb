@@ -54,38 +54,38 @@ module LAME
     end
 
     it "sets the title" do
-      LAME.id3tag_set_title(@flags_pointer, "foo").should eql nil
+      LAME.id3tag_set_title(@flags_pointer, pointer_from_string("foo")).should eql nil
     end
 
     it "sets the artist" do
-      LAME.id3tag_set_artist(@flags_pointer, "foo").should eql nil
+      LAME.id3tag_set_artist(@flags_pointer, pointer_from_string("foo")).should eql nil
     end
 
     it "sets the album" do
-      LAME.id3tag_set_album(@flags_pointer, "foo").should eql nil
+      LAME.id3tag_set_album(@flags_pointer, pointer_from_string("foo")).should eql nil
     end
 
     it "sets the year" do
-      LAME.id3tag_set_year(@flags_pointer, "foo").should eql nil
+      LAME.id3tag_set_year(@flags_pointer, pointer_from_string("foo")).should eql nil
     end
 
     it "sets the comment" do
-      LAME.id3tag_set_comment(@flags_pointer, "foo").should eql nil
+      LAME.id3tag_set_comment(@flags_pointer, pointer_from_string("foo")).should eql nil
     end
 
     # TODO out of range
     it "sets the track" do
-      LAME.id3tag_set_track(@flags_pointer, "1").should eql 0
+      LAME.id3tag_set_track(@flags_pointer, pointer_from_string("1")).should eql 0
     end
 
     # TODO all genre id's, genre names, id3v1 ignores custom
     it "sets the genre" do
-      LAME.id3tag_set_genre(@flags_pointer, "Rock").should eql 0
+      LAME.id3tag_set_genre(@flags_pointer, pointer_from_string("Rock")).should eql 0
     end
 
     # fixed set of allowed fields (see id3tag.c)
     it "sets the fieldvalue" do
-      LAME.id3tag_set_fieldvalue(@flags_pointer, "USER=foofoo").should eql 0 # huh?
+      LAME.id3tag_set_fieldvalue(@flags_pointer, pointer_from_string("USER=foofoo")).should eql 0 # huh?
     end
 
     it "sets album art" do
@@ -102,8 +102,8 @@ module LAME
     it "creates id3v1 tag" do
       buffer_size = 1024
       buffer = ::FFI::MemoryPointer.new(:uchar, buffer_size)
-      LAME.id3tag_set_title(@flags_pointer, "foo")
-      LAME.id3tag_set_album(@flags_pointer, "bar")
+      LAME.id3tag_set_title(@flags_pointer, pointer_from_string("foo"))
+      LAME.id3tag_set_album(@flags_pointer, pointer_from_string("bar"))
       LAME.lame_get_id3v1_tag(@flags_pointer, buffer, buffer_size).should eql 128
     end
 
@@ -111,8 +111,8 @@ module LAME
       buffer_size = 1024
       buffer = ::FFI::MemoryPointer.new(:uchar, buffer_size)
       LAME.id3tag_add_v2(@flags_pointer)
-      LAME.id3tag_set_title(@flags_pointer, "foo")
-      LAME.id3tag_set_album(@flags_pointer, "bar")
+      LAME.id3tag_set_title(@flags_pointer, pointer_from_string("foo"))
+      LAME.id3tag_set_album(@flags_pointer, pointer_from_string("bar"))
       LAME.lame_get_id3v2_tag(@flags_pointer, buffer, buffer_size).should eql 38
     end
 
