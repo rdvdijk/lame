@@ -396,15 +396,15 @@ module LAME
 
       context "version" do
         it "has a version" do
-          LAME.get_lame_version.should eql "3.99.5"
+          LAME.get_lame_version.should =~ /3\.\d\d\.\d/
         end
 
         it "has a short version" do
-          LAME.get_lame_short_version.should eql "3.99.5"
+          LAME.get_lame_short_version.should =~ /3\.\d\d\.\d/
         end
 
         it "has a very short version" do
-          LAME.get_lame_very_short_version.should eql "LAME3.99r5"
+          LAME.get_lame_very_short_version.should =~ /LAME3\.\d\dr\d/
         end
 
         it "has a psy version" do
@@ -416,7 +416,7 @@ module LAME
         end
 
         it "has os bitness" do
-          LAME.get_lame_os_bitness.should eql "64bits"
+          LAME.get_lame_os_bitness.should =~ /(32|64)bits/
         end
 
         context "numerical version" do
