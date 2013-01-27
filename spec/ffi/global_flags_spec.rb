@@ -369,8 +369,10 @@ module LAME
           LAME.should have_getter(:frameNum).with_value(0).for(@flags_pointer)
         end
 
+        # unpredictable default value between versions:
         it "has totalframes" do
-          LAME.should have_getter(:totalframes).with_value(3728272).for(@flags_pointer)
+          # LAME.should have_getter(:totalframes).with_value(3728272).for(@flags_pointer)
+          LAME.should have_getter(:totalframes).for(@flags_pointer)
         end
 
         it "has RatioGain" do

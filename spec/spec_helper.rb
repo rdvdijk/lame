@@ -30,7 +30,7 @@ module SetterGetter
   end
 
   def has_value?(lame, flag)
-    if @value.is_a?(Float)
+    if @value && @value.is_a?(Float)
       actual = actual_value(lame, flag)
       (actual - @value).abs < 0.0001
     elsif @value
