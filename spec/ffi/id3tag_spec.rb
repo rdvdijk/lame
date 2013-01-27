@@ -73,9 +73,12 @@ module LAME
       LAME.id3tag_set_comment(@flags_pointer, pointer_from_string("foo")).should eql nil
     end
 
-    # TODO out of range
     it "sets the track" do
       LAME.id3tag_set_track(@flags_pointer, pointer_from_string("1")).should eql 0
+    end
+
+    it "ignores out of range track numbers for id3" do
+      LAME.id3tag_set_track(@flags_pointer, pointer_from_string("256")).should eql -1
     end
 
     # TODO all genre id's, genre names, id3v1 ignores custom
