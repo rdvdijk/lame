@@ -31,13 +31,17 @@ module SetterGetter
 
   def has_value?(lame, flag)
     if @value.is_a?(Float)
-      actual = lame.send(:"lame_get_#{flag}", @flags_pointer)
+      actual = actual_value(lame, flag)
       (actual - @value).abs < 0.0001
     elsif @value
-      lame.send(:"lame_get_#{flag}", @flags_pointer) == @value
+      actual_value(lame, flag) == @value
     else
       true
     end
+  end
+
+  def actual_value(lame, flag)
+    lame.send(:"lame_get_#{flag}", @flags_pointer)
   end
 end
 
@@ -94,5 +98,14 @@ RSpec::Matchers.define :have_getter do |expected|
   match do |actual|
     has_getter?(actual, expected) &&
       has_value?(actual, expected)
+  end
+
+  failure_message_for_should do |actual|
+    if !has_getter?(actual, expected)
+      "expected that #{actual} would have a getter for field :#{expected}"
+    elsif @value && !has_value?(actual, expected)
+      actual_value = actual_value(actual, expected)
+      "expected field :#{expected} to have a value of #{@value}, but got #{actual_value}"
+    end
   end
 end
