@@ -85,7 +85,8 @@ module LAME
 
     # fixed set of allowed fields (see id3tag.c)
     it "sets the fieldvalue" do
-      LAME.id3tag_set_fieldvalue(@flags_pointer, pointer_from_string("USER=foofoo")).should eql 0 # huh?
+      # TODO: tags like 'USER' crash on Linux..
+      LAME.id3tag_set_fieldvalue(@flags_pointer, pointer_from_string("TIT2=foofoo")).should eql 0 # huh?
     end
 
     it "sets album art" do
