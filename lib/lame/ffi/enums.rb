@@ -24,28 +24,32 @@ module LAME
             :max_indicator # used internally
           ]
 
-          # Vx to match LAME and VBR_xx to match FhG
           enum :preset_mode, [
-            :VBR_10,  410,
-            :V9,      410,
-            :VBR_20,  420,
-            :V8,      420,
-            :VBR_30,  430,
-            :V7,      430,
-            :VBR_40,  440,
-            :V6,      440,
-            :VBR_50,  450,
-            :V5,      450,
-            :VBR_60,  460,
-            :V4,      460,
-            :VBR_70,  470,
-            :V3,      470,
-            :VBR_80,  480,
-            :V2,      480,
-            :VBR_90,  490,
-            :V1,      490,
-            :VBR_100, 500,
-            :V0,      500,
+            # FhG style:
+            # These double enum values break in jruby-19mode.
+            # Internally FFI uses hashes, jruby might have implemented this differently?
+            # :VBR_10,  410,
+            # :VBR_20,  420,
+            # :VBR_30,  430,
+            # :VBR_40,  440,
+            # :VBR_50,  450,
+            # :VBR_60,  460,
+            # :VBR_70,  470,
+            # :VBR_80,  480,
+            # :VBR_90,  490,
+            # :VBR_100, 500,
+
+            # LAME style:
+            :V9, 410,
+            :V8, 420,
+            :V7, 430,
+            :V6, 440,
+            :V5, 450,
+            :V4, 460,
+            :V3, 470,
+            :V2, 480,
+            :V1, 490,
+            :V0, 500,
 
             # old presets:
             :R3MIX,         1000,
