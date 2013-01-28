@@ -88,8 +88,13 @@ module LAME
 
     # fixed set of allowed fields (see id3tag.c)
     it "sets the fieldvalue" do
-      # TODO: tags like 'USER' crash on Linux..
-      LAME.id3tag_set_fieldvalue(@flags_pointer, pointer_from_string("TIT2=foofoo")).should eql 0 # huh?
+      # NOTE: LAME 3.99.4 fixed some bugs in setting field values.
+      LAME.id3tag_set_fieldvalue(@flags_pointer, pointer_from_string("TIT2=foofoo")).should eql 0
+    end
+
+    it "sets the fieldvalue (utf16)" do
+      pending "UTF-16 is a low priority for now.."
+      LAME.id3tag_set_fieldvalue_utf16(@flags_pointer, "LINK=foofoo".encode("UTF-16")).should eql 0
     end
 
     it "sets album art" do

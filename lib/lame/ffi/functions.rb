@@ -12,38 +12,40 @@ module LAME
         attach_function :lame_init, [], :global_flags
 
         # global flags
-        attach_function :lame_set_num_samples,        [:global_flags, :ulong],  :int
-        attach_function :lame_get_num_samples,        [:global_flags],          :ulong
-        attach_function :lame_set_in_samplerate,      [:global_flags, :int],    :int
-        attach_function :lame_get_in_samplerate,      [:global_flags],          :int
-        attach_function :lame_set_num_channels,       [:global_flags, :int],    :int
-        attach_function :lame_get_num_channels,       [:global_flags],          :int
-        attach_function :lame_set_scale,              [:global_flags, :float],  :int
-        attach_function :lame_get_scale,              [:global_flags],          :float
-        attach_function :lame_set_scale_left,         [:global_flags, :float],  :int
-        attach_function :lame_get_scale_left,         [:global_flags],          :float
-        attach_function :lame_set_scale_right,        [:global_flags, :float],  :int
-        attach_function :lame_get_scale_right,        [:global_flags],          :float
-        attach_function :lame_set_out_samplerate,     [:global_flags, :int],    :int
-        attach_function :lame_get_out_samplerate,     [:global_flags],          :int
-        attach_function :lame_set_analysis,           [:global_flags, :int],    :int
-        attach_function :lame_get_analysis,           [:global_flags],          :int
-        attach_function :lame_set_bWriteVbrTag,       [:global_flags, :int],    :int
-        attach_function :lame_get_bWriteVbrTag,       [:global_flags],          :int
-        attach_function :lame_set_decode_only,        [:global_flags, :int],    :int
-        attach_function :lame_get_decode_only,        [:global_flags],          :int
-        attach_function :lame_set_quality,            [:global_flags, :int],    :int
-        attach_function :lame_get_quality,            [:global_flags],          :int
-        attach_function :lame_set_mode,               [:global_flags, :int],    :int
-        attach_function :lame_get_mode,               [:global_flags],          :int
-        attach_function :lame_set_force_ms,           [:global_flags, :int],    :int
-        attach_function :lame_get_force_ms,           [:global_flags],          :int
-        attach_function :lame_set_free_format,        [:global_flags, :int],    :int
-        attach_function :lame_get_free_format,        [:global_flags],          :int
-        attach_function :lame_set_findReplayGain,     [:global_flags, :int],    :int
-        attach_function :lame_get_findReplayGain,     [:global_flags],          :int
-        attach_function :lame_set_decode_on_the_fly,  [:global_flags, :int],    :int
-        attach_function :lame_get_decode_on_the_fly,  [:global_flags],          :int
+        attach_function :lame_set_num_samples,        [:global_flags, :ulong],     :int
+        attach_function :lame_get_num_samples,        [:global_flags],             :ulong
+        attach_function :lame_set_in_samplerate,      [:global_flags, :int],       :int
+        attach_function :lame_get_in_samplerate,      [:global_flags],             :int
+        attach_function :lame_set_num_channels,       [:global_flags, :int],       :int
+        attach_function :lame_get_num_channels,       [:global_flags],             :int
+        attach_function :lame_set_scale,              [:global_flags, :float],     :int
+        attach_function :lame_get_scale,              [:global_flags],             :float
+        attach_function :lame_set_scale_left,         [:global_flags, :float],     :int
+        attach_function :lame_get_scale_left,         [:global_flags],             :float
+        attach_function :lame_set_scale_right,        [:global_flags, :float],     :int
+        attach_function :lame_get_scale_right,        [:global_flags],             :float
+        attach_function :lame_set_out_samplerate,     [:global_flags, :int],       :int
+        attach_function :lame_get_out_samplerate,     [:global_flags],             :int
+        attach_function :lame_set_analysis,           [:global_flags, :int],       :int
+        attach_function :lame_get_analysis,           [:global_flags],             :int
+        attach_function :lame_set_bWriteVbrTag,       [:global_flags, :int],       :int
+        attach_function :lame_get_bWriteVbrTag,       [:global_flags],             :int
+        attach_function :lame_set_decode_only,        [:global_flags, :int],       :int
+        attach_function :lame_get_decode_only,        [:global_flags],             :int
+        attach_function :lame_set_quality,            [:global_flags, :int],       :int
+        attach_function :lame_get_quality,            [:global_flags],             :int
+        attach_function :lame_set_mode,               [:global_flags, :mpeg_mode], :int
+        attach_function :lame_get_mode,               [:global_flags],             :mpeg_mode
+        attach_function :lame_set_force_ms,           [:global_flags, :int],       :int
+        attach_function :lame_get_force_ms,           [:global_flags],             :int
+        attach_function :lame_set_free_format,        [:global_flags, :int],       :int
+        attach_function :lame_get_free_format,        [:global_flags],             :int
+        attach_function :lame_set_findReplayGain,     [:global_flags, :int],       :int
+        attach_function :lame_get_findReplayGain,     [:global_flags],             :int
+        attach_function :lame_set_decode_on_the_fly,  [:global_flags, :int],       :int
+        attach_function :lame_get_decode_on_the_fly,  [:global_flags],             :int
+
+        # counter for gaplass encoding
         attach_function :lame_set_nogap_total,        [:global_flags, :int],    :int
         attach_function :lame_get_nogap_total,        [:global_flags],          :int
         attach_function :lame_set_nogap_currentindex, [:global_flags, :int],    :int
@@ -55,24 +57,24 @@ module LAME
         attach_function :lame_set_debugf,             [:global_flags, :log_function],   :int
         attach_function :lame_set_msgf,               [:global_flags, :log_function],   :int
 
-        attach_function :lame_set_brate,              [:global_flags, :int],    :int
-        attach_function :lame_get_brate,              [:global_flags],          :int
-        attach_function :lame_set_compression_ratio,  [:global_flags, :int],    :int
-        attach_function :lame_get_compression_ratio,  [:global_flags],          :int
-        attach_function :lame_set_preset,             [:global_flags, :int],    :int
-        attach_function :lame_set_asm_optimizations,  [:global_flags, :int, :int], :int
-        attach_function :lame_set_copyright,          [:global_flags, :int],    :int
-        attach_function :lame_get_copyright,          [:global_flags],          :int
-        attach_function :lame_set_original,           [:global_flags, :int],    :int
-        attach_function :lame_get_original,           [:global_flags],          :int
-        attach_function :lame_set_error_protection,   [:global_flags, :int],    :int
-        attach_function :lame_get_error_protection,   [:global_flags],          :int
-        attach_function :lame_set_extension,          [:global_flags, :int],    :int
-        attach_function :lame_get_extension,          [:global_flags],          :int
-        attach_function :lame_set_strict_ISO,         [:global_flags, :int],    :int
-        attach_function :lame_get_strict_ISO,         [:global_flags],          :int
+        attach_function :lame_set_brate,              [:global_flags, :int],         :int
+        attach_function :lame_get_brate,              [:global_flags],               :int
+        attach_function :lame_set_compression_ratio,  [:global_flags, :int],         :int
+        attach_function :lame_get_compression_ratio,  [:global_flags],               :int
+        attach_function :lame_set_preset,             [:global_flags, :preset_mode], :preset_mode
+        attach_function :lame_set_asm_optimizations,  [:global_flags, :int, :int],   :int
+        attach_function :lame_set_copyright,          [:global_flags, :int],         :int
+        attach_function :lame_get_copyright,          [:global_flags],               :int
+        attach_function :lame_set_original,           [:global_flags, :int],         :int
+        attach_function :lame_get_original,           [:global_flags],               :int
+        attach_function :lame_set_error_protection,   [:global_flags, :int],         :int
+        attach_function :lame_get_error_protection,   [:global_flags],               :int
+        attach_function :lame_set_extension,          [:global_flags, :int],         :int
+        attach_function :lame_get_extension,          [:global_flags],               :int
+        attach_function :lame_set_strict_ISO,         [:global_flags, :int],         :int
+        attach_function :lame_get_strict_ISO,         [:global_flags],               :int
 
-        # quantization/noise shaiping
+        # quantization/noise shaping
         attach_function :lame_set_disable_reservoir, [:global_flags, :int],    :int
         attach_function :lame_get_disable_reservoir, [:global_flags],          :int
         attach_function :lame_set_quant_comp,        [:global_flags, :int],    :int
@@ -241,7 +243,7 @@ module LAME
         # experimental id3:
         # attach_function :id3tag_set_textinfo_latin1,      [:global_flags, :string, :string], :int
         # attach_function :id3tag_set_comment_latin1,       [:global_flags, :string, :string, :string], :int
-        # attach_function :id3tag_set_fieldvalue_utf16,     [:global_flags, :pointer], :int
+        attach_function :id3tag_set_fieldvalue_utf16,     [:global_flags, :pointer], :int
         # attach_function :id3tag_set_textinfo_utf16,       [:global_flags, :string, :pointer], :int
         # attach_function :id3tag_set_comment_utf16,        [:global_flags, :string, :pointer, :pointer], :int
 

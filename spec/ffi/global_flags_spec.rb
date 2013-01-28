@@ -89,8 +89,8 @@ module LAME
       end
 
       it "has a mode" do
-        LAME.should have_flag(:mode).with_value(1).for(@flags_pointer)
-        LAME.should be_able_to_set(:mode).to(2).for(@flags_pointer)
+        LAME.should have_flag(:mode).with_value(:joint_stereo).for(@flags_pointer)
+        LAME.should be_able_to_set(:mode).to(:stereo).for(@flags_pointer)
       end
 
       it "has force ms" do
@@ -138,7 +138,7 @@ module LAME
       end
 
       it "has a preset" do
-        LAME.lame_set_preset(@flags_pointer, 500).should eql 500
+        LAME.lame_set_preset(@flags_pointer, :V0).should eql :V0
       end
 
       it "sets asm optimizations" do
