@@ -118,7 +118,7 @@ module LAME
         attach_function :lame_set_highpasswidth, [:global_flags, :int], :int
         attach_function :lame_get_highpasswidth, [:global_flags],       :int
 
-        # psycho acoustics
+        # psycho acoustics ("absolute threshold of hearing")
         attach_function :lame_set_ATHonly,           [:global_flags, :int],   :int
         attach_function :lame_get_ATHonly,           [:global_flags],         :int
         attach_function :lame_set_ATHshort,          [:global_flags, :int],   :int
@@ -134,7 +134,7 @@ module LAME
         attach_function :lame_set_athaa_sensitivity, [:global_flags, :float], :int
         attach_function :lame_get_athaa_sensitivity, [:global_flags],         :float
 
-        # blocks
+        # misc
         attach_function :lame_set_allow_diff_short,   [:global_flags, :int],   :int
         attach_function :lame_get_allow_diff_short,   [:global_flags],         :int
         attach_function :lame_set_useTemporal,        [:global_flags, :int],   :int

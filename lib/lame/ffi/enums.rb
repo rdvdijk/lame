@@ -62,6 +62,11 @@ module LAME
             :MEDIUM_FAST,   1007
           ]
 
+          enum :asm_optimizations, [
+            :MMX,       1,
+            :AMD_3DNOW, 2,
+            :SSE,       3
+          ]
         end
       end
 

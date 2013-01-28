@@ -142,7 +142,7 @@ module LAME
       end
 
       it "sets asm optimizations" do
-        LAME.lame_set_asm_optimizations(@flags_pointer, 1, 2).should eql 1
+        LAME.lame_set_asm_optimizations(@flags_pointer, :MMX, 1).should eql 1
       end
 
       it "has a copyright mark" do
@@ -169,7 +169,6 @@ module LAME
         LAME.should have_flag(:strict_ISO).with_value(2).for(@flags_pointer) # ?
         LAME.should be_able_to_set(:strict_ISO).to(1).for(@flags_pointer)
       end
-
 
       context "quantization/noise shaping" do
 
