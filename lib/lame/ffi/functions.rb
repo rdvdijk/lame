@@ -45,7 +45,7 @@ module LAME
         attach_function :lame_set_decode_on_the_fly,  [:global_flags, :int],       :int
         attach_function :lame_get_decode_on_the_fly,  [:global_flags],             :int
 
-        # counter for gaplass encoding
+        # counters for gaplass encoding
         attach_function :lame_set_nogap_total,        [:global_flags, :int],    :int
         attach_function :lame_get_nogap_total,        [:global_flags],          :int
         attach_function :lame_set_nogap_currentindex, [:global_flags, :int],    :int
@@ -62,7 +62,7 @@ module LAME
         attach_function :lame_set_compression_ratio,  [:global_flags, :int],         :int
         attach_function :lame_get_compression_ratio,  [:global_flags],               :int
         attach_function :lame_set_preset,             [:global_flags, :preset_mode], :preset_mode
-        attach_function :lame_set_asm_optimizations,  [:global_flags, :int, :int],   :int
+        attach_function :lame_set_asm_optimizations,  [:global_flags, :asm_optimizations, :int], :asm_optimizations
         attach_function :lame_set_copyright,          [:global_flags, :int],         :int
         attach_function :lame_get_copyright,          [:global_flags],               :int
         attach_function :lame_set_original,           [:global_flags, :int],         :int

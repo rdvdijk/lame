@@ -1,8 +1,21 @@
 module LAME
-  class Configuration
+  class ConfigurationBase
     extend Delegation
 
     attr_reader :global_flags
+
+    def initialize(global_flags)
+      @global_flags = global_flags
+    end
+
+    private
+
+    def boolean_to_int(value)
+      value ? 1 : 0
+    end
+  end
+
+  class Configuration < ConfigurationBase
 
     delegate_alias_to_lame :number_of_samples => :num_samples,
       :number_of_channels          => :num_channels,
@@ -22,8 +35,125 @@ module LAME
       :preset, :copyright, :original, :error_protection, :extension,
       :force_short_blocks, :emphasis
 
-    def initialize(global_flags)
-      @global_flags = global_flags
+
+    def asm_optimization
+      @asm_optimization ||= AsmOptimization.new(global_flags)
+    end
+
+    def id3
+      @id3 ||= Id3.new(global_flags)
+    end
+
+    def quantization
+      @quantization ||= Quantization.new(global_flags)
+    end
+
+    def vbr
+      @vbr ||= VBR.new(global_flags)
+    end
+
+    def filtering
+      @filtering ||= Filtering.new(global_flags)
+    end
+
+    def psycho_acoustics
+      @psycho_acoustics ||= PsychoAcoustics.new(global_flags)
+    end
+
+    class AsmOptimization < ConfigurationBase
+      def mmx=(value)
+        LAME.lame_set_asm_optimizations(global_flags, :MMX, boolean_to_int(value))
+      end
+
+      def amd_3dnow=(value)
+        LAME.lame_set_asm_optimizations(global_flags, :AMD_3DNOW, boolean_to_int(value))
+      end
+
+      def sse=(value)
+        LAME.lame_set_asm_optimizations(global_flags, :SSE, boolean_to_int(value))
+      end
+    end
+
+    class Id3 < ConfigurationBase
+      def v2=(value)
+        LAME.id3tag_add_v2(global_flags) if value
+      end
+
+      def v1_only=(value)
+        LAME.id3tag_v1_only(global_flags) if value
+      end
+
+      def v2_only=(value)
+        LAME.id3tag_v2_only(global_flags) if value
+      end
+
+      def v1_space=(value)
+        LAME.id3tag_space_v1(global_flags) if value
+      end
+
+      def v2_padding=(value)
+        LAME.id3tag_pad_v2(global_flags) if value
+      end
+
+      def v2_padding_size=(size)
+        LAME.id3tag_set_pad(global_flags, size)
+      end
+    end
+
+    class Quantization < ConfigurationBase
+      delegate_alias_to_lame :comp => :quant_comp,
+        :comp_short     => :quant_comp_short,
+        :experimental_x => :experimentalX,
+        :experimental_y => :experimentalY,
+        :experimental_z => :experimentalZ,
+        :naoki          => :exp_nspsytune
+
+      delegate_to_lame :msfix
+
+      def reservoir=(value)
+        LAME.lame_set_disable_reservoir(global_flags, boolean_to_int(!value))
+      end
+
+      # TODO: int_to_boolean
+      def reservoir
+        LAME.lame_get_disable_reservoir(global_flags)
+      end
+    end
+
+    class VBR < ConfigurationBase
+      delegate_alias_to_lame :write_tag => :bWriteVbrTag,
+        :mode                => :VBR,
+        :q                   => :VBR_q,
+        :quality             => :VBR_quality,
+        :mean_bitrate        => :VBR_mean_bitrate_kbps,
+        :min_bitrate         => :VBR_min_bitrate_kbps,
+        :max_bitrate         => :VBR_max_bitrate_kbps,
+        :enforce_min_bitrate => :VBR_hard_min
+    end
+
+    class Filtering < ConfigurationBase
+      delegate_alias_to_lame :low_pass_frequency => :lowpassfreq,
+        :low_pass_width      => :lowpasswidth,
+        :high_pass_frequency => :highpassfreq,
+        :high_pass_width     => :highpasswidth
+    end
+
+    class PsychoAcoustics < ConfigurationBase
+      delegate_alias_to_lame :ath_only => :ATHonly,
+        :ath_short => :ATHshort,
+        :ath_type => :ATHtype,
+        :ath_lower => :ATHlower
+
+      delegate_to_lame :athaa_type, :athaa_sensitivity
+
+      def ath=(value)
+        LAME.lame_set_noATH(global_flags, boolean_to_int(!value))
+      end
+
+      # TODO: int_to_boolean
+      def ath
+        LAME.lame_get_noATH(global_flags)
+      end
     end
 
   end

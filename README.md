@@ -85,10 +85,11 @@ encoder.configure do |config|
   config.emphasis                    = false
 
   # auto-detected by default
-  config.asm_optimizations.mmx     = true
-  config.asm_optimizations.amd3now = true
-  config.asm_optimizations.sse     = true
+  config.asm_optimization.mmx     = true
+  config.asm_optimization.amd3now = true
+  config.asm_optimization.sse     = true
 
+  # these values can't be "unset" once set to true
   config.id3.v2              = false
   config.id3.v1_only         = false
   config.id3.v2_only         = false
@@ -109,19 +110,19 @@ encoder.configure do |config|
   config.vbr.mode                = :vbr_off
   config.vbr.q                   = 4
   config.vbr.quality             = 4.0
-  config.vbr.bitrate.mean        = 128
-  config.vbr.bitrate.min         = 0
-  config.vbr.bitrate.max         = 0
-  config.vbr.bitrate.enforce_min = false
+  config.vbr.mean_bitrate        = 128
+  config.vbr.min_bitrate         = 0
+  config.vbr.max_bitrate         = 0
+  config.vbr.enforce_min_bitrate = false
 
-  config.filtering.low_pass.frequency  = 17000
-  config.filtering.low_pass.width      = -1
-  config.filtering.high_pass.frequency = 0
-  config.filtering.high_pass.width     = -1
+  config.filtering.low_pass_frequency  = 17000
+  config.filtering.low_pass_width      = -1
+  config.filtering.high_pass_frequency = 0
+  config.filtering.high_pass_width     = -1
 
   config.psycho_acoustics.ath_only          = false
   config.psycho_acoustics.ath_short         = false
-  config.psycho_acoustics.ath               = true # strange
+  config.psycho_acoustics.ath               = true
   config.psycho_acoustics.ath_type          = 4
   config.psycho_acoustics.ath_lower         = 3.0
   config.psycho_acoustics.athaa_type        = -1

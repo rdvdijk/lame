@@ -142,7 +142,7 @@ module LAME
       end
 
       it "sets asm optimizations" do
-        LAME.lame_set_asm_optimizations(@flags_pointer, :MMX, 1).should eql 1
+        LAME.lame_set_asm_optimizations(@flags_pointer, :MMX, 1).should eql :MMX
       end
 
       it "has a copyright mark" do
