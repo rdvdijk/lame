@@ -2,6 +2,7 @@ require "ffi"
 require "lame/version"
 require "lame/ffi"
 require "lame/delegation"
+require "lame/configuration"
 require "lame/encoder"
 
 module LAME

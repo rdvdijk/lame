@@ -45,6 +45,7 @@ module SetterGetter
   end
 end
 
+# Validate existence of a getter, setter and the default value.
 RSpec::Matchers.define :have_flag do |expected|
   include SetterGetter
 
@@ -63,6 +64,7 @@ RSpec::Matchers.define :have_flag do |expected|
   end
 end
 
+# Validate setting a value.
 RSpec::Matchers.define :be_able_to_set do |expected|
   include SetterGetter
 
@@ -84,6 +86,7 @@ RSpec::Matchers.define :be_able_to_set do |expected|
   end
 end
 
+# Validate getting a value.
 RSpec::Matchers.define :have_getter do |expected|
   include SetterGetter
 
@@ -108,4 +111,49 @@ RSpec::Matchers.define :have_getter do |expected|
       "expected field :#{expected} to have a value of #{@value}, but got #{actual_value}"
     end
   end
+end
+
+# Validate delegation to global_flags.
+RSpec::Matchers.define :delegate do |from|
+
+  chain :to do |target|
+    @target = target
+  end
+
+  match do |subject|
+    @from = from
+    delegates_setter? &&
+      delegates_getter?
+  end
+
+  def delegates_setter?
+    LAME.should_receive(:"lame_set_#{target}").with(subject.global_flags, anything)
+    subject.send(:"#{from}=", double)
+    true
+  rescue => e
+    # TODO: save raised exception for better failure message
+    false
+  end
+
+  def delegates_getter?
+    LAME.should_receive(:"lame_get_#{target}").with(subject.global_flags)
+    subject.send(:"#{from}")
+    true
+  rescue => e
+    # TODO: save raised exception for better failure message
+    false
+  end
+
+  failure_message_for_should do |actual|
+    "expected #{subject.class} to delegate :#{from} to LAME.lame_set_#{target}"
+  end
+
+  def target
+    @target || from
+  end
+
+  def from
+    @from
+  end
+
 end

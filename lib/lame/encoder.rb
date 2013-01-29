@@ -1,14 +1,15 @@
 module LAME
   class Encoder
-    extend Delegation
 
-    attr_reader :global_flags
-
-    delegate_to_lame :number_of_samples => :num_samples,
-      :input_samplerate => :in_samplerate
+    attr_reader :global_flags, :configuration
 
     def initialize
       @global_flags = FFI::GlobalFlags.new
+    end
+
+    def configure
+      @configuration = Configuration.new(@global_flags)
+      yield @configuration
     end
 
   end
