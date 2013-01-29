@@ -152,7 +152,7 @@ module LAME
         it { should delegate(:force_short_blocks) }
         it { should delegate(:emphasis) }
 
-        it "delegates .preset= to #lame_set_preset" do
+        it "delegates #preset= to LAME.lame_set_preset" do
           preset = stub
           LAME.should_receive(:lame_set_preset).with(global_flags, preset)
           configuration.preset = preset
@@ -163,51 +163,52 @@ module LAME
       context "asm_optimization fields" do
         subject(:asm_optimization) { configuration.asm_optimization }
 
-        it "delegates .mmx to #lame_set_asm_optimizations" do
+        it "delegates #mmx to LAME.lame_set_asm_optimizations" do
           LAME.should_receive(:lame_set_asm_optimizations).with(global_flags, :MMX, 1)
           asm_optimization.mmx = true
         end
 
-        it "delegates .amd_3dnow to #lame_set_asm_optimizations" do
+        it "delegates #amd_3dnow to LAME.lame_set_asm_optimizations" do
           LAME.should_receive(:lame_set_asm_optimizations).with(global_flags, :AMD_3DNOW, 1)
           asm_optimization.amd_3dnow = true
         end
 
-        it "delegates .sse to #lame_set_asm_optimizations" do
+        it "delegates #sse to LAME.lame_set_asm_optimizations" do
           LAME.should_receive(:lame_set_asm_optimizations).with(global_flags, :SSE, 1)
           asm_optimization.sse = true
         end
       end
 
+      # There are only setters for these settings:
       context "id3 fields" do
         subject(:id3) { configuration.id3 }
 
-        it "delegates .v2 to #id3tag_add_v2" do
+        it "delegates #v2= to LAME.id3tag_add_v2" do
           LAME.should_receive(:id3tag_add_v2).with(global_flags)
           id3.v2 = true
         end
 
-        it "delegates .v1_only to #id3tag_v1_only" do
+        it "delegates #v1_only= to LAME.id3tag_v1_only" do
           LAME.should_receive(:id3tag_v1_only).with(global_flags)
           id3.v1_only = true
         end
 
-        it "delegates .v2_only to #id3tag_v2_only" do
+        it "delegates #v2_only= to LAME.id3tag_v2_only" do
           LAME.should_receive(:id3tag_v2_only).with(global_flags)
           id3.v2_only = true
         end
 
-        it "delegates .v1_space to #id3tag_v1_space" do
+        it "delegates #v1_space= to LAME.id3tag_v1_space" do
           LAME.should_receive(:id3tag_space_v1).with(global_flags)
           id3.v1_space = true
         end
 
-        it "delegates .v2_padding to #id3tag_pad_v2" do
+        it "delegates #v2_padding= to LAME.id3tag_pad_v2" do
           LAME.should_receive(:id3tag_pad_v2).with(global_flags)
           id3.v2_padding = true
         end
 
-        it "delegates .v2_padding_size to #id3tag_set_pad" do
+        it "delegates #v2_padding_size= to LAME.id3tag_set_pad" do
           value = stub
           LAME.should_receive(:id3tag_set_pad).with(global_flags, value)
           id3.v2_padding_size = value
@@ -225,12 +226,12 @@ module LAME
         it { should delegate(:naoki).to(:exp_nspsytune) }
         it { should delegate(:msfix) }
 
-        it "delegates .reservoir= to #lame_set_disable_reservoir" do
+        it "delegates #reservoir= to LAME.lame_set_disable_reservoir" do
           LAME.should_receive(:lame_set_disable_reservoir).with(global_flags, 1)
           quantization.reservoir = false
         end
 
-        it "delegates .reservoir to #lame_get_disable_reservoir" do
+        it "delegates #reservoir to LAME.lame_get_disable_reservoir" do
           LAME.should_receive(:lame_get_disable_reservoir).with(global_flags)
           quantization.reservoir
         end
@@ -268,12 +269,12 @@ module LAME
         it { should delegate(:athaa_type) }
         it { should delegate(:athaa_sensitivity) }
 
-        it "delegates .ath= to #lame_set_noATH" do
+        it "delegates #ath= to LAME.lame_set_noATH" do
           LAME.should_receive(:lame_set_noATH).with(global_flags, 1)
           psycho_acoustics.ath = false
         end
 
-        it "delegates .ath to #lame_get_noATH" do
+        it "delegates #ath to LAME.lame_get_noATH" do
           LAME.should_receive(:lame_get_noATH).with(global_flags)
           psycho_acoustics.ath
         end
