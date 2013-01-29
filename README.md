@@ -24,7 +24,7 @@ Create a default `LAME::Encoder` with default settings:
 encoder = LAME::Encoder.new
 ```
 
-Then configure some settings, if needed:
+Then configure some settings:
 
 ```ruby
 encoder.configure do |config|
@@ -35,7 +35,10 @@ end
 
 See all configuration options in the Configuration section below.
 
-Then encode some audio data:
+Then encode some audio data. Both `left` and `right` are arrays of `short`
+values (ranging from −32,768 to +32,767). The `mp3_data` variable is a
+binary string of MP3 encoded audio. This can be appended to a file or
+streamed to a server.
 
 ```ruby
 encoder.encode_short(left, right) do |mp3_data|
