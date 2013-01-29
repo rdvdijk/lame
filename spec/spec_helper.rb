@@ -115,6 +115,7 @@ end
 
 # Validate delegation to global_flags.
 RSpec::Matchers.define :delegate do |from|
+  include SetterGetter
 
   chain :to do |target|
     @target = target
@@ -122,7 +123,9 @@ RSpec::Matchers.define :delegate do |from|
 
   match do |subject|
     @from = from
-    delegates_setter? &&
+    has_setter?(LAME, target) &&
+      delegates_setter? &&
+      has_getter?(LAME, target) &&
       delegates_getter?
   end
 

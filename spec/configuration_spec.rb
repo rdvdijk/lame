@@ -145,13 +145,18 @@ module LAME
         it { should delegate(:mode) }
         it { should delegate(:free_format) }
         it { should delegate(:decode_on_the_fly) }
-        it { should delegate(:preset) }
         it { should delegate(:copyright) }
         it { should delegate(:original) }
         it { should delegate(:error_protection) }
         it { should delegate(:extension) }
         it { should delegate(:force_short_blocks) }
         it { should delegate(:emphasis) }
+
+        it "delegates .preset= to #lame_set_preset" do
+          preset = stub
+          LAME.should_receive(:lame_set_preset).with(global_flags, preset)
+          configuration.preset = preset
+        end
 
       end
 
