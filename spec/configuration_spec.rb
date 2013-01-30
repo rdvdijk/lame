@@ -153,9 +153,8 @@ module LAME
         it { should delegate(:emphasis) }
 
         it "delegates #preset= to LAME.lame_set_preset" do
-          preset = stub
-          LAME.should_receive(:lame_set_preset).with(global_flags, preset)
-          configuration.preset = preset
+          LAME.should_receive(:lame_set_preset).with(global_flags, anything)
+          configuration.preset = stub
         end
 
       end

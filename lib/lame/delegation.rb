@@ -19,7 +19,7 @@ module LAME
 
     def define_setter_delegator(from, to)
       define_method(:"#{from}=") do |value|
-        # TODO: value conversion (booleans, strings)
+        value = TypeConvertor.convert(value)
         LAME.send(:"lame_set_#{to}", global_flags, value)
       end
     end
@@ -27,6 +27,19 @@ module LAME
     def define_getter_delegator(from, to)
       define_method(:"#{from}") do
         LAME.send(:"lame_get_#{to}", global_flags)
+      end
+    end
+
+    class TypeConvertor
+      def self.convert(value)
+        case value
+        when true
+          1
+        when false
+          0
+        when String
+          ::FFI::MemoryPointer.from_string(value)
+        end
       end
     end
 
