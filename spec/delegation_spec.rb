@@ -82,6 +82,11 @@ module LAME
       value.get_string(0).should eql input
     end
 
+    it "does not convert other values" do
+      converter.convert(:foo).should eql :foo
+      converter.convert(1.2).should eql 1.2
+    end
+
   end
 
 end

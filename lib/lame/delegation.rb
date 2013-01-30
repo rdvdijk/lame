@@ -39,6 +39,8 @@ module LAME
           0
         when String
           ::FFI::MemoryPointer.from_string(value)
+        else
+          value
         end
       end
     end
