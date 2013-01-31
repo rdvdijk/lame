@@ -35,6 +35,23 @@ module LAME
       :preset, :copyright, :original, :error_protection, :extension,
       :force_short_blocks, :emphasis
 
+    def apply!
+      init_return = LAME.lame_init_params(global_flags)
+      if init_return == -1
+        raise ConfigurationError
+      else
+        @applied = true
+      end
+    end
+
+    def applied?
+      @applied
+    end
+
+    def framesize
+      raise ConfigurationError unless applied?
+      LAME.lame_get_framesize(global_flags)
+    end
 
     def asm_optimization
       @asm_optimization ||= AsmOptimization.new(global_flags)

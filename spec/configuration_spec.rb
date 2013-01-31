@@ -6,113 +6,125 @@ module LAME
     context "intialization" do
       let(:global_flags) { stub }
 
+      subject(:configuration) { Configuration.new(global_flags) }
+
       it "initializes with global flags" do
-        configuration = Configuration.new(global_flags)
         configuration.global_flags.should eql global_flags
       end
 
       it "initializes a AsmOptimization configuration object" do
-        configuration = Configuration.new(global_flags)
-
         Configuration::AsmOptimization.should_receive(:new).with(global_flags)
         configuration.asm_optimization
       end
 
       it "memoizes one AsmOptimization configuration object" do
-        configuration = Configuration.new(global_flags)
-
         Configuration::AsmOptimization.stub(:new).and_return(stub)
         Configuration::AsmOptimization.should_receive(:new).exactly(:once)
-        configuration.asm_optimization
-        configuration.asm_optimization
+        2.times { configuration.asm_optimization }
       end
 
       it "initializes a Id3 configuration object" do
-        configuration = Configuration.new(global_flags)
-
         Configuration::Id3.should_receive(:new).with(global_flags)
         configuration.id3
       end
 
       it "memoizes one Id3 configuration object" do
-        configuration = Configuration.new(global_flags)
-
         Configuration::Id3.stub(:new).and_return(stub)
         Configuration::Id3.should_receive(:new).exactly(:once)
-        configuration.id3
-        configuration.id3
+        2.times { configuration.id3 }
       end
 
       it "initializes a Quantization configuration object" do
-        configuration = Configuration.new(global_flags)
-
         Configuration::Quantization.should_receive(:new).with(global_flags)
         configuration.quantization
       end
 
       it "memoizes one Quantization configuration object" do
-        configuration = Configuration.new(global_flags)
-
         Configuration::Quantization.stub(:new).and_return(stub)
         Configuration::Quantization.should_receive(:new).exactly(:once)
-        configuration.quantization
-        configuration.quantization
+        2.times { configuration.quantization }
       end
 
       it "initializes a VBR configuration object" do
-        configuration = Configuration.new(global_flags)
-
         Configuration::VBR.should_receive(:new).with(global_flags)
         configuration.vbr
       end
 
       it "memoizes one VBR configuration object" do
-        configuration = Configuration.new(global_flags)
-
         Configuration::VBR.stub(:new).and_return(stub)
         Configuration::VBR.should_receive(:new).exactly(:once)
-        configuration.vbr
-        configuration.vbr
+        2.times { configuration.vbr }
       end
 
       it "initializes a Filtering configuration object" do
-        configuration = Configuration.new(global_flags)
-
         Configuration::Filtering.should_receive(:new).with(global_flags)
         configuration.filtering
       end
 
       it "memoizes one Filtering configuration object" do
-        configuration = Configuration.new(global_flags)
-
         Configuration::Filtering.stub(:new).and_return(stub)
         Configuration::Filtering.should_receive(:new).exactly(:once)
-        configuration.filtering
-        configuration.filtering
+        2.times { configuration.filtering }
       end
 
       it "initializes a PsychoAcoustics configuration object" do
-        configuration = Configuration.new(global_flags)
-
         Configuration::PsychoAcoustics.should_receive(:new).with(global_flags)
         configuration.psycho_acoustics
       end
 
       it "memoizes one PsychoAcoustics configuration object" do
-        configuration = Configuration.new(global_flags)
-
         Configuration::PsychoAcoustics.stub(:new).and_return(stub)
         Configuration::PsychoAcoustics.should_receive(:new).exactly(:once)
-        configuration.psycho_acoustics
-        configuration.psycho_acoustics
+        2.times { configuration.psycho_acoustics }
+      end
+
+      describe "#apply! / #applied?" do
+        it "is not applied by default" do
+          configuration.should_not be_applied
+        end
+
+        it "applies the configuration" do
+          LAME.should_receive(:lame_init_params).with(global_flags)
+          configuration.apply!
+          configuration.should be_applied
+        end
+
+        it "raises an error if configuration could not be applied" do
+          LAME.stub(:lame_init_params).and_return(-1)
+          expect {
+            configuration.apply!
+          }.to raise_error(ConfigurationError)
+        end
+      end
+
+      describe "#framesize" do
+
+        it "gets framesize from LAME if configuration was applied" do
+          LAME.stub(:lame_init_params)
+          configuration.apply!
+
+          LAME.stub(:lame_get_framesize).and_return(42)
+          LAME.should_receive(:lame_get_framesize).with(global_flags)
+          configuration.framesize.should eql 42
+        end
+
+        it "raises an error if configuration was not applied" do
+          expect {
+            configuration.framesize
+          }.to raise_error(ConfigurationError)
+        end
+
       end
     end
 
-
     # More ruby-ish accessors:
     #
-    # encoder = LAME::Encoder.new
-    # encoder.number_of_samples = 100
+    #   encoder = LAME::Encoder.new
+    #   encoder.number_of_samples = 100
+    #
+    # TODO: question-mark readers for boolean values
+    #
+    #   encoder.replay_gain?
     #
     # Delegates to `LAME.lame_set_num_samples(global_flags, 100)`
     # 
