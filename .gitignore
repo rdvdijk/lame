@@ -17,4 +17,4 @@ test/version_tmp
 tmp
 
 lame-3.99.5
-spec/files/example2.mp3
+spec/files/*.mp3
