@@ -29,6 +29,10 @@ module LAME
       @configuration ||= Configuration.new(global_flags)
     end
 
+    def framesize
+      configuration.framesize
+    end
+
     private
 
     def apply_configuration

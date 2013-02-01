@@ -44,6 +44,10 @@ module LAME
         encoder.configure { }
       end
 
+      it "gets the framesize" do
+        configuration.should_receive(:framesize).and_return(1234)
+        encoder.framesize.should eql 1234
+      end
     end
 
     context "encoding" do
@@ -72,12 +76,6 @@ module LAME
       it "does not apply the configuration if already applied" do
         configuration.stub(:applied?).and_return(true)
         configuration.should_not_receive(:apply!)
-        encoder.encode_short(left, right) { }
-      end
-
-      # TODO: fix when we split up input in frames
-      xit "gets the framesize" do
-        configuration.should_receive(:framesize)
         encoder.encode_short(left, right) { }
       end
 

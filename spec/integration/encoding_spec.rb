@@ -5,7 +5,8 @@ require 'wavefile'
 describe "Encoding" do
 
   let(:wav_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/example2.wav')) }
-  let(:mp3_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/example2.mp3')) }
+  let(:mp3_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/example2a.mp3')) }
+  let(:mp3_path2) { File.expand_path(File.join(File.dirname(__FILE__), '../files/example2b.mp3')) }
 
   let(:wav_reader) { WaveFile::Reader.new(wav_path) }
 
@@ -67,6 +68,29 @@ describe "Encoding" do
 
     # TODO: Need a better way to test output..
     # Digest::MD5.hexdigest(File.read(mp3_path)).should eql "84a1ce7994bb4a54fc13fb5381ebac40"
+  end
+
+  it "encodes a file by api" do
+
+    encoder = LAME::Encoder.new
+
+    encoder.configure do |config|
+      config.bitrate = 192
+    end
+
+    File.open(mp3_path2, "wb") do |file|
+      wav_reader.each_buffer(encoder.framesize) do |read_buffer|
+        left = read_buffer.samples.map { |s| s[0] }
+        right = read_buffer.samples.map { |s| s[1] }
+
+        encoder.encode_short(left, right) do |mp3|
+          file.write mp3
+        end
+      end
+      # TODO: flush
+      # TODO: lametag
+      # TODO: idv2 tag
+    end
   end
 
 end
