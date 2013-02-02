@@ -55,15 +55,11 @@ module LAME
       let(:left) { stub }
       let(:right) { stub }
       let(:global_flags) { subject.global_flags }
-
       let(:configuration) { stub(Configuration) }
 
       before do
         Configuration.stub(:new).and_return(configuration)
-
         configuration.stub(:applied?).and_return(true)
-        # configuration.stub(:framesize).and_return(1152)
-
         Encoders::Short.stub(:new).and_return(stub.as_null_object)
       end
 
@@ -116,13 +112,79 @@ module LAME
 
     context "flushing" do
 
-      it "flushes the final frame"
+      let(:global_flags) { subject.global_flags }
+      let(:configuration) { stub(Configuration) }
+      let(:flusher) { stub(Flusher).as_null_object }
+
+      before do
+        Configuration.stub(:new).and_return(configuration)
+        configuration.stub(:applied?).and_return(true)
+        Flusher.stub(:new).and_return(flusher)
+      end
+
+      it "creates a flusher" do
+        Flusher.should_receive(:new).with(configuration)
+        encoder.flush { }
+      end
+
+      it "flushes the final frame" do
+        flusher.should_receive(:flush)
+        encoder.flush { }
+      end
+
+      it "yields the flushed mp3 data" do
+        mp3_data = stub
+        flusher.stub(:flush).and_return(mp3_data)
+
+        expect { |block|
+          encoder.flush(&block)
+        }.to yield_with_args(mp3_data)
+      end
+
+      it "returns the flushed data if no block was given" do
+        mp3_data = stub
+        flusher.stub(:flush).and_return(mp3_data)
+        encoder.flush.should eql mp3_data
+      end
 
     end
 
     context "lametag frame" do
 
-      it "creates a 'lametag' frame with VBR info"
+      let(:global_flags) { subject.global_flags }
+      let(:configuration) { stub(Configuration) }
+      let(:vbr_info) { stub(VBRInfo).as_null_object }
+
+      before do
+        Configuration.stub(:new).and_return(configuration)
+        configuration.stub(:applied?).and_return(true)
+        VBRInfo.stub(:new).and_return(vbr_info)
+      end
+
+      it "creates vbr info" do
+        VBRInfo.should_receive(:new).with(configuration)
+        encoder.vbr_frame { }
+      end
+
+      it "creates the vbr frame" do
+        vbr_info.should_receive(:frame)
+        encoder.vbr_frame { }
+      end
+
+      it "yields the vbr frame" do
+        mp3_data = stub
+        vbr_info.stub(:frame).and_return(mp3_data)
+
+        expect { |block|
+          encoder.vbr_frame(&block)
+        }.to yield_with_args(mp3_data)
+      end
+
+      it "returns the vbr frame if no block was given" do
+        mp3_data = stub
+        vbr_info.stub(:frame).and_return(mp3_data)
+        encoder.vbr_frame.should eql mp3_data
+      end
 
     end
 

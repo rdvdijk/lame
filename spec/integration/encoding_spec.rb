@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'wavefile'
 # require 'digest'
 
-describe "Encoding" do
+describe "Encoding", :slow => true do
 
   let(:wav_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/example2.wav')) }
   let(:mp3_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/example2a.mp3')) }
@@ -17,8 +17,8 @@ describe "Encoding" do
     flags_pointer = LAME.lame_init
     LAME.lame_init_params(flags_pointer)
 
-    LAME.id3tag_init(flags_pointer) # needed?
-    LAME.id3tag_set_title(flags_pointer, "foo")
+    # LAME.id3tag_init(flags_pointer) # needed?
+    # LAME.id3tag_set_title(flags_pointer, "foo")
 
     # number of samples to read
     framesize = LAME.lame_get_framesize(flags_pointer)
@@ -40,6 +40,7 @@ describe "Encoding" do
           left_buffer.put_short(byte_offset, left)
           right_buffer.put_short(byte_offset, right)
         end
+
         input_buffer_size = read_buffer.samples.size
 
         # encode to mp3 frame
@@ -75,22 +76,31 @@ describe "Encoding" do
     encoder = LAME::Encoder.new
 
     encoder.configure do |config|
-      config.bitrate = 192
+      #config.bitrate = 192
     end
 
     File.open(mp3_path2, "wb") do |file|
       wav_reader.each_buffer(encoder.framesize) do |read_buffer|
-        left = read_buffer.samples.map { |s| s[0] }
+        left  = read_buffer.samples.map { |s| s[0] }
         right = read_buffer.samples.map { |s| s[1] }
 
         encoder.encode_short(left, right) do |mp3|
           file.write mp3
         end
       end
-      # TODO: flush
-      # TODO: lametag
+      flush_frame = encoder.flush
+      file.write(flush_frame)
+
+      vbr_frame = encoder.vbr_frame
+      file.seek(0)
+      file.write(vbr_frame)
+
       # TODO: idv2 tag
     end
+    LAME.lame_close(encoder.configuration.global_flags)
+
+    # TODO: Need a better way to test output..
+    # Digest::MD5.hexdigest(File.read(mp3_path2)).should eql "2b07ae1b4cc65d233804283499927b1c"
   end
 
 end

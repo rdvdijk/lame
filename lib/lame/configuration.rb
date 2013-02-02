@@ -53,6 +53,10 @@ module LAME
       LAME.lame_get_framesize(global_flags)
     end
 
+    def output_buffer_size
+      ((framesize * 1.25) + 7200).ceil
+    end
+
     def asm_optimization
       @asm_optimization ||= AsmOptimization.new(global_flags)
     end

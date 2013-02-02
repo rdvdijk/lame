@@ -15,14 +15,34 @@ module LAME
     def encode_short(left, right)
       apply_configuration
 
-      mp3data = Encoders::Short.new(configuration).encode_frame(left, right)
-      yield mp3data
+      mp3_data = Encoders::Short.new(configuration).encode_frame(left, right)
+      yield mp3_data
 
       # TODO:
       # each_frame(left, right, framesize) do |left_frame, right_frame|
       #   mp3data = Encoders::Short.new(framesize).encode_frame(left_frame, right_frame)
       #   yield mp3data
       # end
+    end
+
+    def flush
+      mp3_data = Flusher.new(configuration).flush
+
+      if block_given?
+        yield mp3_data
+      else
+        mp3_data
+      end
+    end
+
+    def vbr_frame
+      mp3_data = VBRInfo.new(configuration).frame
+
+      if block_given?
+        yield mp3_data
+      else
+        mp3_data
+      end
     end
 
     def configuration

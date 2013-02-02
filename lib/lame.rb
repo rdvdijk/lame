@@ -7,6 +7,8 @@ require "lame/configuration"
 require "lame/buffer"
 require "lame/encoders/short"
 require "lame/encoder"
+require "lame/flusher"
+require "lame/vbr_info"
 
 module LAME
 

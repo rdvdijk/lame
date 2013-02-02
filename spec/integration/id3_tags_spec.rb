@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'wavefile'
 require 'mp3info'
 
-describe "ID3 tags" do
+describe "ID3 tags", :slow => true do
 
   let(:wav_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/example2.wav')) }
   let(:mp3_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/example2.mp3')) }

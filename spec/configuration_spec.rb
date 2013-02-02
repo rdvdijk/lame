@@ -114,6 +114,15 @@ module LAME
           }.to raise_error(ConfigurationError)
         end
 
+        it "calculates the output buffer size based on the framesize" do
+          LAME.stub(:lame_init_params)
+          configuration.apply!
+
+          LAME.stub(:lame_get_framesize).and_return(1152)
+          LAME.should_receive(:lame_get_framesize).with(global_flags)
+          configuration.output_buffer_size.should eql 8640
+        end
+
       end
     end
 

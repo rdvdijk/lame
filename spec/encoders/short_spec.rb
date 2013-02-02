@@ -6,17 +6,13 @@ module LAME
 
       # stubbing galore!
 
-      let(:left) { stub }
-      let(:right) { stub }
       let(:framesize) { 1152 }
+      let(:left) { stub(:size => framesize) }
+      let(:right) { stub }
       let(:global_flags) { stub }
-      let(:configuration) { stub(Configuration, :global_flags => global_flags, :framesize => framesize) }
+      let(:configuration) { stub(Configuration, :global_flags => global_flags, :framesize => framesize, :output_buffer_size => 8640) }
 
       subject(:encoder) { Short.new(configuration) }
-
-      it "initializes with framesize" do
-        encoder.framesize.should eql 1152
-      end
 
       it "creates input buffers" do
         LAME.stub(:lame_encode_buffer).and_return(0)
@@ -51,6 +47,7 @@ module LAME
           right_buffer.should eql right_stub
           framesize.should    eql 1152
           output.should       eql output_stub
+          output_size.should  eql 8640
 
           0 # return value
         end
