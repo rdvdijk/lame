@@ -140,6 +140,14 @@ TODO: Implement this properly:
 
 http://sourceforge.net/mailarchive/message.php?msg_id=18557283
 
+So:
+
+1. Disable automatic id3tag writing
+2. Write id3v2 tag at start of file (keep track of position)
+3. Write audio to file
+4. Write id3v1 tag at end of file
+5. Write vbr 'lametag' at start of audio (using position)
+
 ## Contributing
 
 1. Fork it
