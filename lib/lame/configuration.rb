@@ -96,6 +96,16 @@ module LAME
     end
 
     class Id3 < ConfigurationBase
+
+      delegate_alias_to_lame :write_automatic => :write_id3tag_automatic
+
+      delegate_id3_to_lame :title, :artist, :album, :year, :comment
+
+      def initialize(global_flags)
+        super(global_flags)
+        LAME.id3tag_init(global_flags)
+      end
+
       def v2=(value)
         LAME.id3tag_add_v2(global_flags) if value
       end
@@ -118,6 +128,10 @@ module LAME
 
       def v2_padding_size=(size)
         LAME.id3tag_set_pad(global_flags, size)
+      end
+
+      def track=(value)
+        LAME.id3tag_set_track(global_flags, value)
       end
     end
 

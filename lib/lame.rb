@@ -9,6 +9,7 @@ require "lame/encoders/short"
 require "lame/encoder"
 require "lame/flusher"
 require "lame/vbr_info"
+require "lame/id3"
 
 module LAME
 

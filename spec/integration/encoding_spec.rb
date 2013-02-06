@@ -76,10 +76,25 @@ describe "Encoding", :slow => true do
     encoder = LAME::Encoder.new
 
     encoder.configure do |config|
+      config.id3.write_automatic = false
+      config.id3.v2 = true
+      config.id3.title = "Dies Irae"
+
       #config.bitrate = 192
+
+      # config.preset = :V0 # doesn't work?
+      config.vbr.mode = :vbr_default
+      config.vbr.q = 0
     end
 
     File.open(mp3_path2, "wb") do |file|
+
+      id3v2_size = 0
+      encoder.id3v2 do |tag|
+        file.write tag
+        id3v2_size = tag.size
+      end
+
       wav_reader.each_buffer(encoder.framesize) do |read_buffer|
         left  = read_buffer.samples.map { |s| s[0] }
         right = read_buffer.samples.map { |s| s[1] }
@@ -88,19 +103,23 @@ describe "Encoding", :slow => true do
           file.write mp3
         end
       end
-      flush_frame = encoder.flush
-      file.write(flush_frame)
+      encoder.flush do |flush_frame|
+        file.write(flush_frame)
+      end
 
-      vbr_frame = encoder.vbr_frame
-      file.seek(0)
-      file.write(vbr_frame)
+      encoder.id3v1 do |tag|
+        file.write tag
+      end
 
-      # TODO: idv2 tag
+      encoder.vbr_frame do |vbr_frame|
+        file.seek(id3v2_size)
+        file.write(vbr_frame)
+      end
+
     end
-    LAME.lame_close(encoder.configuration.global_flags)
 
     # TODO: Need a better way to test output..
-    # Digest::MD5.hexdigest(File.read(mp3_path2)).should eql "2b07ae1b4cc65d233804283499927b1c"
+    # Digest::MD5.hexdigest(File.read(mp3_path2)).should eql "d1cd92c106e7aac4f5291fd141a19e10"
   end
 
 end

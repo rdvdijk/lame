@@ -9,6 +9,7 @@ module LAME
 
     delegate_alias_to_lame :foo => :bar
     delegate_to_lame :baz
+    delegate_id3_to_lame :qux
   end
 
   describe Delegation do
@@ -41,6 +42,13 @@ module LAME
       it "delegates #baz to LAME" do
         LAME.should_receive(:lame_get_baz).with(global_flags)
         subject.baz
+      end
+    end
+
+    context "#delegate_id3_to_lame" do
+      it "delegates #qux= to LAME" do
+        LAME.should_receive(:id3tag_set_qux).with(global_flags, anything)
+        subject.qux = stub
       end
     end
 

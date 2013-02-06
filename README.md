@@ -136,7 +136,9 @@ TODO
 
 ### Development
 
-TODO: Implement this properly:
+#### ID3v2 tags
+
+To use ID3v2 tags in files, see this post on the lame-dev mailing list:
 
 http://sourceforge.net/mailarchive/message.php?msg_id=18557283
 
@@ -147,6 +149,9 @@ So:
 3. Write audio to file
 4. Write id3v1 tag at end of file
 5. Write vbr 'lametag' at start of audio (using position)
+
+See the example code in `spec/integration/encoding_spec.rb` for an example.
+
 
 ## Contributing
 

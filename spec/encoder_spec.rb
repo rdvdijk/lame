@@ -52,10 +52,10 @@ module LAME
 
     context "encoding" do
 
-      let(:left) { stub }
-      let(:right) { stub }
+      let(:left) { [0] }
+      let(:right) { [0] }
       let(:global_flags) { subject.global_flags }
-      let(:configuration) { stub(Configuration) }
+      let(:configuration) { stub(Configuration, :framesize => 100) }
 
       before do
         Configuration.stub(:new).and_return(configuration)
@@ -89,12 +89,11 @@ module LAME
         end
 
         it "delegates encoding to the short encoder" do
+          left.stub(:length => 100) # exactly framesize
           short_encoder.should_receive(:encode_frame).with(left, right)
 
           encoder.encode_short(left, right) { }
         end
-
-        it "delegates multiple times for large input"
 
         it "yields the encoder results" do
           mp3_data = stub
@@ -105,7 +104,34 @@ module LAME
           }.to yield_with_args(mp3_data)
         end
 
-        it "yields multiple times for large input"
+        it "delegates multiple times for large input" do
+          right = left = [0]*150 # larger than framesize
+
+          short_encoder.should_receive(:encode_frame) do |left_frame, right_frame|
+            left_frame.length.should eql 100
+            right_frame.length.should eql 100
+          end
+
+          short_encoder.should_receive(:encode_frame) do |left_frame, right_frame|
+            left_frame.length.should eql 50
+            right_frame.length.should eql 50
+          end
+
+          encoder.encode_short(left, right) { }
+        end
+
+        it "yields multiple times for large input" do
+          mp3_data1 = stub("frame1")
+          mp3_data2 = stub("frame2")
+
+          left = [0]*150 # larger than framesize
+
+          short_encoder.stub(:encode_frame).and_return(mp3_data1, mp3_data2)
+
+          expect { |block|
+            encoder.encode_short(left, right, &block)
+          }.to yield_successive_args(mp3_data1, mp3_data2)
+        end
 
       end
     end
@@ -186,6 +212,67 @@ module LAME
         encoder.vbr_frame.should eql mp3_data
       end
 
+    end
+
+    context "id3" do
+      let(:global_flags) { subject.global_flags }
+      let(:configuration) { stub(Configuration) }
+      let(:id3) { stub(Id3).as_null_object }
+
+      before do
+        Configuration.stub(:new).and_return(configuration)
+        configuration.stub(:applied?).and_return(true)
+        Id3.stub(:new).and_return(id3)
+      end
+
+      it "creates vbr info" do
+        Id3.should_receive(:new).with(configuration)
+        encoder.id3v1 { }
+      end
+
+      context "v1" do
+        it "creates the id3v1 frame" do
+          id3.should_receive(:v1)
+          encoder.id3v1 { }
+        end
+
+        it "yields the vbr frame" do
+          mp3_data = stub
+          id3.stub(:v1).and_return(mp3_data)
+
+          expect { |block|
+            encoder.id3v1(&block)
+          }.to yield_with_args(mp3_data)
+        end
+
+        it "returns the vbr frame if no block was given" do
+          mp3_data = stub
+          id3.stub(:v1).and_return(mp3_data)
+          encoder.id3v1.should eql mp3_data
+        end
+      end
+
+      context "v2" do
+        it "creates the id3v2 frame" do
+          id3.should_receive(:v2)
+          encoder.id3v2 { }
+        end
+
+        it "yields the vbr frame" do
+          mp3_data = stub
+          id3.stub(:v2).and_return(mp3_data)
+
+          expect { |block|
+            encoder.id3v2(&block)
+          }.to yield_with_args(mp3_data)
+        end
+
+        it "returns the vbr frame if no block was given" do
+          mp3_data = stub
+          id3.stub(:v2).and_return(mp3_data)
+          encoder.id3v2.should eql mp3_data
+        end
+      end
     end
 
   end

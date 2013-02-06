@@ -78,6 +78,15 @@ module LAME
         2.times { configuration.psycho_acoustics }
       end
 
+      context "Id3" do
+
+        it "initializes the Id3 tag" do
+          LAME.should_receive(:id3tag_init).with(global_flags)
+          Configuration::Id3.new(global_flags)
+        end
+
+      end
+
       describe "#apply! / #applied?" do
         it "is not applied by default" do
           configuration.should_not be_applied
@@ -203,6 +212,12 @@ module LAME
       context "id3 fields" do
         subject(:id3) { configuration.id3 }
 
+        it { should delegate(:write_automatic).to(:write_id3tag_automatic) }
+
+        before do
+          LAME.stub(:id3tag_init)
+        end
+
         it "delegates #v2= to LAME.id3tag_add_v2" do
           LAME.should_receive(:id3tag_add_v2).with(global_flags)
           id3.v2 = true
@@ -232,6 +247,28 @@ module LAME
           value = stub
           LAME.should_receive(:id3tag_set_pad).with(global_flags, value)
           id3.v2_padding_size = value
+        end
+
+        # Meta programming in a test. Oh well ;)
+        [ :title, :artist, :album, :year, :comment ].each do |field|
+
+          it "sets the #{field} with string buffer" do
+            LAME.should_receive(:"id3tag_set_#{field}") do |flags, string_buffer|
+              flags.should eql global_flags
+              string_buffer.should be_a(::FFI::MemoryPointer)
+              string_buffer.get_string(0).should eql "Some #{field}"
+            end
+            id3.send(:"#{field}=", "Some #{field}")
+          end
+
+        end
+
+        it "sets the track" do
+          LAME.should_receive(:"id3tag_set_track") do |flags, value|
+            flags.should eql global_flags
+            value.should eql 42
+          end
+          id3.track = 42
         end
       end
 
