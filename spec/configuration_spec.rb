@@ -270,6 +270,34 @@ module LAME
           end
           id3.track = 42
         end
+
+        it "sets the genre by name" do
+          LAME.should_receive(:id3tag_set_genre) do |flags, value|
+            flags.should eql global_flags
+            value.should be_a(::FFI::MemoryPointer)
+            value.get_string(0).should eql "147"
+          end
+          id3.genre = "SynthPop"
+        end
+
+        it "sets the genre by id" do
+          LAME.should_receive(:id3tag_set_genre) do |flags, value|
+            flags.should eql global_flags
+            value.should be_a(::FFI::MemoryPointer)
+            value.get_string(0).should eql "81"
+          end
+
+          id3.genre = 81
+        end
+
+        it "sets non-standard genre name" do
+          LAME.should_receive(:id3tag_set_genre) do |flags, value|
+            flags.should eql global_flags
+            value.should be_a(::FFI::MemoryPointer)
+            value.get_string(0).should eql "Ruby FFI Rock"
+          end
+          id3.genre = "Ruby FFI Rock"
+        end
       end
 
       context "quantization fields" do

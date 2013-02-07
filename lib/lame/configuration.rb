@@ -133,6 +133,32 @@ module LAME
       def track=(value)
         LAME.id3tag_set_track(global_flags, value)
       end
+
+      def genre=(value)
+        genre_id = find_genre_id_by_name(value)
+        genre_id_string = ::FFI::MemoryPointer.from_string(genre_id.to_s)
+
+        LAME.id3tag_set_genre(global_flags, genre_id_string)
+      end
+
+      private
+
+      def find_genre_id_by_name(name)
+        genres[name] || name
+      end
+
+      def genres
+        @genres ||= begin
+                      genres = {}
+
+                      genre_collector_callback = ::FFI::Function.new(:void, [:int, :string, :pointer]) do |id, name, _|
+                        genres[name] = id
+                      end
+                      LAME.id3tag_genre_list(genre_collector_callback, nil)
+
+                      genres
+                    end
+      end
     end
 
     class Quantization < ConfigurationBase
