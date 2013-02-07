@@ -79,6 +79,7 @@ describe "Encoding", :slow => true do
       config.id3.write_automatic = false
       config.id3.v2 = true
       config.id3.title = "Dies Irae"
+      config.id3.genre = "Classical"
 
       #config.bitrate = 192
 
