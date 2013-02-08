@@ -85,16 +85,15 @@ module LAME
       LAME.id3tag_set_genre(@flags_pointer, pointer_from_string("Rock")).should eql 0
     end
 
-    # fixed set of allowed fields (see id3tag.c)
+    # There is a fixed set of allowed fields (see id3tag.c)
+    # LAME 3.99.4 fixed some bugs in setting field values, this could crash for certain tags.
     it "sets the fieldvalue" do
-      # NOTE: LAME 3.99.4 fixed some bugs in setting field values.
       LAME.id3tag_set_fieldvalue(@flags_pointer, pointer_from_string("TIT2=foofoo")).should eql 0
     end
 
-    it "sets the fieldvalue (utf16)" do
-      pending "UTF-16 is a low priority for now.."
-      LAME.id3tag_set_fieldvalue_utf16(@flags_pointer, "LINK=foofoo".encode("UTF-16")).should eql 0
-    end
+    # it "sets the fieldvalue (utf16)" do
+    #   LAME.id3tag_set_fieldvalue_utf16(@flags_pointer, "LINK=foofoo".encode("UTF-16")).should eql 0
+    # end
 
     it "sets album art" do
       buffer_size = 1024
