@@ -11,7 +11,7 @@ module LAME
     private
 
     def boolean_to_int(value)
-      value ? 1 : 0
+      Delegation::TypeConvertor.convert(value)
     end
   end
 
@@ -175,9 +175,12 @@ module LAME
         LAME.lame_set_disable_reservoir(global_flags, boolean_to_int(!value))
       end
 
-      # TODO: int_to_boolean
       def reservoir
         LAME.lame_get_disable_reservoir(global_flags)
+      end
+
+      def reservoir?
+        Delegation::TypeConvertor.convert_return(reservoir)
       end
     end
 
@@ -211,10 +214,14 @@ module LAME
         LAME.lame_set_noATH(global_flags, boolean_to_int(!value))
       end
 
-      # TODO: int_to_boolean
       def ath
         LAME.lame_get_noATH(global_flags)
       end
+
+      def ath?
+        !Delegation::TypeConvertor.convert_return(ath)
+      end
+
     end
 
   end

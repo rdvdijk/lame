@@ -34,6 +34,10 @@ module LAME
       define_method(:"#{from}") do
         LAME.send(:"#{preset}_get_#{to}", global_flags)
       end
+      define_method(:"#{from}?") do
+        return_value = send(:"#{from}")
+        TypeConvertor.convert_return(return_value)
+      end
     end
 
     class TypeConvertor
@@ -47,6 +51,15 @@ module LAME
           ::FFI::MemoryPointer.from_string(value)
         else
           value
+        end
+      end
+
+      def self.convert_return(value)
+        case value
+        when 0
+          false
+        else
+          !!value
         end
       end
     end

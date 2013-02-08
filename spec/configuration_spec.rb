@@ -320,6 +320,16 @@ module LAME
           LAME.should_receive(:lame_get_disable_reservoir).with(global_flags)
           quantization.reservoir
         end
+
+        it "delegates #reservoir? to LAME.lame_get_disable_reservoir" do
+          LAME.should_receive(:lame_get_disable_reservoir).with(global_flags)
+          quantization.reservoir?
+        end
+
+        it "converts the return value 0 for #reservoir? to false" do
+          LAME.stub(:lame_get_disable_reservoir).and_return(0)
+          quantization.reservoir?.should be_false
+        end
       end
 
       context "vbr" do
@@ -362,6 +372,16 @@ module LAME
         it "delegates #ath to LAME.lame_get_noATH" do
           LAME.should_receive(:lame_get_noATH).with(global_flags)
           psycho_acoustics.ath
+        end
+
+        it "delegates #ath? to LAME.lame_get_noATH" do
+          LAME.should_receive(:lame_get_noATH).with(global_flags)
+          psycho_acoustics.ath?
+        end
+
+        it "converts the return value 0 for #ath? to true" do
+          LAME.stub(:lame_get_noATH).and_return(0)
+          psycho_acoustics.ath?.should be_true
         end
       end
 
