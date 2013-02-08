@@ -4,34 +4,12 @@ require 'mp3info'
 
 describe "ID3 tags", :slow => true do
 
-  let(:wav_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/dies-irae.wav')) }
+  let(:wav_path)     { File.expand_path(File.join(File.dirname(__FILE__), '../files/dies-irae.wav')) }
   let(:mp3_id3_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/dies-irae-id3-raw.mp3')) }
+  let(:wav_reader)   { WaveFile::Reader.new(wav_path) }
 
-  let(:wav_reader) { WaveFile::Reader.new(wav_path) }
-
-  let(:framesize)    { LAME.lame_get_framesize(@flags_pointer) }
-  let(:left_buffer)  { FFI::MemoryPointer.new(:short, framesize) }
-  let(:right_buffer) { FFI::MemoryPointer.new(:short, framesize) }
-
-  let(:max_buffer_size) { (128*1024)+16384 }
-  let(:buffer) { FFI::MemoryPointer.new(:uchar, max_buffer_size) }
-
-  before do
-    @flags_pointer = LAME.lame_init
-    LAME.lame_init_params(@flags_pointer)
-    LAME.id3tag_init(@flags_pointer) # needed?
-  end
-
-  # This test serves as an example how to add id3 tags
   it "adds id3v1 tags" do
-    LAME.id3tag_set_title(@flags_pointer, "title")
-    LAME.id3tag_set_artist(@flags_pointer, "artist")
-    LAME.id3tag_set_album(@flags_pointer, "album")
-    LAME.id3tag_set_year(@flags_pointer, "2013")
-    LAME.id3tag_set_comment(@flags_pointer, "comment")
-    LAME.id3tag_set_track(@flags_pointer, "42")
-
-    encode_wav_file
+    encode_wav_file(false)
 
     Mp3Info.open(mp3_id3_path) do |info|
       info.hastag1?.should be_true
@@ -44,50 +22,75 @@ describe "ID3 tags", :slow => true do
       tags["year"].should     eql 2013
       tags["comments"].should eql "comment"
       tags["tracknum"].should eql 42
+      tags["genre_s"].should  eql "Rock"
     end
   end
 
   it "adds id3v2 tags if configured to" do
-    pending "We have to prepend the MP3 file with the id3v2 frame.."
-    LAME.id3tag_add_v2(@flags_pointer)
+    encode_wav_file
+
+    Mp3Info.open(mp3_id3_path) do |info|
+      info.hastag1?.should be_true
+      info.hastag2?.should be_true
+
+      tags = info.tag2
+      tags["TIT2"].should eql "title"
+      tags["TPE1"].should eql "artist"
+      tags["TALB"].should eql "album"
+      tags["TYER"].should eql "2013"
+      tags["COMM"].should eql "comment"
+      tags["TRCK"].should eql "42"
+      tags["TCON"].should eql "Rock"
+    end
   end
 
   private
 
-  def encode_wav_file
-    File.open(mp3_id3_path, "wb") do |file|
-      wav_reader.each_buffer(framesize) do |read_buffer|
+  def encode_wav_file(enable_id3v2 = true)
+    encoder = LAME::Encoder.new
 
-        # read samples (ranges from -32k to +32k)
-        read_buffer.samples.each.with_index do |(left, right), index|
-          byte_offset = index * 2
-          left_buffer.put_short(byte_offset, left)
-          right_buffer.put_short(byte_offset, right)
-        end
-        input_buffer_size = read_buffer.samples.size
-
-        # encode to mp3 frame
-        size = LAME.lame_encode_buffer(
-          @flags_pointer,
-          left_buffer, right_buffer, input_buffer_size,
-          buffer, max_buffer_size
-        )
-
-        # write to file
-        file.write buffer.get_bytes(0, size)
-      end
-
-      # flush final frame
-      size = LAME.lame_encode_flush(@flags_pointer, buffer, max_buffer_size)
-      file.write buffer.get_bytes(0, size)
-
-      # write "lametag" frame with extra info
-      size = LAME.lame_get_lametag_frame(@flags_pointer, buffer, max_buffer_size)
-      file.seek(0)
-      file.write buffer.get_bytes(0, size)
+    encoder.configure do |config|
+      config.id3.write_automatic = false
+      config.id3.v2 = enable_id3v2
+      config.id3.title   = "title"
+      config.id3.artist  = "artist"
+      config.id3.album   = "album"
+      config.id3.year    = "2013"
+      config.id3.comment = "comment"
+      config.id3.track   = "42"
+      config.id3.genre   = "Rock"
     end
 
-    LAME.lame_close(@flags_pointer)
+    File.open(mp3_id3_path, "wb") do |file|
+
+      id3v2_size = 0
+      encoder.id3v2 do |tag|
+        file.write tag
+        id3v2_size = tag.size
+      end
+
+      wav_reader.each_buffer(encoder.framesize) do |read_buffer|
+        left  = read_buffer.samples.map { |s| s[0] }
+        right = read_buffer.samples.map { |s| s[1] }
+
+        encoder.encode_short(left, right) do |mp3|
+          file.write mp3
+        end
+      end
+      encoder.flush do |flush_frame|
+        file.write(flush_frame)
+      end
+
+      encoder.id3v1 do |tag|
+        file.write tag
+      end
+
+      encoder.vbr_frame do |vbr_frame|
+        file.seek(id3v2_size)
+        file.write(vbr_frame)
+      end
+
+    end
   end
 
 end
