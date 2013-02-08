@@ -4,8 +4,8 @@ require 'mp3info'
 
 describe "ID3 tags", :slow => true do
 
-  let(:wav_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/example2.wav')) }
-  let(:mp3_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/example2.mp3')) }
+  let(:wav_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/dies-irae.wav')) }
+  let(:mp3_id3_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/dies-irae-id3-raw.mp3')) }
 
   let(:wav_reader) { WaveFile::Reader.new(wav_path) }
 
@@ -33,7 +33,7 @@ describe "ID3 tags", :slow => true do
 
     encode_wav_file
 
-    Mp3Info.open(mp3_path) do |info|
+    Mp3Info.open(mp3_id3_path) do |info|
       info.hastag1?.should be_true
       info.hastag2?.should be_false
 
@@ -55,7 +55,7 @@ describe "ID3 tags", :slow => true do
   private
 
   def encode_wav_file
-    File.open(mp3_path, "wb") do |file|
+    File.open(mp3_id3_path, "wb") do |file|
       wav_reader.each_buffer(framesize) do |read_buffer|
 
         # read samples (ranges from -32k to +32k)

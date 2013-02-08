@@ -4,9 +4,9 @@ require 'wavefile'
 
 describe "Encoding", :slow => true do
 
-  let(:wav_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/example2.wav')) }
-  let(:mp3_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/example2a.mp3')) }
-  let(:mp3_path2) { File.expand_path(File.join(File.dirname(__FILE__), '../files/example2b.mp3')) }
+  let(:wav_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/dies-irae.wav')) }
+  let(:mp3_path_raw) { File.expand_path(File.join(File.dirname(__FILE__), '../files/dies-irae-raw.mp3')) }
+  let(:mp3_path_api) { File.expand_path(File.join(File.dirname(__FILE__), '../files/dies-irae-api.mp3')) }
 
   let(:wav_reader) { WaveFile::Reader.new(wav_path) }
 
@@ -31,7 +31,7 @@ describe "Encoding", :slow => true do
     buffer_size = (128*1024)+16384
     buffer = ::FFI::MemoryPointer.new(:uchar, buffer_size)
 
-    File.open(mp3_path, "wb") do |file|
+    File.open(mp3_path_raw, "wb") do |file|
       wav_reader.each_buffer(framesize) do |read_buffer|
 
         # read samples (ranges from -32k to +32k)
@@ -68,7 +68,7 @@ describe "Encoding", :slow => true do
     LAME.lame_close(flags_pointer)
 
     # TODO: Need a better way to test output..
-    # Digest::MD5.hexdigest(File.read(mp3_path)).should eql "84a1ce7994bb4a54fc13fb5381ebac40"
+    # Digest::MD5.hexdigest(File.read(mp3_path_raw)).should eql "84a1ce7994bb4a54fc13fb5381ebac40"
   end
 
   it "encodes a file by api" do
@@ -88,7 +88,7 @@ describe "Encoding", :slow => true do
       config.vbr.q = 0
     end
 
-    File.open(mp3_path2, "wb") do |file|
+    File.open(mp3_path_api, "wb") do |file|
 
       id3v2_size = 0
       encoder.id3v2 do |tag|
@@ -120,7 +120,7 @@ describe "Encoding", :slow => true do
     end
 
     # TODO: Need a better way to test output..
-    # Digest::MD5.hexdigest(File.read(mp3_path2)).should eql "d1cd92c106e7aac4f5291fd141a19e10"
+    # Digest::MD5.hexdigest(File.read(mp3_path_api)).should eql "d1cd92c106e7aac4f5291fd141a19e10"
   end
 
 end
