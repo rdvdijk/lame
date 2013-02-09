@@ -71,7 +71,7 @@ encoder.configure do |config|
   config.replay_gain                 = false
   config.decode_on_the_fly           = false
   config.bitrate                     = 128
-  config.preset                      = :V0 # no LAME default
+  config.preset                      = :EXTREME # no LAME default
   config.copyright                   = false
   config.original                    = true
   config.error_protection            = false
@@ -138,7 +138,7 @@ TODO
 
 #### ID3v2 tags
 
-To use ID3v2 tags in files, see this post on the lame-dev mailing list:
+To use ID3v2 tags in files, see this post on the `lame-dev` mailing list:
 
 http://sourceforge.net/mailarchive/message.php?msg_id=18557283
 
