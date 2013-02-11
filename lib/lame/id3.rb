@@ -9,28 +9,35 @@ module LAME
     end
 
     def v1
-      output = output_buffer
-
-      tag_size = LAME.lame_get_id3v1_tag(global_flags, output, output_buffer_size)
-
+      tag_size = v1_tag_size
+      output = output_buffer(tag_size)
+      LAME.lame_get_id3v1_tag(global_flags, output, tag_size)
       output.get_bytes(0, tag_size)
     end
 
     def v2
-      output = output_buffer
-
-      tag_size = LAME.lame_get_id3v2_tag(global_flags, output, output_buffer_size)
-
+      tag_size = v2_tag_size
+      output = output_buffer(tag_size)
+      LAME.lame_get_id3v2_tag(global_flags, output, tag_size)
       output.get_bytes(0, tag_size)
     end
 
     private
 
-    # TODO:
-    # this buffer could not be large enough.. check the return code of the 
-    # lame_get_id3vX_tag calls and create larger buffer if needed
-    def output_buffer
-      Buffer.create_empty(:uchar, output_buffer_size)
+    def output_buffer(size)
+      Buffer.create_empty(:uchar, size)
+    end
+
+    # LAME returns the required buffer size if the input buffer is too small.
+    def v1_tag_size
+      small_buffer = output_buffer(0)
+      LAME.lame_get_id3v1_tag(global_flags, small_buffer, 0)
+    end
+
+    # LAME returns the required buffer size if the input buffer is too small.
+    def v2_tag_size
+      small_buffer = output_buffer(0)
+      LAME.lame_get_id3v2_tag(global_flags, small_buffer, 0)
     end
 
   end
