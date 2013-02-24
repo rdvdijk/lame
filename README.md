@@ -1,5 +1,8 @@
 # LAME
 
+[![Build Status](https://travis-ci.org/rdvdijk/lame.png?branch=master)](https://travis-ci.org/rdvdijk/lame)
+[![Code Climate](https://codeclimate.com/github/rdvdijk/lame.png)](https://codeclimate.com/github/rdvdijk/lame)
+
 FFI powered library for the [LAME MP3 encoder](http://lame.sourceforge.net/).
 
 ## Installation
@@ -134,6 +137,22 @@ end
 
 TODO
 
+### Decoding
+
+Check this link for a 'simple' example. Note that we need to deal with the
+ID3 tags ourselves before decoding MP3 frames.
+
+http://sourceforge.net/mailarchive/message.php?msg_id=26907120
+
+Analysis of `lame_decode_initfile` in `get_audio.c`:
+
+1. `hip_decode_init`
+2. Read ID3 tags, starting with "ID3"
+3. The length of the ID3 tag are at the start (right after "ID3")
+4. Optionally read the contents of the ID3 tag, or just skip it
+5. Check if there is a "AID" header, and skip it
+6. Read up until the first "mp123 syncword"
+
 ### Development
 
 #### ID3v2 tags
@@ -151,7 +170,6 @@ So:
 5. Write vbr 'lametag' at start of audio (using position)
 
 See the example code in `spec/integration/encoding_spec.rb` for an example.
-
 
 ## Contributing
 
