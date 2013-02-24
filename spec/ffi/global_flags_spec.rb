@@ -1,6 +1,20 @@
 require 'spec_helper'
 
 module LAME
+  describe GlobalFlags do
+    it "initializes LAME" do
+      pointer = ::FFI::Pointer.new(0)
+      LAME.should_receive(:lame_init).and_return(pointer)
+      GlobalFlags.new
+    end
+
+    it "closes the LAME struct pointer" do
+      pointer = ::FFI::Pointer.new(0)
+      LAME.should_receive(:lame_close).with(pointer)
+      GlobalFlags.release(pointer)
+    end
+  end
+
   describe "FFI calls to global flags" do
 
     before do
