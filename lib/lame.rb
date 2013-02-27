@@ -10,6 +10,7 @@ require "lame/encoder"
 require "lame/flusher"
 require "lame/vbr_info"
 require "lame/id3"
+require "lame/mpeg_audio_frame_matcher"
 
 module LAME
 
