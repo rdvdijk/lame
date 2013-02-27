@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'wavefile'
 
 describe "Deocding", :slow => true do
 
@@ -16,123 +17,147 @@ describe "Deocding", :slow => true do
     # find MP3 sync frame
     # read mp3_data (number of frames etc)
 
-    offset = mpeg_audio_offset(mp3_file)
-    puts "offset: #{offset}"
+    mp3_offset = mpeg_audio_offset(mp3_file)
 
-    mpeg_audio_offset(mp3_file, 0, 4096)
+    puts "offset: #{mp3_offset}"
 
+    @decode_flags = LAME::FFI::DecodeFlags.new
+    @mp3_data = LAME::FFI::MP3Data.new
+
+    # Decode until we have parsed an MP3 header
+    offset = mp3_offset
+    begin
+      decode(mp3_file, offset, 100)
+      offset += 100
+    end until @mp3_data.header_parsed?
+
+    # Results:
+    if @mp3_data.header_parsed?
+      puts "stereo:      #{@mp3_data[:stereo]}"
+      puts "samplerate:  #{@mp3_data[:samplerate]}"
+      puts "bitrate:     #{@mp3_data[:bitrate]}"
+      puts "mode:        #{@mp3_data[:mode]}"
+      puts "mod_ext:     #{@mp3_data[:mod_ext]}"
+      puts "framesize:   #{@mp3_data[:framesize]}"
+      puts "nsamp:       #{@mp3_data[:nsamp]}"
+      puts "totalframes: #{@mp3_data[:totalframes]}"
+      puts "framenum:    #{@mp3_data[:framenum]}"
+    end
+
+    format = WaveFile::Format.new(:stereo, :pcm_16, 44100)
+    WaveFile::Writer.new("output.wav", format) do |writer|
+
+      # See get_audio.c:2082 #lame_decode_fromfile
+      #
+      # Read until we have decode some MP3 data:
+      @numframes = 0
+      @offset = mp3_offset
+      @result = 0
+      @size = 1024
+      begin
+        @result = decode2(mp3_file)
+
+        if @result && @result.any?
+          left = @result[0].read_array_of_short(@result[0].size/2)
+          right = @result[1].read_array_of_short(@result[1].size/2)
+          buffer = WaveFile::Buffer.new(left.zip(right), format)
+
+          writer.write(buffer)
+        end
+      end until !@result
+    end
+
+    puts "decoded #{@numframes} frames"
   end
 
-  class SyncwordMatcher
-    attr_reader :bytes
+  def decode(mp3_file, offset, size)
+    mp3_file.seek(offset)
+    in_data = mp3_file.read(size)
 
-    def initialize(bytes)
-      @bytes = bytes
+    in_buffer = LAME::Buffer.create_uchar(in_data)
+    out_left  = LAME::Buffer.create_empty(:short, 1152)
+    out_right = LAME::Buffer.create_empty(:short, 1152)
+
+    enc_delay   = ::FFI::MemoryPointer.new(:int, 1)
+    enc_padding = ::FFI::MemoryPointer.new(:int, 1)
+
+    result = LAME.hip_decode1_headersB(@decode_flags, in_buffer, size, out_left, out_right, @mp3_data, enc_delay, enc_padding)
+
+    if @mp3_data.header_parsed?
+      puts "header parsed (#{offset}): #{@mp3_data[:header_parsed]}"
+      puts "enc_delay:   #{enc_delay.read_array_of_int(1)}"
+      puts "enc_padding: #{enc_padding.read_array_of_int(1)}"
     end
-
-    def match?
-      leading_bits? &&
-        mpeg? &&
-        layer? &&
-        bitrate? &&
-        sample_frequency? &&
-        abl? &&
-        !emphasis?
-    end
-
-    # Eleven bits set to '1'
-    def leading_bits?
-      (bytes[0] & 0b11111111) == 0b11111111 &&
-        (bytes[1] & 0b11100000) == 0b11100000
-    end
-
-    def mpeg?
-      (bytes[1] & 0x11000) != 0x01000
-    end
-
-    # Second byte:
-    # - 0b010 (Layer 3)
-    # - 0b100 (Layer 2)
-    # - 0b110 (Layer 1)
-    def layer?
-      case bytes[2] & 0b110
-      when 0b010; true # Layer 3
-      when 0b100; true # Layer 2
-      when 0b110; true # Layer 1
-      else
-        false
-      end
-    end
-
-    def bitrate?
-      # bad bitrate
-      return false if (byte & 0b11110000) == 0x11110000
-    end
-
-    def sample_frequency?
-      # no sample frequency with (32,44.1,48)/(1,2,4)
-      return false if (byte & 0b1100) == 0b110
-    end
-
-    def abl?
-    end
-
-    def emphasis?
-    end
-
   end
 
-  # if (
-  #   (p[1] & 0x18) == 0x18 && 
-  #   (p[1] & 0x06) == 0x04 && 
-  #   abl2[p[2] >> 4] & (1 << (p[3] >> 6))
-  # )
+  def decode2(mp3_file)
+    in_buffer = LAME::Buffer.create_empty(:uchar, 0)
+    out_left  = LAME::Buffer.create_empty(:short, 1152)
+    out_right = LAME::Buffer.create_empty(:short, 1152)
 
-  # abl2 = [ 0, 7, 7, 7, 0, 7, 0, 0, 
-  #          0, 0, 0, 8, 8, 8, 8, 8 ]
+    # see if we have anything left in the decode buffer
+    result = LAME.hip_decode1_headers(@decode_flags, in_buffer, 0, out_left, out_right, @mp3_data)
+    puts "-"*25
+    if result > 0
+      puts "decoded MORE data at offset: #{@offset}"
+      puts "result:      #{result}"
 
-  def mpeg_audio_offset(mp3_file, offset = 0, window_size = 4)
+      @numframes += 1
+
+      return [out_left, out_right]
+    else
+      puts "there was no more data in the buffer: #{result}"
+    end
+
+    puts "read #{@size} bytes at #{@offset}"
+    in_data = mp3_file.read(@size)
+    @offset += 1024
+
+    if !in_data
+      return nil
+    end
+
+    in_buffer = LAME::Buffer.create_uchar(in_data)
+
+    # else read more data and try again
+    result = LAME.hip_decode1_headers(@decode_flags, in_buffer, @size, out_left, out_right, @mp3_data)
+
+    if result > 0
+      puts "decoded NEW data at offset: #{@offset}"
+      puts "result:      #{result}"
+
+      @numframes += 1
+
+      return [out_left, out_right]
+    else
+      puts "there was no new data: #{result}"
+    end
+
+    # read 1024 more bytes but no full mp3 was found, continue
+
+    []
+  end
+
+  def mpeg_audio_offset(mp3_file, offset = 0)
     mp3_file.seek(offset)
 
-    decode_flags = LAME::FFI::DecodeFlags.new
+    window_size = 4
+    count=0;
+    first_offset = nil
     begin
       in_data = mp3_file.read(window_size)
 
-      in_buffer = LAME::Buffer.create_uchar(in_data)
-
-      out_left = LAME::Buffer.create_empty(:short, 1152)
-      out_right = LAME::Buffer.create_empty(:short, 1152)
-
-      mp3_data = LAME::FFI::MP3Data.new
-
-      enc_delay = ::FFI::MemoryPointer.new(:int, 1)
-      enc_padding = ::FFI::MemoryPointer.new(:int, 1)
-
-      result = LAME.hip_decode1_headersB(decode_flags, in_buffer, window_size, out_left, out_right, mp3_data, enc_delay, enc_padding)
-
-      if result > 0
-        puts "-"*25
-        puts "read data at offset: #{offset}"
-
-        puts "stereo:      #{mp3_data[:stereo]}"
-        puts "samplerate:  #{mp3_data[:samplerate]}"
-        puts "bitrate:     #{mp3_data[:bitrate]}"
-        puts "mode:        #{mp3_data[:mode]}"
-        puts "mod_ext:     #{mp3_data[:mod_ext]}"
-        puts "framesize:   #{mp3_data[:framesize]}"
-        puts "nsamp:       #{mp3_data[:nsamp]}"
-        puts "totalframes: #{mp3_data[:totalframes]}"
-        puts "framenum:    #{mp3_data[:framenum]}"
-        puts "enc_delay:   #{enc_delay.read_array_of_int(1)}"
-        puts "enc_padding: #{enc_padding.read_array_of_int(1)}"
-        puts "result:      #{result}"
+      if LAME::MPEGAudioFrameMatcher.new(in_data).match?
+        count +=1
+        first_offset ||= offset
+        puts "##{count} match offset: #{offset}. #{in_data.bytes.to_a[0].to_s(2)} #{in_data.bytes.to_a[1].to_s(2)} #{in_data.bytes.to_a[2].to_s(2)} #{in_data.bytes.to_a[3].to_s(2)}"
       end
-
-      #return offset if result > 0
 
       offset += 1
       mp3_file.seek(offset)
     end while in_data.length == window_size
+
+    return first_offset
   end
 
   # http://id3.org/id3v2.4.0-structure

@@ -13,6 +13,10 @@ module LAME
         :totalframes, :int,
         :framenum,    :int
 
+      def header_parsed?
+        self[:header_parsed] == 1
+      end
+
     end
   end
 end
