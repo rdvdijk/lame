@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/rdvdijk/lame.png?branch=master)](https://travis-ci.org/rdvdijk/lame)
 [![Code Climate](https://codeclimate.com/github/rdvdijk/lame.png)](https://codeclimate.com/github/rdvdijk/lame)
+[![Coverage Status](https://coveralls.io/repos/rdvdijk/lame/badge.png?branch=master)](https://coveralls.io/r/rdvdijk/lame)
 
 FFI powered library for the [LAME MP3 encoder](http://lame.sourceforge.net/).
 
