@@ -24,4 +24,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "pry"
   gem.add_development_dependency "wavefile"
   gem.add_development_dependency "ruby-mp3info"
+  gem.add_development_dependency "coveralls"
 end
