@@ -103,7 +103,7 @@ module LAME
       end
 
       it "converts false to 0" do
-        converter.convert(true).should eql 1
+        converter.convert(false).should eql 0
       end
 
       it "converts a string to a pointer with correct value" do
