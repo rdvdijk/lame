@@ -5,12 +5,14 @@ require "lame/error"
 require "lame/delegation"
 require "lame/configuration"
 require "lame/buffer"
-require "lame/encoders/short"
+
+require "lame/encoding/encode_short_buffer"
+require "lame/encoding/flusher"
+require "lame/encoding/id3"
+require "lame/encoding/vbr_info"
 require "lame/encoder"
-require "lame/flusher"
-require "lame/vbr_info"
-require "lame/id3"
-require "lame/mpeg_audio_frame_matcher"
+
+require "lame/decoding/mpeg_audio_frame_matcher"
 
 module LAME
 

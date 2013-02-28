@@ -43,7 +43,7 @@ describe "Deocding", :slow => true do
 
     # read mp3_data (number of frames etc)
     format = WaveFile::Format.new(:stereo, :pcm_16, 44100)
-    WaveFile::Writer.new("output.wav", format) do |writer|
+    WaveFile::Writer.new("output2.wav", format) do |writer|
 
       # See get_audio.c:2082 #lame_decode_fromfile
       #
@@ -68,8 +68,8 @@ describe "Deocding", :slow => true do
     in_data = mp3_file.read(size)
 
     in_buffer = LAME::Buffer.create_uchar(in_data)
-    out_left  = LAME::Buffer.create_empty(:short, 1152)
-    out_right = LAME::Buffer.create_empty(:short, 1152)
+    out_left  = LAME::Buffer.create_empty(:short, 0)
+    out_right = LAME::Buffer.create_empty(:short, 0)
 
     enc_delay   = ::FFI::MemoryPointer.new(:int, 1)
     enc_padding = ::FFI::MemoryPointer.new(:int, 1)
@@ -84,7 +84,7 @@ describe "Deocding", :slow => true do
   end
 
   def decode(mp3_file)
-    size = 1024 # arbitrary (TODO: check what LAME does..)
+    size = 1024 # arbitrary, taken from get_audio.c#lame_decode_fromfile
     out_left  = LAME::Buffer.create_empty(:short, 1152)
     out_right = LAME::Buffer.create_empty(:short, 1152)
 

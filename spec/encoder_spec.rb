@@ -60,7 +60,7 @@ module LAME
       before do
         Configuration.stub(:new).and_return(configuration)
         configuration.stub(:applied?).and_return(true)
-        Encoders::Short.stub(:new).and_return(stub.as_null_object)
+        Encoding::EncodeShortBuffer.stub(:new).and_return(stub.as_null_object)
       end
 
       it "applies the configuration if not done already" do
@@ -79,11 +79,11 @@ module LAME
         let(:short_encoder) { stub.as_null_object }
 
         before do
-          Encoders::Short.stub(:new).and_return(short_encoder)
+          Encoding::EncodeShortBuffer.stub(:new).and_return(short_encoder)
         end
 
         it "create a short encoder with configuration" do
-          Encoders::Short.should_receive(:new).with(configuration)
+          Encoding::EncodeShortBuffer.should_receive(:new).with(configuration)
 
           encoder.encode_short(left, right) { }
         end
@@ -140,16 +140,16 @@ module LAME
 
       let(:global_flags) { subject.global_flags }
       let(:configuration) { stub(Configuration) }
-      let(:flusher) { stub(Flusher).as_null_object }
+      let(:flusher) { stub(Encoding::Flusher).as_null_object }
 
       before do
         Configuration.stub(:new).and_return(configuration)
         configuration.stub(:applied?).and_return(true)
-        Flusher.stub(:new).and_return(flusher)
+        Encoding::Flusher.stub(:new).and_return(flusher)
       end
 
       it "creates a flusher" do
-        Flusher.should_receive(:new).with(configuration)
+        Encoding::Flusher.should_receive(:new).with(configuration)
         encoder.flush { }
       end
 
@@ -179,16 +179,16 @@ module LAME
 
       let(:global_flags) { subject.global_flags }
       let(:configuration) { stub(Configuration) }
-      let(:vbr_info) { stub(VBRInfo).as_null_object }
+      let(:vbr_info) { stub(Encoding::VBRInfo).as_null_object }
 
       before do
         Configuration.stub(:new).and_return(configuration)
         configuration.stub(:applied?).and_return(true)
-        VBRInfo.stub(:new).and_return(vbr_info)
+        Encoding::VBRInfo.stub(:new).and_return(vbr_info)
       end
 
       it "creates vbr info" do
-        VBRInfo.should_receive(:new).with(configuration)
+        Encoding::VBRInfo.should_receive(:new).with(configuration)
         encoder.vbr_frame { }
       end
 
@@ -217,16 +217,16 @@ module LAME
     context "id3" do
       let(:global_flags) { subject.global_flags }
       let(:configuration) { stub(Configuration) }
-      let(:id3) { stub(Id3).as_null_object }
+      let(:id3) { stub(Encoding::Id3).as_null_object }
 
       before do
         Configuration.stub(:new).and_return(configuration)
         configuration.stub(:applied?).and_return(true)
-        Id3.stub(:new).and_return(id3)
+        Encoding::Id3.stub(:new).and_return(id3)
       end
 
       it "creates vbr info" do
-        Id3.should_receive(:new).with(configuration)
+        Encoding::Id3.should_receive(:new).with(configuration)
         encoder.id3v1 { }
       end
 

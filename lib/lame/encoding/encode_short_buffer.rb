@@ -1,6 +1,6 @@
 module LAME
-  module Encoders
-    class Short
+  module Encoding
+    class EncodeShortBuffer
       extend Forwardable
 
       def_delegators :@configuration, :global_flags, :framesize, :output_buffer_size
