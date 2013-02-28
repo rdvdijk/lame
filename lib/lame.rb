@@ -13,6 +13,7 @@ require "lame/encoding/vbr_info"
 require "lame/encoder"
 
 require "lame/decoding/mpeg_audio_frame_matcher"
+require "lame/decoder"
 
 module LAME
 

@@ -5,10 +5,10 @@ module LAME
 
     subject(:encoder) { Encoder.new }
 
-    context "intialization" do
+    context "initialization" do
 
       it "initializes GlobalFlags" do
-        GlobalFlags.should_receive(:new)
+        FFI::GlobalFlags.should_receive(:new)
         Encoder.new
       end
 

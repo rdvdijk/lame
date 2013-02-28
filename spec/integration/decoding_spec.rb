@@ -1,12 +1,29 @@
 require 'spec_helper'
 require 'wavefile'
 
-describe "Deocding", :slow => true do
+describe "Decoding", :slow => true do
 
-  it "decodes a wav file" do
-    mp3_file_path = File.expand_path(File.join(File.dirname(__FILE__), '../files/dies-irae-cli-id3v2.mp3'))
-    mp3_file = File.open(mp3_file_path, "r")
+  let(:mp3_file_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/dies-irae-cli-id3v2.mp3')) }
+  let(:mp3_file)      { File.open(mp3_file_path, "r") }
 
+  xit "decodes an MP3 file by api" do
+    decoder = LAME::Decoder.new(mp3_file)
+
+    format = WaveFile::Format.new(decode.channel_mode, :pcm_16, decoder.sample_rate)
+
+    WaveFile::Writer.new("output1.wav", format) do |writer|
+
+      decoder.each_frame do |frame|
+        zipped_buffer = frame.left.zip(frame.right)
+        buffer = WaveFile::Buffer.new(zipped_buffer, format)
+
+        writer.write(buffer)
+      end
+
+    end
+  end
+
+  it "decodes an MP3 file" do
     # id3
     id3_length = id3_length(mp3_file)
     puts "ID3 length: #{id3_length} bytes"
