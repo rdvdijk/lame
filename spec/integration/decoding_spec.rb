@@ -15,20 +15,17 @@ describe "Deocding", :slow => true do
     # aid TODO (ignored for now)
 
     # find MP3 sync frame
-    # read mp3_data (number of frames etc)
 
-    mp3_offset = mpeg_audio_offset(mp3_file)
-
+    mp3_offset = mpeg_audio_offset(mp3_file, id3_length)
     puts "offset: #{mp3_offset}"
 
     @decode_flags = LAME::FFI::DecodeFlags.new
     @mp3_data = LAME::FFI::MP3Data.new
 
     # Decode until we have parsed an MP3 header
-    offset = mp3_offset
+    mp3_file.seek(mp3_offset)
     begin
-      decode(mp3_file, offset, 100)
-      offset += 100
+      find_header(mp3_file)
     end until @mp3_data.header_parsed?
 
     # Results:
@@ -44,18 +41,16 @@ describe "Deocding", :slow => true do
       puts "framenum:    #{@mp3_data[:framenum]}"
     end
 
+    # read mp3_data (number of frames etc)
     format = WaveFile::Format.new(:stereo, :pcm_16, 44100)
     WaveFile::Writer.new("output.wav", format) do |writer|
 
       # See get_audio.c:2082 #lame_decode_fromfile
       #
       # Read until we have decode some MP3 data:
-      @numframes = 0
-      @offset = mp3_offset
       @result = 0
-      @size = 1024
       begin
-        @result = decode2(mp3_file)
+        @result = decode(mp3_file)
 
         if @result && @result.any?
           left = @result[0].read_array_of_short(@result[0].size/2)
@@ -66,12 +61,10 @@ describe "Deocding", :slow => true do
         end
       end until !@result
     end
-
-    puts "decoded #{@numframes} frames"
   end
 
-  def decode(mp3_file, offset, size)
-    mp3_file.seek(offset)
+  def find_header(mp3_file)
+    size = 100 # arbitrary, taken from get_audio.c#lame_decode_initfile
     in_data = mp3_file.read(size)
 
     in_buffer = LAME::Buffer.create_uchar(in_data)
@@ -84,35 +77,32 @@ describe "Deocding", :slow => true do
     result = LAME.hip_decode1_headersB(@decode_flags, in_buffer, size, out_left, out_right, @mp3_data, enc_delay, enc_padding)
 
     if @mp3_data.header_parsed?
-      puts "header parsed (#{offset}): #{@mp3_data[:header_parsed]}"
+      puts "header parsed @ #{mp3_file.pos}"
       puts "enc_delay:   #{enc_delay.read_array_of_int(1)}"
       puts "enc_padding: #{enc_padding.read_array_of_int(1)}"
     end
   end
 
-  def decode2(mp3_file)
-    in_buffer = LAME::Buffer.create_empty(:uchar, 0)
+  def decode(mp3_file)
+    size = 1024 # arbitrary (TODO: check what LAME does..)
     out_left  = LAME::Buffer.create_empty(:short, 1152)
     out_right = LAME::Buffer.create_empty(:short, 1152)
 
-    # see if we have anything left in the decode buffer
+    in_buffer = LAME::Buffer.create_empty(:uchar, 0)
+
+    # see if we have anything left in the internal decode buffer
     result = LAME.hip_decode1_headers(@decode_flags, in_buffer, 0, out_left, out_right, @mp3_data)
-    puts "-"*25
-    if result > 0
-      puts "decoded MORE data at offset: #{@offset}"
-      puts "result:      #{result}"
 
-      @numframes += 1
-
-      return [out_left, out_right]
+    case result
+    when -1
+      raise "decoding error (a)"
+    when 0
+      # need more data
     else
-      puts "there was no more data in the buffer: #{result}"
+      return [out_left, out_right]
     end
 
-    puts "read #{@size} bytes at #{@offset}"
-    in_data = mp3_file.read(@size)
-    @offset += 1024
-
+    in_data = mp3_file.read(size)
     if !in_data
       return nil
     end
@@ -120,20 +110,16 @@ describe "Deocding", :slow => true do
     in_buffer = LAME::Buffer.create_uchar(in_data)
 
     # else read more data and try again
-    result = LAME.hip_decode1_headers(@decode_flags, in_buffer, @size, out_left, out_right, @mp3_data)
+    result = LAME.hip_decode1_headers(@decode_flags, in_buffer, size, out_left, out_right, @mp3_data)
 
-    if result > 0
-      puts "decoded NEW data at offset: #{@offset}"
-      puts "result:      #{result}"
-
-      @numframes += 1
-
-      return [out_left, out_right]
+    case result
+    when -1
+      raise "decoding error (b)"
+    when 0
+      # need more data
     else
-      puts "there was no new data: #{result}"
+      return [out_left, out_right]
     end
-
-    # read 1024 more bytes but no full mp3 was found, continue
 
     []
   end
@@ -142,22 +128,17 @@ describe "Deocding", :slow => true do
     mp3_file.seek(offset)
 
     window_size = 4
-    count=0;
-    first_offset = nil
     begin
       in_data = mp3_file.read(window_size)
 
       if LAME::MPEGAudioFrameMatcher.new(in_data).match?
-        count +=1
-        first_offset ||= offset
-        puts "##{count} match offset: #{offset}. #{in_data.bytes.to_a[0].to_s(2)} #{in_data.bytes.to_a[1].to_s(2)} #{in_data.bytes.to_a[2].to_s(2)} #{in_data.bytes.to_a[3].to_s(2)}"
+        puts "match offset @ #{offset} : #{in_data.bytes.to_a[0].to_s(2)} #{in_data.bytes.to_a[1].to_s(2)} #{in_data.bytes.to_a[2].to_s(2)} #{in_data.bytes.to_a[3].to_s(2)}"
+        return offset
       end
 
       offset += 1
       mp3_file.seek(offset)
     end while in_data.length == window_size
-
-    return first_offset
   end
 
   # http://id3.org/id3v2.4.0-structure
