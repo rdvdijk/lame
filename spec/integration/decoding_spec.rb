@@ -158,12 +158,6 @@ describe "Decoding", :slow => true do
     end while in_data.length == window_size
   end
 
-  # http://id3.org/id3v2.4.0-structure
-  # 10 bytes header:
-  # - "ID3"
-  # - "xx" version (2 bytes)
-  # - "x" flags (1 byte)
-  # - "xxxx" size (4 bytes)
   def id3_length(file)
     header = file.read(10)
     if id3?(header)

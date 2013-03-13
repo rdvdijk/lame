@@ -12,7 +12,10 @@ require "lame/encoding/id3"
 require "lame/encoding/vbr_info"
 require "lame/encoder"
 
+require "lame/decoding/id3_tag_parser"
 require "lame/decoding/mpeg_audio_frame_matcher"
+require "lame/decoding/mp3_data_header_parser"
+require "lame/decoding/stream_decoder"
 require "lame/decoder"
 
 module LAME
