@@ -9,11 +9,5 @@ rvm:
   - jruby-19mode
   - jruby-18mode
   - jruby-head
-matrix:
-  allow_failures:
-    - rvm: jruby-19mode
-    - rvm: jruby-18mode
-    - rvm: jruby-head
 before_install:
-- sudo apt-get update -qq
 - sudo apt-get install -qq libmp3lame-dev
