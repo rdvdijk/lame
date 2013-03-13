@@ -135,6 +135,16 @@ module LAME
         it_behaves_like "4 valid bytes"
       end
 
+      context "yet another valid MPEG1 Layer II bitrate/channel mode combination" do
+        let(:b1) { B1_LEADING }
+        let(:b2) { B2_LEADING | B2_MPEG1 | B2_LAYER2 }
+        let(:b3) { B3_BITRATE9 | B3_SMPRATE2 }
+        let(:b4) { B4_JOINT | B4_EMPH_NONE }
+
+        # bitrate '9' and 'joint_stereo' is valid
+        it_behaves_like "4 valid bytes"
+      end
+
       context "invalid MPEG1 Layer II bitrate/channel mode combination" do
         let(:b1) { B1_LEADING }
         let(:b2) { B2_LEADING | B2_MPEG1 | B2_LAYER2 }
