@@ -17,6 +17,12 @@ module LAME
           @data = @stream.read(SIZE)
           parse_headers
         end until parsed? || end_of_stream?
+
+        if parsed?
+          @mp3_data
+        else
+          raise Mp3DataHeaderNotFoundError
+        end
       end
 
       private
@@ -39,7 +45,7 @@ module LAME
       end
 
       def parsed?
-        false
+        @mp3_data.header_parsed?
       end
 
       def end_of_stream?
