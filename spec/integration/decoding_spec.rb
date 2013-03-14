@@ -148,7 +148,7 @@ describe "Decoding", :slow => true do
     begin
       in_data = mp3_file.read(window_size)
 
-      if LAME::MPEGAudioFrameMatcher.new(in_data).match?
+      if LAME::Decoding::MPEGAudioFrameMatcher.new(in_data).match?
         puts "match offset @ #{offset} : #{in_data.bytes.to_a[0].to_s(2)} #{in_data.bytes.to_a[1].to_s(2)} #{in_data.bytes.to_a[2].to_s(2)} #{in_data.bytes.to_a[3].to_s(2)}"
         return offset
       end

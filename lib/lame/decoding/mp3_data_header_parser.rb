@@ -4,8 +4,6 @@ module LAME
 
       SIZE = 100
 
-      # TODO: find mpeg header frame
-
       def initialize(decode_flags, stream)
         @decode_flags = decode_flags
         @stream = stream
@@ -13,6 +11,17 @@ module LAME
       end
 
       def parse!
+        find_first_mpeg_audio_frame!
+        parse_mp3_data_header!
+      end
+
+      private
+
+      def find_first_mpeg_audio_frame!
+        MPEGAudioAudioFrameFinder.new(@stream).find!
+      end
+
+      def parse_mp3_data_header!
         begin
           @data = @stream.read(SIZE)
           parse_headers
@@ -24,8 +33,6 @@ module LAME
           raise Mp3DataHeaderNotFoundError
         end
       end
-
-      private
 
       def parse_headers
         return if !@data
