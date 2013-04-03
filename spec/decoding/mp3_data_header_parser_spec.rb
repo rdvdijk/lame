@@ -20,13 +20,17 @@ module LAME
       end
 
       it "seeks the input stream until the first mpeg frame" do
-        MPEGAudioAudioFrameFinder.should_receive(:new).with(stream).and_return(mpeg_finder)
+        MPEGAudioFrameFinder.should_receive(:new).with(stream).and_return(mpeg_finder)
         mpeg_finder.should_receive(:find!)
 
         parser.parse!
       end
 
       context "decoding headers" do
+
+        before do
+          MPEGAudioFrameFinder.stub(:new => stub.as_null_object)
+        end
 
         it "reads 100 bytes from the stream" do
           stream.should_receive(:read).with(100).and_return("a"*100)

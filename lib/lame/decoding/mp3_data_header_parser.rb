@@ -18,7 +18,7 @@ module LAME
       private
 
       def find_first_mpeg_audio_frame!
-        MPEGAudioAudioFrameFinder.new(@stream).find!
+        MPEGAudioFrameFinder.new(@stream).find!
       end
 
       def parse_mp3_data_header!

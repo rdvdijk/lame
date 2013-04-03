@@ -6,4 +6,6 @@ module LAME
 
   class Mp3DataHeaderNotFoundError < LAMEError; end
 
+  class MPEGAudioFrameNotFoundError < LAMEError; end
+
 end
