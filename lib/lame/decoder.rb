@@ -20,7 +20,7 @@ module LAME
     private
 
     def stream_decoder
-      @stream_decoder ||= Decoding::StreamDecoder.new(mp3_file, mp3_data)
+      @stream_decoder ||= Decoding::StreamDecoder.new(decode_flags, mp3_data, mp3_file)
     end
 
     def skip_id3_tag
@@ -28,7 +28,7 @@ module LAME
     end
 
     def parse_mp3_data
-      Decoding::Mp3DataHeaderParser.new(@decode_flags, mp3_file).parse!
+      Decoding::Mp3DataHeaderParser.new(decode_flags, mp3_file).parse!
     end
 
   end

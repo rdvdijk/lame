@@ -16,6 +16,7 @@ require "lame/decoding/id3_tag_parser"
 require "lame/decoding/mp3_data_header_parser"
 require "lame/decoding/mpeg_audio_frame_matcher"
 require "lame/decoding/mpeg_audio_frame_finder"
+require "lame/decoding/single_frame_decoder"
 require "lame/decoding/stream_decoder"
 require "lame/decoder"
 

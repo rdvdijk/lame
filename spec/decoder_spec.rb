@@ -63,13 +63,15 @@ module LAME
       it "initializes a stream decoder with mp3 file and mp3 data" do
         stream_decoder.stub(:each_frame)
 
-        mp3_data = stub
+        mp3_data = stub("mp3 data")
         parser = stub
+
+        FFI::DecodeFlags.stub(:new).and_return(decode_flags)
 
         Decoding::Mp3DataHeaderParser.stub(:new).and_return(parser)
         parser.stub(:parse!).and_return(mp3_data)
 
-        Decoding::StreamDecoder.should_receive(:new).with(mp3_file, mp3_data)
+        Decoding::StreamDecoder.should_receive(:new).with(decode_flags, mp3_data, mp3_file)
 
         decoder.each_frame
       end

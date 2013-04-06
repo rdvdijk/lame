@@ -8,4 +8,6 @@ module LAME
 
   class MPEGAudioFrameNotFoundError < LAMEError; end
 
+  class DecodingError < LAMEError; end
+
 end
