@@ -21,6 +21,20 @@ module LAME
         finder.find!
       end
 
+      it "seeks the stream at the position of the found frame" do
+        matcher1 = stub("matcher", :match? => false)
+        matcher2 = stub("matcher", :match? => false)
+        matcher3 = stub("matcher", :match? => true)
+
+        MPEGAudioFrameMatcher.stub(:new).with("1234").and_return(matcher1)
+        MPEGAudioFrameMatcher.stub(:new).with("2345").and_return(matcher2)
+        MPEGAudioFrameMatcher.stub(:new).with("3456").and_return(matcher3)
+
+        finder.find!
+
+        stream.pos.should eql 2
+      end
+
       it "raises an error if no header could be found" do
         matcher = stub("matcher", :match? => false)
 

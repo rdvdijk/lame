@@ -12,6 +12,7 @@ module LAME
         begin
           @data = @stream.read(MPEG_HEADER_SIZE)
           if MPEGAudioFrameMatcher.new(@data).match?
+            seek_back!
             return
           end
           seek!
@@ -26,8 +27,14 @@ module LAME
         @stream.pos
       end
 
+      # Move to next 4 bytes.
       def seek!
         @stream.seek(offset - (MPEG_HEADER_SIZE-1))
+      end
+
+      # Move back to frame position.
+      def seek_back!
+        @stream.seek(offset - (MPEG_HEADER_SIZE))
       end
 
       def end_of_stream?
