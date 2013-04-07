@@ -18,6 +18,7 @@ require "lame/decoding/mpeg_audio_frame_matcher"
 require "lame/decoding/mpeg_audio_frame_finder"
 require "lame/decoding/single_frame_decoder"
 require "lame/decoding/stream_decoder"
+require "lame/decoding/decoded_frame"
 require "lame/decoder"
 
 module LAME

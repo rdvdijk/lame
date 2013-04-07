@@ -59,15 +59,15 @@ module LAME
 
         expect { |block|
           decoder.decode(data, &block)
-        }.to yield_control
+        }.to yield_successive_args(DecodedFrame)
       end
 
       it "yields decoded frames for new data" do
-        LAME.stub(:hip_decode1_headers).and_return(0, 1, 0)
+        LAME.stub(:hip_decode1_headers).and_return(0, 1, 1, 0)
 
         expect { |block|
           decoder.decode(data, &block)
-        }.to yield_control
+        }.to yield_successive_args(DecodedFrame, DecodedFrame)
       end
 
       it "raises an error if decoding failed" do

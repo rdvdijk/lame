@@ -13,10 +13,8 @@ describe "Decoding", :slow => true do
 
     WaveFile::Writer.new("output1.wav", format) do |writer|
 
-      decoder.each_frame do |frame|
-        #zipped_buffer = frame.left.zip(frame.right)
-        #buffer = WaveFile::Buffer.new(zipped_buffer, format)
-        buffer = WaveFile::Buffer.new(frame, format)
+      decoder.each_decoded_frame do |decoded_frame|
+        buffer = WaveFile::Buffer.new(decoded_frame.samples, format)
 
         writer.write(buffer)
       end
