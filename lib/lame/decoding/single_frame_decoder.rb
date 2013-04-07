@@ -8,11 +8,11 @@ module LAME
       end
 
       def decode(data)
-        flush_buffer do |frame|
-          yield frame
+        flush_buffer do |decoded_frame|
+          yield decoded_frame
         end
-        decode_data(data) do |frame|
-          yield frame
+        decode_data(data) do |decoded_frame|
+          yield decoded_frame
         end
       end
 

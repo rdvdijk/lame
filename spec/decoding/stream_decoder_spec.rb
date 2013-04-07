@@ -23,10 +23,10 @@ module LAME
 
         single_frame_decoder.should_receive(:decode).exactly(:twice)
 
-        decoder.each_frame
+        decoder.each_decoded_frame
       end
 
-      it "yields the decoded frames" do
+      it "yields the decoded frame" do
         single_frame_decoder = stub
         SingleFrameDecoder.stub(:new).and_return(single_frame_decoder)
 
@@ -34,7 +34,7 @@ module LAME
         single_frame_decoder.stub(:decode).with("b"*1024).and_yield(:two).and_yield(:three)
 
         expect { |block|
-          decoder.each_frame(&block)
+          decoder.each_decoded_frame(&block)
         }.to yield_successive_args(:one, :two, :three)
       end
 

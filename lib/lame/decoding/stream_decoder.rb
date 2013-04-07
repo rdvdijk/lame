@@ -10,7 +10,7 @@ module LAME
         @single_frame_decoder = SingleFrameDecoder.new(decode_flags, mp3_data)
       end
 
-      def each_frame(&block)
+      def each_decoded_frame(&block)
         begin
           @data = @stream.read(DECODE_SIZE)
 
@@ -23,8 +23,8 @@ module LAME
       def decode
         return if end_of_stream?
 
-        @single_frame_decoder.decode(@data) do |frame|
-          yield frame
+        @single_frame_decoder.decode(@data) do |decoded_frame|
+          yield decoded_frame
         end
       end
 

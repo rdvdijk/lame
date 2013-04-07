@@ -10,8 +10,8 @@ module LAME
       let(:mp3_data) { stub("mp3 data") }
       let(:data) { "a"*1024 }
 
-      it "always checks if there is a frame in the internal buffer" do
-        # initial frame
+      it "always checks if there is a decoded frame in the internal buffer" do
+        # initial decoded frame
         LAME.should_receive(:hip_decode1_headers) do |flags, in_buffer, in_size, out_left, out_right, mp3_data_arg|
           flags.should          eql decode_flags
           in_buffer.size.should eql 0
@@ -54,7 +54,7 @@ module LAME
         decoder.decode(data) {}
       end
 
-      it "yields frames for initial decoded frame" do
+      it "yields decoded frames if one is left in internal buffer" do
         LAME.stub(:hip_decode1_headers).and_return(1, 0)
 
         expect { |block|
@@ -62,7 +62,7 @@ module LAME
         }.to yield_control
       end
 
-      it "yields frames for successive frames" do
+      it "yields decoded frames for new data" do
         LAME.stub(:hip_decode1_headers).and_return(0, 1, 0)
 
         expect { |block|
@@ -78,7 +78,7 @@ module LAME
         }.to raise_error(DecodingError)
       end
 
-      # Enable this test once next rspec-expectations have been released
+      # Enable these tests once next rspec-expectations has been released
       xit "yields until no more data is decoded" do
         LAME.stub(:hip_decode1_headers).and_return(0, 1, 1, 0)
 
@@ -89,7 +89,7 @@ module LAME
         }.to yield_control.exactly(2).times
       end
 
-      xit "yields if the decoder had a decoded frame initially" do
+      xit "yields if the decoder had a decoded frame " do
         LAME.stub(:hip_decode1_headers).and_return(1, 1, 1, 0)
 
         LAME.should_receive(:hip_decode1_headers).exactly(4).times

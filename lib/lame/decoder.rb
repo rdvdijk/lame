@@ -14,9 +14,9 @@ module LAME
       @mp3_data = parse_mp3_data
     end
 
-    def each_frame
-      stream_decoder.each_frame do |frame|
-        yield frame
+    def each_decoded_frame
+      stream_decoder.each_decoded_frame do |decoded_frame|
+        yield decoded_frame
       end
     end
 

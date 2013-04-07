@@ -6,16 +6,17 @@ describe "Decoding", :slow => true do
   let(:mp3_file_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/dies-irae-cli-id3v2.mp3')) }
   let(:mp3_file)      { File.open(mp3_file_path, "r") }
 
-  xit "decodes an MP3 file by api" do
+  it "decodes an MP3 file by api" do
     decoder = LAME::Decoder.new(mp3_file)
 
-    format = WaveFile::Format.new(decode.channel_mode, :pcm_16, decoder.sample_rate)
+    format = WaveFile::Format.new(decoder.channel_mode, :pcm_16, decoder.sample_rate)
 
     WaveFile::Writer.new("output1.wav", format) do |writer|
 
       decoder.each_frame do |frame|
-        zipped_buffer = frame.left.zip(frame.right)
-        buffer = WaveFile::Buffer.new(zipped_buffer, format)
+        #zipped_buffer = frame.left.zip(frame.right)
+        #buffer = WaveFile::Buffer.new(zipped_buffer, format)
+        buffer = WaveFile::Buffer.new(frame, format)
 
         writer.write(buffer)
       end

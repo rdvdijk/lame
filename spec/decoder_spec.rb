@@ -52,42 +52,66 @@ module LAME
 
     end
 
-    describe "#each_frame" do
+    context "after initialization" do
 
-      let(:stream_decoder) { stub }
-      before do
-        Decoding::StreamDecoder.stub(:new).and_return(stream_decoder)
-      end
+      let(:mp3_data) { stub("mp3 data") }
 
       # stubbing galore!
-      it "initializes a stream decoder with mp3 file and mp3 data" do
-        stream_decoder.stub(:each_frame)
-
-        mp3_data = stub("mp3 data")
-        parser = stub
-
+      before do
         FFI::DecodeFlags.stub(:new).and_return(decode_flags)
 
+        parser = stub
         Decoding::Mp3DataHeaderParser.stub(:new).and_return(parser)
         parser.stub(:parse!).and_return(mp3_data)
-
-        Decoding::StreamDecoder.should_receive(:new).with(decode_flags, mp3_data, mp3_file)
-
-        decoder.each_frame
       end
 
-      it "delegates to a stream decoder" do
-        stream_decoder.should_receive(:each_frame)
+      describe "#each_decoded_frame" do
 
-        decoder.each_frame
+        let(:stream_decoder) { stub }
+        before do
+          Decoding::StreamDecoder.stub(:new).and_return(stream_decoder)
+        end
+
+        it "initializes a stream decoder with mp3 file and mp3 data" do
+          stream_decoder.stub(:each_decoded_frame)
+
+          Decoding::StreamDecoder.should_receive(:new).with(decode_flags, mp3_data, mp3_file)
+
+          decoder.each_decoded_frame
+        end
+
+        it "delegates to a stream decoder" do
+          stream_decoder.should_receive(:each_decoded_frame)
+
+          decoder.each_decoded_frame
+        end
+
+        it "re-yields the stream decoder's yield" do
+          stream_decoder.stub(:each_decoded_frame).and_yield(:one).and_yield(:two)
+
+          expect { |block|
+            decoder.each_decoded_frame(&block)
+          }.to yield_successive_args(:one, :two)
+        end
+
       end
 
-      it "re-yields the stream decoder's yield" do
-        stream_decoder.stub(:each_frame).and_yield(:one).and_yield(:two)
+      describe "#channel_mode" do
 
-        expect { |block|
-          decoder.each_frame(&block)
-        }.to yield_successive_args(:one, :two)
+        it "delegates to mp3_data" do
+          mp3_data.should_receive(:channel_mode).and_return(:stereo)
+          decoder.channel_mode.should eql :stereo
+        end
+
+      end
+
+      describe "#sample_rate" do
+
+        it "delegates to mp3_data" do
+          mp3_data.should_receive(:sample_rate).and_return(44100)
+          decoder.sample_rate.should eql 44100
+        end
+
       end
 
     end
