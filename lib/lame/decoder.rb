@@ -1,7 +1,10 @@
 module LAME
   class Decoder
+    extend Forwardable
 
     attr_reader :decode_flags, :mp3_file, :mp3_data
+
+    def_delegators :mp3_data, :channel_mode, :sample_rate
 
     def initialize(mp3_file)
       @decode_flags = FFI::DecodeFlags.new

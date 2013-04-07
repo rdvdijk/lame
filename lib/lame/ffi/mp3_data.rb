@@ -17,6 +17,19 @@ module LAME
         self[:header_parsed] == 1
       end
 
+      def channel_mode
+        case self[:stereo]
+        when 1
+          :mono
+        when 2
+          :stereo
+        end
+      end
+
+      def sample_rate
+        self[:samplerate]
+      end
+
     end
   end
 end
