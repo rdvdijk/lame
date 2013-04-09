@@ -139,6 +139,29 @@ end
 See `spec/integration/encoding_spec.rb` for an example how to encode a WAV file
 to an MP3 file.
 
+The available encoding functions are:
+
+```ruby
+encoder = LAME::Encoder.new
+
+# encode shorts (−32,768 to +32,767), for 16-bit audio
+encoder.encode_short(left, right) do |mp3_frame|
+  # ...
+end
+
+# encode floats (−1.0 to +1.0), for 32-bit floating point audio
+encoder.encode_float(left, right) do |mp3_frame|
+  # ...
+end
+
+# encode longs (system dependent, +/- 2^(bits_per_long-1)
+encoder.encode_long(left, right) do |mp3_frame|
+  # ...
+end
+```
+
+The `left` and `right` are arrays of sample values for the given data type.
+
 ### Decoding
 
 See `spec/integration/decoding_spec.rb` for an example how to decode an MP3 file

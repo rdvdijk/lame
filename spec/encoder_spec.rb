@@ -60,80 +60,104 @@ module LAME
       before do
         Configuration.stub(:new).and_return(configuration)
         configuration.stub(:applied?).and_return(true)
-        Encoding::EncodeShortBuffer.stub(:new).and_return(stub.as_null_object)
       end
 
-      it "applies the configuration if not done already" do
-        configuration.stub(:applied?).and_return(false)
-        configuration.should_receive(:apply!)
-        encoder.encode_short(left, right) { }
-      end
-
-      it "does not apply the configuration if already applied" do
-        configuration.stub(:applied?).and_return(true)
-        configuration.should_not_receive(:apply!)
-        encoder.encode_short(left, right) { }
-      end
-
-      context "delegation" do
-        let(:short_encoder) { stub.as_null_object }
+      describe "#encode_short" do
 
         before do
-          Encoding::EncodeShortBuffer.stub(:new).and_return(short_encoder)
+          Encoding::ShortBufferEncoder.stub(:new).and_return(stub.as_null_object)
         end
 
-        it "create a short encoder with configuration" do
-          Encoding::EncodeShortBuffer.should_receive(:new).with(configuration)
-
+        it "applies the configuration if not done already" do
+          configuration.stub(:applied?).and_return(false)
+          configuration.should_receive(:apply!)
           encoder.encode_short(left, right) { }
         end
 
-        it "delegates encoding to the short encoder" do
-          left.stub(:length => 100) # exactly framesize
-          short_encoder.should_receive(:encode_frame).with(left, right)
-
+        it "does not apply the configuration if already applied" do
+          configuration.stub(:applied?).and_return(true)
+          configuration.should_not_receive(:apply!)
           encoder.encode_short(left, right) { }
         end
 
-        it "yields the encoder results" do
-          mp3_data = stub
-          short_encoder.stub(:encode_frame).and_return(mp3_data)
+        context "delegation" do
+          let(:short_encoder) { stub.as_null_object }
 
-          expect { |block|
-            encoder.encode_short(left, right, &block)
-          }.to yield_with_args(mp3_data)
-        end
-
-        it "delegates multiple times for large input" do
-          right = left = [0]*150 # larger than framesize
-
-          short_encoder.should_receive(:encode_frame) do |left_frame, right_frame|
-            left_frame.length.should eql 100
-            right_frame.length.should eql 100
+          before do
+            Encoding::ShortBufferEncoder.stub(:new).and_return(short_encoder)
           end
 
-          short_encoder.should_receive(:encode_frame) do |left_frame, right_frame|
-            left_frame.length.should eql 50
-            right_frame.length.should eql 50
+          it "create a short encoder with configuration" do
+            Encoding::ShortBufferEncoder.should_receive(:new).with(configuration)
+
+            encoder.encode_short(left, right) { }
           end
 
-          encoder.encode_short(left, right) { }
+          it "delegates encoding to the short encoder" do
+            left.stub(:length => 100) # exactly framesize
+            short_encoder.should_receive(:encode_frame).with(left, right)
+
+            encoder.encode_short(left, right) { }
+          end
+
+          it "yields the encoder results" do
+            mp3_data = stub
+            short_encoder.stub(:encode_frame).and_return(mp3_data)
+
+            expect { |block|
+              encoder.encode_short(left, right, &block)
+            }.to yield_with_args(mp3_data)
+          end
+
+          it "delegates multiple times for large input" do
+            right = left = [0]*150 # larger than framesize
+
+            short_encoder.should_receive(:encode_frame) do |left_frame, right_frame|
+              left_frame.length.should eql 100
+              right_frame.length.should eql 100
+            end
+
+            short_encoder.should_receive(:encode_frame) do |left_frame, right_frame|
+              left_frame.length.should eql 50
+              right_frame.length.should eql 50
+            end
+
+            encoder.encode_short(left, right) { }
+          end
+
+          it "yields multiple times for large input" do
+            mp3_data1 = stub("frame1")
+            mp3_data2 = stub("frame2")
+
+            left = [0]*150 # larger than framesize
+
+            short_encoder.stub(:encode_frame).and_return(mp3_data1, mp3_data2)
+
+            expect { |block|
+              encoder.encode_short(left, right, &block)
+            }.to yield_successive_args(mp3_data1, mp3_data2)
+          end
         end
-
-        it "yields multiple times for large input" do
-          mp3_data1 = stub("frame1")
-          mp3_data2 = stub("frame2")
-
-          left = [0]*150 # larger than framesize
-
-          short_encoder.stub(:encode_frame).and_return(mp3_data1, mp3_data2)
-
-          expect { |block|
-            encoder.encode_short(left, right, &block)
-          }.to yield_successive_args(mp3_data1, mp3_data2)
-        end
-
       end
+
+      describe "#encode_float" do
+        it "create a float encoder" do
+          Encoding::FloatBufferEncoder.stub(:new).and_return(stub.as_null_object)
+          Encoding::FloatBufferEncoder.should_receive(:new).with(configuration)
+
+          encoder.encode_float(left, right) { }
+        end
+      end
+
+      describe "#encode_long" do
+        it "create a long encoder" do
+          Encoding::LongBufferEncoder.stub(:new).and_return(stub.as_null_object)
+          Encoding::LongBufferEncoder.should_receive(:new).with(configuration)
+
+          encoder.encode_long(left, right) { }
+        end
+      end
+
     end
 
     context "flushing" do

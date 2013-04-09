@@ -1,6 +1,12 @@
 module LAME
   class Encoder
 
+    STEREO_ENCODERS = {
+      :short => Encoding::ShortBufferEncoder,
+      :float => Encoding::FloatBufferEncoder,
+      :long => Encoding::LongBufferEncoder
+    }
+
     attr_reader :global_flags
 
     def initialize
@@ -12,13 +18,16 @@ module LAME
       apply_configuration
     end
 
-    def encode_short(left, right)
-      apply_configuration
+    def encode_short(left, right, &block)
+      encode_stereo(left, right, :short, &block)
+    end
 
-      each_frame(left, right) do |left_frame, right_frame|
-        mp3_data = Encoding::EncodeShortBuffer.new(configuration).encode_frame(left_frame, right_frame)
-        yield mp3_data
-      end
+    def encode_float(left, right, &block)
+      encode_stereo(left, right, :float, &block)
+    end
+
+    def encode_long(left, right, &block)
+      encode_stereo(left, right, :long, &block)
     end
 
     def flush(&block)
@@ -53,6 +62,15 @@ module LAME
 
     def apply_configuration
       configuration.apply! unless configuration.applied?
+    end
+
+    def encode_stereo(left, right, data_type)
+      apply_configuration
+
+      each_frame(left, right) do |left_frame, right_frame|
+        mp3_data = STEREO_ENCODERS[data_type].new(configuration).encode_frame(left_frame, right_frame)
+        yield mp3_data
+      end
     end
 
     def each_frame(left, right)
