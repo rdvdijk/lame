@@ -10,8 +10,9 @@ describe "Decoding", :slow => true do
     decoder = LAME::Decoder.new(mp3_file)
 
     format = WaveFile::Format.new(decoder.channel_mode, :pcm_16, decoder.sample_rate)
+    output = Tempfile.new('output.wav')
 
-    WaveFile::Writer.new("output1.wav", format) do |writer|
+    WaveFile::Writer.new(output.path, format) do |writer|
 
       decoder.each_decoded_frame do |decoded_frame|
         buffer = WaveFile::Buffer.new(decoded_frame.samples, format)
@@ -57,9 +58,11 @@ describe "Decoding", :slow => true do
       puts "framenum:    #{@mp3_data[:framenum]}"
     end
 
+    output = Tempfile.new('output.wav')
+
     # read mp3_data (number of frames etc)
     format = WaveFile::Format.new(:stereo, :pcm_16, 44100)
-    WaveFile::Writer.new("output2.wav", format) do |writer|
+    WaveFile::Writer.new(output.path, format) do |writer|
 
       # See get_audio.c:2082 #lame_decode_fromfile
       #
