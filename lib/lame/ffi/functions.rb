@@ -215,7 +215,21 @@ module LAME
         # closing
         attach_function :lame_close, [:global_flags], :int
 
-        # TODO: decoding
+        # decoding
+        typedef :pointer, :decode_flags
+        typedef :pointer, :mp3_data
+
+        attach_function :hip_decode_init, [], :decode_flags
+        attach_function :hip_decode_exit, [:decode_flags], :int
+        attach_function :hip_set_errorf,  [:decode_flags, :log_function], :void
+        attach_function :hip_set_debugf,  [:decode_flags, :log_function], :void
+        attach_function :hip_set_msgf,    [:decode_flags, :log_function], :void
+
+        attach_function :hip_decode,           [:decode_flags, :buffer_in, :size_t, :buffer_out, :buffer_out], :int
+        attach_function :hip_decode_headers,   [:decode_flags, :buffer_in, :size_t, :buffer_out, :buffer_out, :mp3_data], :int
+        attach_function :hip_decode1,          [:decode_flags, :buffer_in, :size_t, :buffer_out, :buffer_out], :int
+        attach_function :hip_decode1_headers,  [:decode_flags, :buffer_in, :size_t, :buffer_out, :buffer_out, :mp3_data], :int
+        attach_function :hip_decode1_headersB, [:decode_flags, :buffer_in, :size_t, :buffer_out, :buffer_out, :mp3_data, :pointer, :pointer], :int
 
         # id3
         callback :genre_callback, [:int, :string, :pointer], :void

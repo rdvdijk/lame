@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 module LAME
-  module Encoders
-    describe Short do
+  module Encoding
+    describe EncodeShortBuffer do
 
       # stubbing galore!
 
@@ -12,7 +12,7 @@ module LAME
       let(:global_flags) { stub }
       let(:configuration) { stub(Configuration, :global_flags => global_flags, :framesize => framesize, :output_buffer_size => 8640) }
 
-      subject(:encoder) { Short.new(configuration) }
+      subject(:encoder) { EncodeShortBuffer.new(configuration) }
 
       it "creates input buffers" do
         LAME.stub(:lame_encode_buffer).and_return(0)
