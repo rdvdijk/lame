@@ -24,9 +24,11 @@ describe "Decoding", :slow => true do
   end
 
   it "decodes an MP3 file" do
+    @debug = false
+
     # id3
     id3_length = id3_length(mp3_file)
-    puts "ID3 length: #{id3_length} bytes"
+    puts "ID3 length: #{id3_length} bytes" if @debug
     mp3_file.read(id3_length)
 
     # aid TODO (ignored for now)
@@ -34,7 +36,7 @@ describe "Decoding", :slow => true do
     # find MP3 sync frame
 
     mp3_offset = mpeg_audio_offset(mp3_file, id3_length)
-    puts "offset: #{mp3_offset}"
+    puts "offset: #{mp3_offset}" if @debug
 
     @decode_flags = LAME::FFI::DecodeFlags.new
     @mp3_data = LAME::FFI::MP3Data.new
@@ -46,7 +48,7 @@ describe "Decoding", :slow => true do
     end until @mp3_data.header_parsed?
 
     # Results:
-    if @mp3_data.header_parsed?
+    if @mp3_data.header_parsed? && @debug
       puts "stereo:      #{@mp3_data[:stereo]}"
       puts "samplerate:  #{@mp3_data[:samplerate]}"
       puts "bitrate:     #{@mp3_data[:bitrate]}"
@@ -95,7 +97,7 @@ describe "Decoding", :slow => true do
 
     result = LAME.hip_decode1_headersB(@decode_flags, in_buffer, size, out_left, out_right, @mp3_data, enc_delay, enc_padding)
 
-    if @mp3_data.header_parsed?
+    if @mp3_data.header_parsed? && @debug
       puts "header parsed @ #{mp3_file.pos}"
       puts "enc_delay:   #{enc_delay.read_array_of_int(1)}"
       puts "enc_padding: #{enc_padding.read_array_of_int(1)}"
@@ -151,7 +153,7 @@ describe "Decoding", :slow => true do
       in_data = mp3_file.read(window_size)
 
       if LAME::Decoding::MPEGAudioFrameMatcher.new(in_data).match?
-        puts "match offset @ #{offset} : #{in_data.bytes.to_a[0].to_s(2)} #{in_data.bytes.to_a[1].to_s(2)} #{in_data.bytes.to_a[2].to_s(2)} #{in_data.bytes.to_a[3].to_s(2)}"
+        puts "match offset @ #{offset} : #{in_data.bytes.to_a[0].to_s(2)} #{in_data.bytes.to_a[1].to_s(2)} #{in_data.bytes.to_a[2].to_s(2)} #{in_data.bytes.to_a[3].to_s(2)}" if @debug
         return offset
       end
 

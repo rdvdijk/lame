@@ -63,6 +63,30 @@ describe "Encoding", :slow => true do
     # Digest::MD5.hexdigest(File.read(mp3_path_api)).should eql "d1cd92c106e7aac4f5291fd141a19e10"
   end
 
+  it "encodes a file using interleaved api" do
+
+    encoder = LAME::Encoder.new
+
+    encoder.configure do |config|
+      config.bitrate = 192
+    end
+
+    File.open(mp3_path_api, "wb") do |file|
+
+      wav_reader.each_buffer(encoder.framesize) do |read_buffer|
+        encoder.encode_interleaved_short(read_buffer.samples.flatten) do |mp3|
+          file.write mp3
+        end
+      end
+      encoder.flush do |flush_frame|
+        file.write(flush_frame)
+      end
+    end
+
+    # TODO: Need a better way to test output..
+    # Digest::MD5.hexdigest(File.read(mp3_path_api)).should eql "d1cd92c106e7aac4f5291fd141a19e10"
+  end
+
   # This test serves as an example how to use the LAME API
   it "encodes a wav file" do
 

@@ -105,6 +105,15 @@ module LAME
 
         context "interleaved" do
 
+          context "short-buffer" do
+            let(:input_type) { :short }
+
+            it "encodes" do
+              return_code = LAME.lame_encode_buffer_interleaved(@flags_pointer, input_buffer_interleaved, input_buffer_size, output_buffer, output_buffer_size)
+              return_code.should >= 0
+            end
+          end
+
           context "ieee float-buffer" do
             let(:input_type) { :float }
 

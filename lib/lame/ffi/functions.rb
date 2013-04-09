@@ -182,7 +182,7 @@ module LAME
 
         # encoding
         attach_function :lame_encode_buffer,                         [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
-        attach_function :lame_encode_buffer_interleaved,             [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
+        attach_function :lame_encode_buffer_interleaved,             [:global_flags, :buffer_in,             :int, :buffer_out, :int], :int
         attach_function :lame_encode_buffer_float,                   [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
         attach_function :lame_encode_buffer_ieee_float,              [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
         attach_function :lame_encode_buffer_interleaved_ieee_float,  [:global_flags, :buffer_in,             :int, :buffer_out, :int],           :int
