@@ -4,9 +4,10 @@ require 'wavefile'
 
 describe "Encoding", :slow => true do
 
-  let(:wav_path) { File.expand_path(File.join(File.dirname(__FILE__), '../files/dies-irae.wav')) }
-  let(:mp3_path_raw) { File.expand_path(File.join(File.dirname(__FILE__), '../files/dies-irae-raw.mp3')) }
-  let(:mp3_path_api) { File.expand_path(File.join(File.dirname(__FILE__), '../files/dies-irae-api.mp3')) }
+  let(:wav_file) { WaveFileGenerator.new(:length => 2).generate }
+  let(:wav_path) { wav_file.path }
+  let(:mp3_path_raw) { Tempfile.new("output-raw.mp3") }
+  let(:mp3_path_api) { Tempfile.new("output-api.mp3") }
 
   let(:wav_reader) { WaveFile::Reader.new(wav_path) }
 
