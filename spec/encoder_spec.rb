@@ -54,6 +54,8 @@ module LAME
 
       let(:left) { [0] }
       let(:right) { [0] }
+      let(:samples) { [0,0] }
+
       let(:global_flags) { subject.global_flags }
       let(:configuration) { stub(Configuration, :framesize => 100) }
 
@@ -155,6 +157,91 @@ module LAME
           Encoding::LongBufferEncoder.should_receive(:new).with(configuration)
 
           encoder.encode_long(left, right) { }
+        end
+      end
+
+      describe "#encode_interleaved_short" do
+
+        before do
+          Encoding::InterleavedShortBufferEncoder.stub(:new).and_return(stub.as_null_object)
+        end
+
+        it "applies the configuration if not done already" do
+          configuration.stub(:applied?).and_return(false)
+          configuration.should_receive(:apply!)
+          encoder.encode_interleaved_short(samples) { }
+        end
+
+        it "does not apply the configuration if already applied" do
+          configuration.stub(:applied?).and_return(true)
+          configuration.should_not_receive(:apply!)
+          encoder.encode_interleaved_short(samples) { }
+        end
+
+        context "delegation" do
+          let(:interleaved_short_encoder) { stub.as_null_object }
+
+          before do
+            Encoding::InterleavedShortBufferEncoder.stub(:new).and_return(interleaved_short_encoder)
+          end
+
+          it "create a short encoder with configuration" do
+            Encoding::InterleavedShortBufferEncoder.should_receive(:new).with(configuration)
+
+            encoder.encode_interleaved_short(samples) { }
+          end
+
+          it "delegates encoding to the short encoder" do
+            samples.stub(:length => 200) # exactly framesize
+            interleaved_short_encoder.should_receive(:encode_frame).with(samples)
+
+            encoder.encode_interleaved_short(samples) { }
+          end
+
+          it "yields the encoder results" do
+            mp3_data = stub
+            interleaved_short_encoder.stub(:encode_frame).and_return(mp3_data)
+
+            expect { |block|
+              encoder.encode_interleaved_short(samples, &block)
+            }.to yield_with_args(mp3_data)
+          end
+
+          it "delegates multiple times for large input" do
+            samples = [0]*300 # larger than framesize
+
+            interleaved_short_encoder.should_receive(:encode_frame) do |samples|
+              samples.length.should eql 200
+            end
+
+            interleaved_short_encoder.should_receive(:encode_frame) do |samples|
+              samples.length.should eql 100
+            end
+
+            encoder.encode_interleaved_short(samples) { }
+          end
+
+          it "yields multiple times for large input" do
+            mp3_data1 = stub("frame1")
+            mp3_data2 = stub("frame2")
+
+            samples = [0]*300 # larger than framesize
+
+            interleaved_short_encoder.stub(:encode_frame).and_return(mp3_data1, mp3_data2)
+
+            expect { |block|
+              encoder.encode_interleaved_short(samples, &block)
+            }.to yield_successive_args(mp3_data1, mp3_data2)
+          end
+        end
+      end
+
+      describe "#encode_interleaved_float" do
+        it "create a float encoder" do
+          Encoding::InterleavedFloatBufferEncoder.stub(:new).and_return(stub.as_null_object)
+          Encoding::InterleavedFloatBufferEncoder.should_receive(:new).with(configuration)
+
+          encoder.encode_interleaved_float(samples) { }
         end
       end
 
