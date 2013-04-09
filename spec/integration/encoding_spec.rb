@@ -11,6 +11,58 @@ describe "Encoding", :slow => true do
 
   let(:wav_reader) { WaveFile::Reader.new(wav_path) }
 
+  it "encodes a file by api" do
+
+    encoder = LAME::Encoder.new
+
+    encoder.configure do |config|
+      config.id3.write_automatic = false
+      config.id3.v2 = true
+      config.id3.title = "Dies Irae"
+      config.id3.genre = "Classical"
+
+      #config.bitrate = 192
+
+      # config.preset = :V0 # doesn't work?
+      config.vbr.mode = :vbr_default
+      config.vbr.q = 0
+    end
+
+    File.open(mp3_path_api, "wb") do |file|
+
+      id3v2_size = 0
+      encoder.id3v2 do |tag|
+        file.write tag
+        id3v2_size = tag.size
+      end
+
+      wav_reader.each_buffer(encoder.framesize) do |read_buffer|
+        left  = read_buffer.samples.map { |s| s[0] }
+        right = read_buffer.samples.map { |s| s[1] }
+
+        encoder.encode_short(left, right) do |mp3|
+          file.write mp3
+        end
+      end
+      encoder.flush do |flush_frame|
+        file.write(flush_frame)
+      end
+
+      encoder.id3v1 do |tag|
+        file.write tag
+      end
+
+      encoder.vbr_frame do |vbr_frame|
+        file.seek(id3v2_size)
+        file.write(vbr_frame)
+      end
+
+    end
+
+    # TODO: Need a better way to test output..
+    # Digest::MD5.hexdigest(File.read(mp3_path_api)).should eql "d1cd92c106e7aac4f5291fd141a19e10"
+  end
+
   # This test serves as an example how to use the LAME API
   it "encodes a wav file" do
 
@@ -70,58 +122,6 @@ describe "Encoding", :slow => true do
 
     # TODO: Need a better way to test output..
     # Digest::MD5.hexdigest(File.read(mp3_path_raw)).should eql "84a1ce7994bb4a54fc13fb5381ebac40"
-  end
-
-  it "encodes a file by api" do
-
-    encoder = LAME::Encoder.new
-
-    encoder.configure do |config|
-      config.id3.write_automatic = false
-      config.id3.v2 = true
-      config.id3.title = "Dies Irae"
-      config.id3.genre = "Classical"
-
-      #config.bitrate = 192
-
-      # config.preset = :V0 # doesn't work?
-      config.vbr.mode = :vbr_default
-      config.vbr.q = 0
-    end
-
-    File.open(mp3_path_api, "wb") do |file|
-
-      id3v2_size = 0
-      encoder.id3v2 do |tag|
-        file.write tag
-        id3v2_size = tag.size
-      end
-
-      wav_reader.each_buffer(encoder.framesize) do |read_buffer|
-        left  = read_buffer.samples.map { |s| s[0] }
-        right = read_buffer.samples.map { |s| s[1] }
-
-        encoder.encode_short(left, right) do |mp3|
-          file.write mp3
-        end
-      end
-      encoder.flush do |flush_frame|
-        file.write(flush_frame)
-      end
-
-      encoder.id3v1 do |tag|
-        file.write tag
-      end
-
-      encoder.vbr_frame do |vbr_frame|
-        file.seek(id3v2_size)
-        file.write(vbr_frame)
-      end
-
-    end
-
-    # TODO: Need a better way to test output..
-    # Digest::MD5.hexdigest(File.read(mp3_path_api)).should eql "d1cd92c106e7aac4f5291fd141a19e10"
   end
 
 end

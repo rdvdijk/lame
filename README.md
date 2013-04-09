@@ -136,23 +136,13 @@ end
 
 ### Encoding
 
-TODO
+See `spec/integration/encoding_spec.rb` for an example how to encode a WAV file
+to an MP3 file.
 
 ### Decoding
 
-Check this link for a 'simple' example. Note that we need to deal with the
-ID3 tags ourselves before decoding MP3 frames.
-
-http://sourceforge.net/mailarchive/message.php?msg_id=26907120
-
-Analysis of `lame_decode_initfile` in `get_audio.c`:
-
-1. `hip_decode_init`
-2. Read ID3 tags, starting with "ID3"
-3. The length of the ID3 tag are at the start (right after "ID3")
-4. Optionally read the contents of the ID3 tag, or just skip it
-5. Check if there is a "AID" header, and skip it
-6. Read up until the first "mp123 syncword"
+See `spec/integration/decoding_spec.rb` for an example how to encode a WAV file
+to an MP3 file.
 
 ### Development
 
