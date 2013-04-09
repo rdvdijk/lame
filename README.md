@@ -141,8 +141,8 @@ to an MP3 file.
 
 ### Decoding
 
-See `spec/integration/decoding_spec.rb` for an example how to encode a WAV file
-to an MP3 file.
+See `spec/integration/decoding_spec.rb` for an example how to decode an MP3 file
+to an WAV file.
 
 ### Development
 
