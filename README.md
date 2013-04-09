@@ -146,6 +146,8 @@ to an MP3 file.
 
 ### Development
 
+This section contains some references used during development of this gem.
+
 #### ID3v2 tags
 
 To use ID3v2 tags in files, see this post on the `lame-dev` mailing list:
@@ -155,12 +157,42 @@ http://sourceforge.net/mailarchive/message.php?msg_id=18557283
 So:
 
 1. Disable automatic id3tag writing
-2. Write id3v2 tag at start of file (keep track of position)
+2. Write id3v2 tag at start of file (keep track of size of this tag)
 3. Write audio to file
 4. Write id3v1 tag at end of file
-5. Write vbr 'lametag' at start of audio (using position)
+5. Write vbr 'lametag' at start of audio (using the size of the id3v2 tag)
 
 See the example code in `spec/integration/encoding_spec.rb` for an example.
+
+#### Decoding
+
+Check this link for a 'simple' example. Note that we need to deal with the
+ID3 tags ourselves before decoding MP3 frames.
+
+http://sourceforge.net/mailarchive/message.php?msg_id=26907120
+
+Analysis of `lame_decode_initfile` in `get_audio.c`:
+
+1. `hip_decode_init`
+2. Read ID3 tags, starting with "ID3"
+3. The length of the ID3 tag are at the start (right after "ID3")
+4. Optionally read the contents of the ID3 tag, or just skip it
+5. Check if there is a "AID" header, and skip it
+6. Read up until the first "mp123 syncword"
+
+After this, we are ready to decode MP3 data.
+
+1. Check if there are some samples in the internal decoder by passing an empty
+   input-buffer into the decoder.
+2. If some decoded audio samples were indeed left in the internal decoder, do 
+   something useful with them.
+3. Repeat this until no audio is left in the internal buffer.
+4. Read some data from the file (starting at the "mp123 syncword") and feed it
+   to the decoder.
+5. Handle the decoded audio.
+6. Now repeat this process (`GOTO 1`) until the end of the MP3 file.
+
+See the example code in `spec/integration/decoding_spec.rb` for an example.
 
 ## Contributing
 
