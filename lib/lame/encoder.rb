@@ -1,15 +1,12 @@
 module LAME
   class Encoder
 
-    STEREO_ENCODERS = {
+    BUFFER_ENCODERS = {
       :short => Encoding::ShortBufferEncoder,
       :float => Encoding::FloatBufferEncoder,
-      :long => Encoding::LongBufferEncoder
-    }
-
-    INTERLEAVED_ENCODERS = {
-      :short => Encoding::InterleavedShortBufferEncoder,
-      :float => Encoding::InterleavedFloatBufferEncoder
+      :long  => Encoding::LongBufferEncoder,
+      :short_interleaved => Encoding::InterleavedShortBufferEncoder,
+      :float_interleaved => Encoding::InterleavedFloatBufferEncoder
     }
 
     attr_reader :global_flags
@@ -36,11 +33,11 @@ module LAME
     end
 
     def encode_interleaved_short(samples, &block)
-      encode_interleaved(samples, :short, &block)
+      encode_interleaved(samples, :short_interleaved, &block)
     end
 
     def encode_interleaved_float(samples, &block)
-      encode_interleaved(samples, :float, &block)
+      encode_interleaved(samples, :float_interleaved, &block)
     end
 
     def flush(&block)
@@ -81,7 +78,8 @@ module LAME
       apply_configuration
 
       each_frame(left, right) do |left_frame, right_frame|
-        mp3_data = STEREO_ENCODERS[data_type].new(configuration).encode_frame(left_frame, right_frame)
+        encoder = BUFFER_ENCODERS[data_type].new(configuration)
+        mp3_data = encoder.encode_frame(left_frame, right_frame)
         yield mp3_data
       end
     end
@@ -90,7 +88,8 @@ module LAME
       apply_configuration
 
       each_interleaved_frame(interleaved_samples) do |interleaved_frame|
-        mp3_data = INTERLEAVED_ENCODERS[data_type].new(configuration).encode_frame(interleaved_frame)
+        encoder = BUFFER_ENCODERS[data_type].new(configuration)
+        mp3_data = encoder.encode_frame(interleaved_frame)
         yield mp3_data
       end
     end
