@@ -158,6 +158,16 @@ end
 encoder.encode_long(left, right) do |mp3_frame|
   # ...
 end
+
+# encode interleaved shorts
+encoder.encode_interleaved_short(samples) do |mp3_frame|
+  # ...
+end
+
+# encode interleaved floats
+encoder.encode_interleaved_float(samples) do |mp3_frame|
+  # ...
+end
 ```
 
 The `left` and `right` are arrays of sample values for the given data type.
