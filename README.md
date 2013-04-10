@@ -56,27 +56,28 @@ See all encoding methods in the Encoding section below.
 
 ### Configuration
 
-(work in progress)
+Here are all the encoding configuration options. The values use here are the
+defaults. You can set any option prior to encoding.
 
 ```ruby
-# These are the defaults:
 encoder.configure do |config|
+  config.bitrate                     = 128
+  config.quality                     = 3
+  config.mode                        = :join_stereo
+
   config.number_of_samples           = 4294967295
-  config.input_samplerate            = 44100
   config.number_of_channels          = 2
+  config.input_samplerate            = 44100
+  config.output_samplerate           = 44100
   config.scale                       = 0.95
   config.scale_left                  = 1.0
   config.scale_left                  = 1.0
-  config.output_samplerate           = 44100
   config.analysis                    = false
   config.decode_only                 = false
-  config.quality                     = 3
-  config.mode                        = :join_stereo
   config.force_mid_side              = false
   config.free_format                 = false
   config.replay_gain                 = false
   config.decode_on_the_fly           = false
-  config.bitrate                     = 128
   config.preset                      = :EXTREME # no LAME default
   config.copyright                   = false
   config.original                    = true
@@ -91,17 +92,26 @@ encoder.configure do |config|
   config.emphasis                    = false
 
   # auto-detected by default
-  config.asm_optimization.mmx     = true
-  config.asm_optimization.amd3now = true
-  config.asm_optimization.sse     = true
+  config.asm_optimization.mmx       = true
+  config.asm_optimization.amd_3dnow = true
+  config.asm_optimization.sse       = true
 
-  # these values can't be "unset" once set to true
+  # these options can't be "unset" once set to true
   config.id3.v2              = false
   config.id3.v1_only         = false
   config.id3.v2_only         = false
   config.id3.v1_space        = false
   config.id3.v2_padding      = false
   config.id3.v2_padding_size = 128
+
+  config.id3.write_automatic = true
+  config.id3.title           = nil
+  config.id3.artist          = nil
+  config.id3.album           = nil
+  config.id3.year            = nil
+  config.id3.comment         = nil
+  config.id3.track           = nil
+  config.id3.genre           = nil
 
   config.quantization.reservoir      = true
   config.quantization.comp           = 9
