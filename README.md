@@ -138,8 +138,8 @@ end
 
 ### Encoding
 
-See `spec/integration/encoding_spec.rb` for an example how to encode a WAV file
-to an MP3 file.
+See [`encoding_spec.rb`](spec/integration/encoding_spec.rb) for examples how
+to encode a WAV file to an MP3 file.
 
 The available encoding functions are:
 
@@ -176,8 +176,8 @@ The `left` and `right` are arrays of sample values for the given data type.
 
 ### Decoding
 
-See `spec/integration/decoding_spec.rb` for an example how to decode an MP3 file
-to an WAV file.
+See [`decoding_spec.rb`](spec/integration/decoding_spec.rb) for examples how
+to decode an MP3 file to an WAV file.
 
 ### Development
 
@@ -197,7 +197,7 @@ So:
 4. Write id3v1 tag at end of file
 5. Write vbr 'lametag' at start of audio (using the size of the id3v2 tag)
 
-See the example code in `spec/integration/encoding_spec.rb` for an example.
+See the example code in [`encoding_spec.rb`](spec/integration/encoding_spec.rb).
 
 #### Decoding
 
@@ -227,7 +227,7 @@ After this, we are ready to decode MP3 data.
 5. Handle the decoded audio.
 6. Now repeat this process (`GOTO 1`) until the end of the MP3 file.
 
-See the example code in `spec/integration/decoding_spec.rb` for an example.
+See the example code in [`decoding_spec.rb`](spec/integration/decoding_spec.rb).
 
 ## Contributing
 
