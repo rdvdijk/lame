@@ -5,11 +5,33 @@ require 'wavefile'
 describe "Encoding", :slow => true do
 
   let(:wav_file) { WaveFileGenerator.new(:length => 2).generate }
-  let(:wav_path) { wav_file.path }
-  let(:mp3_path_raw) { Tempfile.new("output-raw.mp3") }
-  let(:mp3_path_api) { Tempfile.new("output-api.mp3") }
+  let(:mp3_raw) { Tempfile.new("output-raw.mp3") }
+  let(:mp3_api) { Tempfile.new("output-api.mp3") }
+  let(:mp3_api2) { Tempfile.new("output-api2.mp3") }
 
-  let(:wav_reader) { WaveFile::Reader.new(wav_path) }
+  let(:wav_reader) { WaveFile::Reader.new(wav_file.path) }
+
+  let(:debug) { false }
+
+  it "encodes using the file-encoder" do
+    file_encoder = LAME::FileEncoder.new
+
+    file_encoder.configure do |config|
+      config.id3.write_automatic = false
+      config.id3.v2 = true
+      config.id3.title = "Sine wave"
+      config.id3.genre = "Classical"
+
+      config.vbr.mode = :vbr_default
+      config.vbr.q = 0
+    end
+
+    file_encoder.encode(wav_file.path, mp3_api2.path)
+
+    mp3_api2.size.should > 0
+
+    puts Digest::MD5.hexdigest(File.read(mp3_api2.path)) if debug
+  end
 
   it "encodes a file by api" do
 
@@ -18,7 +40,7 @@ describe "Encoding", :slow => true do
     encoder.configure do |config|
       config.id3.write_automatic = false
       config.id3.v2 = true
-      config.id3.title = "Dies Irae"
+      config.id3.title = "Sine wave"
       config.id3.genre = "Classical"
 
       #config.bitrate = 192
@@ -28,7 +50,7 @@ describe "Encoding", :slow => true do
       config.vbr.q = 0
     end
 
-    File.open(mp3_path_api, "wb") do |file|
+    File.open(mp3_api, "wb") do |file|
 
       id3v2_size = 0
       encoder.id3v2 do |tag|
@@ -59,8 +81,12 @@ describe "Encoding", :slow => true do
 
     end
 
+    mp3_api.size.should > 0
+
+    puts Digest::MD5.hexdigest(File.read(mp3_api.path)) if debug
+
     # TODO: Need a better way to test output..
-    # Digest::MD5.hexdigest(File.read(mp3_path_api)).should eql "d1cd92c106e7aac4f5291fd141a19e10"
+    # Digest::MD5.hexdigest(File.read(mp3_api)).should eql "d1cd92c106e7aac4f5291fd141a19e10"
   end
 
   it "encodes a file using interleaved api" do
@@ -71,7 +97,7 @@ describe "Encoding", :slow => true do
       config.bitrate = 192
     end
 
-    File.open(mp3_path_api, "wb") do |file|
+    File.open(mp3_api, "wb") do |file|
 
       wav_reader.each_buffer(encoder.framesize) do |read_buffer|
         encoder.encode_interleaved_short(read_buffer.samples.flatten) do |mp3|
@@ -84,7 +110,7 @@ describe "Encoding", :slow => true do
     end
 
     # TODO: Need a better way to test output..
-    # Digest::MD5.hexdigest(File.read(mp3_path_api)).should eql "d1cd92c106e7aac4f5291fd141a19e10"
+    # Digest::MD5.hexdigest(File.read(mp3_api)).should eql "d1cd92c106e7aac4f5291fd141a19e10"
   end
 
   # This test serves as an example how to use the LAME API
@@ -108,7 +134,7 @@ describe "Encoding", :slow => true do
     buffer_size = (128*1024)+16384
     buffer = ::FFI::MemoryPointer.new(:uchar, buffer_size)
 
-    File.open(mp3_path_raw, "wb") do |file|
+    File.open(mp3_raw, "wb") do |file|
       wav_reader.each_buffer(framesize) do |read_buffer|
 
         # read samples (ranges from -32k to +32k)
@@ -145,7 +171,7 @@ describe "Encoding", :slow => true do
     LAME.lame_close(flags_pointer)
 
     # TODO: Need a better way to test output..
-    # Digest::MD5.hexdigest(File.read(mp3_path_raw)).should eql "84a1ce7994bb4a54fc13fb5381ebac40"
+    # Digest::MD5.hexdigest(File.read(mp3_raw)).should eql "84a1ce7994bb4a54fc13fb5381ebac40"
   end
 
 end
