@@ -1,20 +1,20 @@
 class WaveFileGenerator
-  attr_accessor :mode, :bits, :bitrate, :length, :hertz
+  attr_accessor :mode, :bits, :sample_rate, :length, :hertz
 
   def initialize(options = {})
-    @mode    = options[:mode]   || :stereo
-    @bits    = options[:bits]   || 16
-    @bitrate = options[:bitate] || 44100
-    @length  = options[:length] || 1
-    @hertz   = options[:hertz]  || 440
+    @mode        = options[:mode]   || :stereo
+    @bits        = options[:bits]   || 16
+    @sample_rate = options[:sample_rate] || 44100
+    @length      = options[:length] || 1
+    @hertz       = options[:hertz]  || 440
   end
 
   def generate
     wav_file = Tempfile.new('sine.wav')
 
-    format = WaveFile::Format.new(mode, pcm_type, bitrate)
+    format = WaveFile::Format.new(mode, pcm_type, sample_rate)
     WaveFile::Writer.new(wav_file.path, format) do |writer|
-      samples = (0...bitrate*length).map do |offset|
+      samples = (0...sample_rate*length).map do |offset|
         sample = (Math.sin((Math::PI*2 / scale) * offset) * max).round
         [sample, sample]
       end
@@ -31,7 +31,7 @@ class WaveFileGenerator
   end
 
   def scale
-    bitrate / hertz
+    sample_rate / hertz
   end
 
   def pcm_type
