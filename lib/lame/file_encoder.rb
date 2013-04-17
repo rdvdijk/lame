@@ -1,3 +1,5 @@
+require 'wavefile'
+
 module LAME
   class FileEncoder < Encoder
 
@@ -7,17 +9,16 @@ module LAME
     end
 
     def encode(input_file, output_file)
+      apply_configuration
+
       @wav_file = input_file
+      @mp3_file = output_file
 
-      File.open(output_file, "wb") do |mp3_file|
-        @mp3_file = mp3_file
-
-        write_id3v2_tag if id3v2?
-        write_mp3_frames
-        flush_mp3_frame
-        write_id3v1_tag if id3v1?
-        write_vbr_frame if vbr?
-      end
+      write_id3v2_tag if id3v2?
+      write_mp3_frames
+      flush_mp3_frame
+      write_id3v1_tag if id3v1?
+      write_vbr_frame if vbr?
     end
 
     private
@@ -60,17 +61,14 @@ module LAME
     end
 
     def id3v1?
-      return true
       configuration.id3v1?
     end
 
     def id3v2?
-      return true
       configuration.id3v2?
     end
 
     def vbr?
-      return true
       configuration.vbr?
     end
 

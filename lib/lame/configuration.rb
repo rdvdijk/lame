@@ -81,6 +81,18 @@ module LAME
       @psycho_acoustics ||= PsychoAcoustics.new(global_flags)
     end
 
+    def id3v1?
+      false
+    end
+
+    def id3v2?
+      false
+    end
+
+    def vbr?
+      false
+    end
+
     class AsmOptimization < ConfigurationBase
       def mmx=(value)
         LAME.lame_set_asm_optimizations(global_flags, :MMX, boolean_to_int(value))
