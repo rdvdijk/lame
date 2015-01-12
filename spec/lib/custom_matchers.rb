@@ -56,7 +56,7 @@ RSpec::Matchers.define :have_getter do |expected|
       has_value?(actual, expected)
   end
 
-  failure_message_for_should do |actual|
+  failure_message do |actual|
     if !has_getter?(actual, expected)
       "expected that #{actual} would have a getter for field :#{expected}"
     elsif @value && !has_value?(actual, expected)
@@ -83,7 +83,7 @@ RSpec::Matchers.define :delegate do |from|
   end
 
   def delegates_setter?
-    LAME.should_receive(:"lame_set_#{target}").with(subject.global_flags, anything)
+    expect(LAME).to receive(:"lame_set_#{target}").with(subject.global_flags, anything)
     subject.send(:"#{from}=", double)
     true
   rescue => e
@@ -92,7 +92,7 @@ RSpec::Matchers.define :delegate do |from|
   end
 
   def delegates_getter?
-    LAME.should_receive(:"lame_get_#{target}").with(subject.global_flags)
+    expect(LAME).to receive(:"lame_get_#{target}").with(subject.global_flags)
     subject.send(:"#{from}")
     true
   rescue => e
@@ -100,7 +100,7 @@ RSpec::Matchers.define :delegate do |from|
     false
   end
 
-  failure_message_for_should do |actual|
+  failure_message do |actual|
     "expected #{subject.class} to delegate :#{from} to LAME.lame_set_#{target}"
   end
 

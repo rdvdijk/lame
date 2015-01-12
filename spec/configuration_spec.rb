@@ -4,84 +4,84 @@ module LAME
   describe Configuration do
 
     context "intialization" do
-      let(:global_flags) { stub }
+      let(:global_flags) { double("global_flags") }
 
       subject(:configuration) { Configuration.new(global_flags) }
 
       it "initializes with global flags" do
-        configuration.global_flags.should eql global_flags
+        expect(configuration.global_flags).to eql global_flags
       end
 
       it "initializes a AsmOptimization configuration object" do
-        Configuration::AsmOptimization.should_receive(:new).with(global_flags)
+        expect(Configuration::AsmOptimization).to receive(:new).with(global_flags)
         configuration.asm_optimization
       end
 
       it "memoizes one AsmOptimization configuration object" do
-        Configuration::AsmOptimization.stub(:new).and_return(stub)
-        Configuration::AsmOptimization.should_receive(:new).exactly(:once)
+        allow(Configuration::AsmOptimization).to receive(:new).and_return(double)
+        expect(Configuration::AsmOptimization).to receive(:new).exactly(:once)
         2.times { configuration.asm_optimization }
       end
 
       it "initializes a Id3 configuration object" do
-        Configuration::Id3.should_receive(:new).with(global_flags)
+        expect(Configuration::Id3).to receive(:new).with(global_flags)
         configuration.id3
       end
 
       it "memoizes one Id3 configuration object" do
-        Configuration::Id3.stub(:new).and_return(stub)
-        Configuration::Id3.should_receive(:new).exactly(:once)
+        allow(Configuration::Id3).to receive(:new).and_return(double)
+        expect(Configuration::Id3).to receive(:new).exactly(:once)
         2.times { configuration.id3 }
       end
 
       it "initializes a Quantization configuration object" do
-        Configuration::Quantization.should_receive(:new).with(global_flags)
+        expect(Configuration::Quantization).to receive(:new).with(global_flags)
         configuration.quantization
       end
 
       it "memoizes one Quantization configuration object" do
-        Configuration::Quantization.stub(:new).and_return(stub)
-        Configuration::Quantization.should_receive(:new).exactly(:once)
+        allow(Configuration::Quantization).to receive(:new).and_return(double)
+        expect(Configuration::Quantization).to receive(:new).exactly(:once)
         2.times { configuration.quantization }
       end
 
       it "initializes a VBR configuration object" do
-        Configuration::VBR.should_receive(:new).with(global_flags)
+        expect(Configuration::VBR).to receive(:new).with(global_flags)
         configuration.vbr
       end
 
       it "memoizes one VBR configuration object" do
-        Configuration::VBR.stub(:new).and_return(stub)
-        Configuration::VBR.should_receive(:new).exactly(:once)
+        allow(Configuration::VBR).to receive(:new).and_return(double)
+        expect(Configuration::VBR).to receive(:new).exactly(:once)
         2.times { configuration.vbr }
       end
 
       it "initializes a Filtering configuration object" do
-        Configuration::Filtering.should_receive(:new).with(global_flags)
+        expect(Configuration::Filtering).to receive(:new).with(global_flags)
         configuration.filtering
       end
 
       it "memoizes one Filtering configuration object" do
-        Configuration::Filtering.stub(:new).and_return(stub)
-        Configuration::Filtering.should_receive(:new).exactly(:once)
+        allow(Configuration::Filtering).to receive(:new).and_return(double)
+        expect(Configuration::Filtering).to receive(:new).exactly(:once)
         2.times { configuration.filtering }
       end
 
       it "initializes a PsychoAcoustics configuration object" do
-        Configuration::PsychoAcoustics.should_receive(:new).with(global_flags)
+        expect(Configuration::PsychoAcoustics).to receive(:new).with(global_flags)
         configuration.psycho_acoustics
       end
 
       it "memoizes one PsychoAcoustics configuration object" do
-        Configuration::PsychoAcoustics.stub(:new).and_return(stub)
-        Configuration::PsychoAcoustics.should_receive(:new).exactly(:once)
+        allow(Configuration::PsychoAcoustics).to receive(:new).and_return(double)
+        expect(Configuration::PsychoAcoustics).to receive(:new).exactly(:once)
         2.times { configuration.psycho_acoustics }
       end
 
       context "Id3" do
 
         it "initializes the Id3 tag" do
-          LAME.should_receive(:id3tag_init).with(global_flags)
+          expect(LAME).to receive(:id3tag_init).with(global_flags)
           Configuration::Id3.new(global_flags)
         end
 
@@ -89,17 +89,17 @@ module LAME
 
       describe "#apply! / #applied?" do
         it "is not applied by default" do
-          configuration.should_not be_applied
+          expect(configuration).not_to be_applied
         end
 
         it "applies the configuration" do
-          LAME.should_receive(:lame_init_params).with(global_flags)
+          expect(LAME).to receive(:lame_init_params).with(global_flags)
           configuration.apply!
-          configuration.should be_applied
+          expect(configuration).to be_applied
         end
 
         it "raises an error if configuration could not be applied" do
-          LAME.stub(:lame_init_params).and_return(-1)
+          allow(LAME).to receive(:lame_init_params).and_return(-1)
           expect {
             configuration.apply!
           }.to raise_error(ConfigurationError)
@@ -109,12 +109,12 @@ module LAME
       describe "#framesize" do
 
         it "gets framesize from LAME if configuration was applied" do
-          LAME.stub(:lame_init_params)
+          allow(LAME).to receive(:lame_init_params)
           configuration.apply!
 
-          LAME.stub(:lame_get_framesize).and_return(42)
-          LAME.should_receive(:lame_get_framesize).with(global_flags)
-          configuration.framesize.should eql 42
+          allow(LAME).to receive(:lame_get_framesize).and_return(42)
+          expect(LAME).to receive(:lame_get_framesize).with(global_flags)
+          expect(configuration.framesize).to eql 42
         end
 
         it "raises an error if configuration was not applied" do
@@ -124,12 +124,12 @@ module LAME
         end
 
         it "calculates the output buffer size based on the framesize" do
-          LAME.stub(:lame_init_params)
+          allow(LAME).to receive(:lame_init_params)
           configuration.apply!
 
-          LAME.stub(:lame_get_framesize).and_return(1152)
-          LAME.should_receive(:lame_get_framesize).with(global_flags)
-          configuration.output_buffer_size.should eql 8640
+          allow(LAME).to receive(:lame_get_framesize).and_return(1152)
+          expect(LAME).to receive(:lame_get_framesize).with(global_flags)
+          expect(configuration.output_buffer_size).to eql 8640
         end
 
       end
@@ -148,7 +148,7 @@ module LAME
     # 
     context "set/get delegation" do
 
-      let(:global_flags) { stub(GlobalFlags) }
+      let(:global_flags) { double(GlobalFlags) }
       subject(:configuration) { Configuration.new(global_flags) }
 
       context "basic fields" do
@@ -183,8 +183,8 @@ module LAME
         it { should delegate(:emphasis) }
 
         it "delegates #preset= to LAME.lame_set_preset" do
-          LAME.should_receive(:lame_set_preset).with(global_flags, anything)
-          configuration.preset = stub
+          expect(LAME).to receive(:lame_set_preset).with(global_flags, anything)
+          configuration.preset = double
         end
 
       end
@@ -193,17 +193,17 @@ module LAME
         subject(:asm_optimization) { configuration.asm_optimization }
 
         it "delegates #mmx to LAME.lame_set_asm_optimizations" do
-          LAME.should_receive(:lame_set_asm_optimizations).with(global_flags, :MMX, 1)
+          expect(LAME).to receive(:lame_set_asm_optimizations).with(global_flags, :MMX, 1)
           asm_optimization.mmx = true
         end
 
         it "delegates #amd_3dnow to LAME.lame_set_asm_optimizations" do
-          LAME.should_receive(:lame_set_asm_optimizations).with(global_flags, :AMD_3DNOW, 1)
+          expect(LAME).to receive(:lame_set_asm_optimizations).with(global_flags, :AMD_3DNOW, 1)
           asm_optimization.amd_3dnow = true
         end
 
         it "delegates #sse to LAME.lame_set_asm_optimizations" do
-          LAME.should_receive(:lame_set_asm_optimizations).with(global_flags, :SSE, 1)
+          expect(LAME).to receive(:lame_set_asm_optimizations).with(global_flags, :SSE, 1)
           asm_optimization.sse = true
         end
       end
@@ -215,37 +215,37 @@ module LAME
         it { should delegate(:write_automatic).to(:write_id3tag_automatic) }
 
         before do
-          LAME.stub(:id3tag_init)
+          allow(LAME).to receive(:id3tag_init)
         end
 
         it "delegates #v2= to LAME.id3tag_add_v2" do
-          LAME.should_receive(:id3tag_add_v2).with(global_flags)
+          expect(LAME).to receive(:id3tag_add_v2).with(global_flags)
           id3.v2 = true
         end
 
         it "delegates #v1_only= to LAME.id3tag_v1_only" do
-          LAME.should_receive(:id3tag_v1_only).with(global_flags)
+          expect(LAME).to receive(:id3tag_v1_only).with(global_flags)
           id3.v1_only = true
         end
 
         it "delegates #v2_only= to LAME.id3tag_v2_only" do
-          LAME.should_receive(:id3tag_v2_only).with(global_flags)
+          expect(LAME).to receive(:id3tag_v2_only).with(global_flags)
           id3.v2_only = true
         end
 
         it "delegates #v1_space= to LAME.id3tag_v1_space" do
-          LAME.should_receive(:id3tag_space_v1).with(global_flags)
+          expect(LAME).to receive(:id3tag_space_v1).with(global_flags)
           id3.v1_space = true
         end
 
         it "delegates #v2_padding= to LAME.id3tag_pad_v2" do
-          LAME.should_receive(:id3tag_pad_v2).with(global_flags)
+          expect(LAME).to receive(:id3tag_pad_v2).with(global_flags)
           id3.v2_padding = true
         end
 
         it "delegates #v2_padding_size= to LAME.id3tag_set_pad" do
-          value = stub
-          LAME.should_receive(:id3tag_set_pad).with(global_flags, value)
+          value = double
+          expect(LAME).to receive(:id3tag_set_pad).with(global_flags, value)
           id3.v2_padding_size = value
         end
 
@@ -253,10 +253,10 @@ module LAME
         [ :title, :artist, :album, :year, :comment ].each do |field|
 
           it "sets the #{field} with string buffer" do
-            LAME.should_receive(:"id3tag_set_#{field}") do |flags, string_buffer|
-              flags.should eql global_flags
-              string_buffer.should be_a(::FFI::MemoryPointer)
-              string_buffer.get_string(0).should eql "Some #{field}"
+            expect(LAME).to receive(:"id3tag_set_#{field}") do |flags, string_buffer|
+              expect(flags).to eql global_flags
+              expect(string_buffer).to be_a(::FFI::MemoryPointer)
+              expect(string_buffer.get_string(0)).to eql "Some #{field}"
             end
             id3.send(:"#{field}=", "Some #{field}")
           end
@@ -264,37 +264,37 @@ module LAME
         end
 
         it "sets the track" do
-          LAME.should_receive(:"id3tag_set_track") do |flags, value|
-            flags.should eql global_flags
-            value.should eql 42
+          expect(LAME).to receive(:"id3tag_set_track") do |flags, value|
+            expect(flags).to eql global_flags
+            expect(value).to eql 42
           end
           id3.track = 42
         end
 
         it "sets the genre by name" do
-          LAME.should_receive(:id3tag_set_genre) do |flags, value|
-            flags.should eql global_flags
-            value.should be_a(::FFI::MemoryPointer)
-            value.get_string(0).should eql "147"
+          expect(LAME).to receive(:id3tag_set_genre) do |flags, value|
+            expect(flags).to eql global_flags
+            expect(value).to be_a(::FFI::MemoryPointer)
+            expect(value.get_string(0)).to eql "147"
           end
           id3.genre = "SynthPop"
         end
 
         it "sets the genre by id" do
-          LAME.should_receive(:id3tag_set_genre) do |flags, value|
-            flags.should eql global_flags
-            value.should be_a(::FFI::MemoryPointer)
-            value.get_string(0).should eql "81"
+          expect(LAME).to receive(:id3tag_set_genre) do |flags, value|
+            expect(flags).to eql global_flags
+            expect(value).to be_a(::FFI::MemoryPointer)
+            expect(value.get_string(0)).to eql "81"
           end
 
           id3.genre = 81
         end
 
         it "sets non-standard genre name" do
-          LAME.should_receive(:id3tag_set_genre) do |flags, value|
-            flags.should eql global_flags
-            value.should be_a(::FFI::MemoryPointer)
-            value.get_string(0).should eql "Ruby FFI Rock"
+          expect(LAME).to receive(:id3tag_set_genre) do |flags, value|
+            expect(flags).to eql global_flags
+            expect(value).to be_a(::FFI::MemoryPointer)
+            expect(value.get_string(0)).to eql "Ruby FFI Rock"
           end
           id3.genre = "Ruby FFI Rock"
         end
@@ -312,23 +312,23 @@ module LAME
         it { should delegate(:msfix) }
 
         it "delegates #reservoir= to LAME.lame_set_disable_reservoir" do
-          LAME.should_receive(:lame_set_disable_reservoir).with(global_flags, 1)
+          expect(LAME).to receive(:lame_set_disable_reservoir).with(global_flags, 1)
           quantization.reservoir = false
         end
 
         it "delegates #reservoir to LAME.lame_get_disable_reservoir" do
-          LAME.should_receive(:lame_get_disable_reservoir).with(global_flags)
+          expect(LAME).to receive(:lame_get_disable_reservoir).with(global_flags)
           quantization.reservoir
         end
 
         it "delegates #reservoir? to LAME.lame_get_disable_reservoir" do
-          LAME.should_receive(:lame_get_disable_reservoir).with(global_flags)
+          expect(LAME).to receive(:lame_get_disable_reservoir).with(global_flags)
           quantization.reservoir?
         end
 
         it "converts the return value 0 for #reservoir? to false" do
-          LAME.stub(:lame_get_disable_reservoir).and_return(0)
-          quantization.reservoir?.should be_false
+          allow(LAME).to receive(:lame_get_disable_reservoir).and_return(0)
+          expect(quantization.reservoir?).to be_falsy
         end
       end
 
@@ -365,23 +365,23 @@ module LAME
         it { should delegate(:athaa_sensitivity) }
 
         it "delegates #ath= to LAME.lame_set_noATH" do
-          LAME.should_receive(:lame_set_noATH).with(global_flags, 1)
+          expect(LAME).to receive(:lame_set_noATH).with(global_flags, 1)
           psycho_acoustics.ath = false
         end
 
         it "delegates #ath to LAME.lame_get_noATH" do
-          LAME.should_receive(:lame_get_noATH).with(global_flags)
+          expect(LAME).to receive(:lame_get_noATH).with(global_flags)
           psycho_acoustics.ath
         end
 
         it "delegates #ath? to LAME.lame_get_noATH" do
-          LAME.should_receive(:lame_get_noATH).with(global_flags)
+          expect(LAME).to receive(:lame_get_noATH).with(global_flags)
           psycho_acoustics.ath?
         end
 
         it "converts the return value 0 for #ath? to true" do
-          LAME.stub(:lame_get_noATH).and_return(0)
-          psycho_acoustics.ath?.should be_true
+          allow(LAME).to receive(:lame_get_noATH).and_return(0)
+          expect(psycho_acoustics.ath?).to be_truthy
         end
       end
 
