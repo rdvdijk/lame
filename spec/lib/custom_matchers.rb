@@ -83,7 +83,7 @@ RSpec::Matchers.define :delegate do |from|
   end
 
   def delegates_setter?
-    LAME.should_receive(:"lame_set_#{target}").with(subject.global_flags, anything)
+    expect(LAME).to receive(:"lame_set_#{target}").with(subject.global_flags, anything)
     subject.send(:"#{from}=", double)
     true
   rescue => e
@@ -92,7 +92,7 @@ RSpec::Matchers.define :delegate do |from|
   end
 
   def delegates_getter?
-    LAME.should_receive(:"lame_get_#{target}").with(subject.global_flags)
+    expect(LAME).to receive(:"lame_get_#{target}").with(subject.global_flags)
     subject.send(:"#{from}")
     true
   rescue => e
