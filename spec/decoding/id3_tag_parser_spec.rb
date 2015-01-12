@@ -21,13 +21,13 @@ module LAME
 
           it "seeks the file until after the id3 tag" do
             parser.skip!
-            stream.pos.should eql 351
+            expect(stream.pos).to eql 351
           end
 
           it "start from the start of the stream" do
             stream.seek(42)
             parser.skip!
-            stream.pos.should eql 351
+            expect(stream.pos).to eql 351
           end
         end
 
@@ -43,7 +43,7 @@ module LAME
 
           it "does not seek the stream if no header is present" do
             parser.skip!
-            stream.pos.should eql 0
+            expect(stream.pos).to eql 0
           end
         end
 

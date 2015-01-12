@@ -8,17 +8,17 @@ module LAME
 
       it "is stereo for two channels" do
         mp3_data[:stereo] = 2
-        mp3_data.channel_mode.should eql :stereo
+        expect(mp3_data.channel_mode).to eql :stereo
       end
 
       it "is mono for one channel" do
         mp3_data[:stereo] = 1
-        mp3_data.channel_mode.should eql :mono
+        expect(mp3_data.channel_mode).to eql :mono
       end
 
       it "has a sample rate" do
         mp3_data[:samplerate] = 44100
-        mp3_data.sample_rate.should eql 44100
+        expect(mp3_data.sample_rate).to eql 44100
       end
 
     end
