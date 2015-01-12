@@ -14,11 +14,11 @@ module LAME
     context "initialization" do
 
       it "initializes the parameters" do
-        LAME.lame_init_params(@flags_pointer).should eql 0
+        expect(LAME.lame_init_params(@flags_pointer)).to eql 0
       end
 
       it "inits the bitstream" do
-        LAME.lame_init_bitstream(@flags_pointer).should eql 0
+        expect(LAME.lame_init_bitstream(@flags_pointer)).to eql 0
       end
 
     end
@@ -45,7 +45,7 @@ module LAME
 
           it "encodes" do
             return_code = LAME.lame_encode_buffer(@flags_pointer, input_buffer_left, input_buffer_right, input_buffer_size, output_buffer, output_buffer_size)
-            return_code.should >= 0
+            expect(return_code).to be >= 0
           end
         end
 
@@ -54,7 +54,7 @@ module LAME
 
           it "encodes" do
             return_code = LAME.lame_encode_buffer_float(@flags_pointer, input_buffer_left, input_buffer_right, input_buffer_size, output_buffer, output_buffer_size)
-            return_code.should >= 0
+            expect(return_code).to be >= 0
           end
         end
 
@@ -63,7 +63,7 @@ module LAME
 
           it "encodes" do
             return_code = LAME.lame_encode_buffer_ieee_float(@flags_pointer, input_buffer_left, input_buffer_right, input_buffer_size, output_buffer, output_buffer_size)
-            return_code.should >= 0
+            expect(return_code).to be >= 0
           end
         end
 
@@ -72,7 +72,7 @@ module LAME
 
           it "encodes" do
             return_code = LAME.lame_encode_buffer_ieee_double(@flags_pointer, input_buffer_left, input_buffer_right, input_buffer_size, output_buffer, output_buffer_size)
-            return_code.should >= 0
+            expect(return_code).to be >= 0
           end
         end
 
@@ -81,7 +81,7 @@ module LAME
 
           it "encodes" do
             return_code = LAME.lame_encode_buffer_long(@flags_pointer, input_buffer_left, input_buffer_right, input_buffer_size, output_buffer, output_buffer_size)
-            return_code.should >= 0
+            expect(return_code).to be >= 0
           end
         end
 
@@ -90,7 +90,7 @@ module LAME
 
           it "encodes" do
             return_code = LAME.lame_encode_buffer_long2(@flags_pointer, input_buffer_left, input_buffer_right, input_buffer_size, output_buffer, output_buffer_size)
-            return_code.should >= 0
+            expect(return_code).to be >= 0
           end
         end
 
@@ -99,7 +99,7 @@ module LAME
 
           it "encodes" do
             return_code = LAME.lame_encode_buffer_int(@flags_pointer, input_buffer_left, input_buffer_right, input_buffer_size, output_buffer, output_buffer_size)
-            return_code.should >= 0
+            expect(return_code).to be >= 0
           end
         end
 
@@ -110,7 +110,7 @@ module LAME
 
             it "encodes" do
               return_code = LAME.lame_encode_buffer_interleaved(@flags_pointer, input_buffer_interleaved, input_buffer_size, output_buffer, output_buffer_size)
-              return_code.should >= 0
+              expect(return_code).to be >= 0
             end
           end
 
@@ -119,7 +119,7 @@ module LAME
 
             it "encodes" do
               return_code = LAME.lame_encode_buffer_interleaved_ieee_float(@flags_pointer, input_buffer_interleaved, input_buffer_size, output_buffer, output_buffer_size)
-              return_code.should >= 0
+              expect(return_code).to be >= 0
             end
           end
 
@@ -128,7 +128,7 @@ module LAME
 
             it "encodes" do
               return_code = LAME.lame_encode_buffer_interleaved_ieee_double(@flags_pointer, input_buffer_interleaved, input_buffer_size, output_buffer, output_buffer_size)
-              return_code.should >= 0
+              expect(return_code).to be >= 0
             end
           end
 
@@ -140,14 +140,14 @@ module LAME
         let(:input_type) { :short }
 
         it "flushes" do
-          LAME.lame_encode_flush(@flags_pointer, output_buffer, output_buffer_size).should be >= 0
+          expect(LAME.lame_encode_flush(@flags_pointer, output_buffer, output_buffer_size)).to be >= 0
         end
 
         it "flushes nogap" do
           # encode something so the flush doesn't give an error
           LAME.lame_encode_buffer(@flags_pointer, input_buffer_left, input_buffer_right, input_buffer_size, output_buffer, output_buffer_size)
 
-          LAME.lame_encode_flush_nogap(@flags_pointer, output_buffer, output_buffer_size).should >= 0
+          expect(LAME.lame_encode_flush_nogap(@flags_pointer, output_buffer, output_buffer_size)).to be >= 0
         end
       end
 
@@ -165,7 +165,7 @@ module LAME
 
           frame_size = LAME.lame_get_lametag_frame(@flags_pointer, output_buffer, output_buffer_size)
           #p output_buffer.get_bytes(0, frame_size)
-          frame_size.should eql 417
+          expect(frame_size).to eql 417
         end
       end
 
@@ -182,7 +182,7 @@ module LAME
 
           bitrate_count = bitrate_count_ptr.read_array_of_int(14)
           # 9th = 128 (see below)
-          bitrate_count.should eql [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+          expect(bitrate_count).to eql [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
         end
 
         it "has bitrate kbps" do
@@ -191,7 +191,7 @@ module LAME
 
           bitrate_kbps = bitrate_kbps_ptr.read_array_of_int(14)
           # 9th = 128 (see bitrate table, without 0)
-          bitrate_kbps.should eql [32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320]
+          expect(bitrate_kbps).to eql [32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320]
         end
 
         it "has stereo mode hist" do
@@ -200,11 +200,11 @@ module LAME
 
           stereo_mode_hist = stereo_mode_hist_ptr.read_array_of_int(4)
           # see lame.h for meaning
-          stereo_mode_hist.should eql [0, 0, 1, 0]
+          expect(stereo_mode_hist).to eql [0, 0, 1, 0]
         end
 
         it "has bitrate stereo mode hist" do
-          pending "multi-dimensional array"
+          skip "multi-dimensional array"
         end
 
         it "has block type hist" do
@@ -213,17 +213,17 @@ module LAME
 
           block_type_hist = block_type_hist_ptr.read_array_of_int(6)
           # see lame.h for meaning
-          block_type_hist.should eql [4, 0, 0, 0, 0, 4]
+          expect(block_type_hist).to eql [4, 0, 0, 0, 0, 4]
         end
 
         it "has bitrate block type hist" do
-          pending "multi-dimensional array"
+          skip "multi-dimensional array"
         end
       end
 
       context "closing" do
         it "closes" do
-          LAME.lame_close(@flags_pointer).should eql 0
+          expect(LAME.lame_close(@flags_pointer)).to eql 0
         end
       end
     end

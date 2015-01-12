@@ -10,35 +10,35 @@ module LAME
       let(:stream_string) { "1234567890" }
 
       it "tries to find the mpeg frame 4 bytes at a time until a header is found" do
-        matcher1 = stub("matcher", :match? => false)
-        matcher2 = stub("matcher", :match? => false)
-        matcher3 = stub("matcher", :match? => true)
+        matcher1 = double("matcher", :match? => false)
+        matcher2 = double("matcher", :match? => false)
+        matcher3 = double("matcher", :match? => true)
 
-        MPEGAudioFrameMatcher.should_receive(:new).with("1234").and_return(matcher1)
-        MPEGAudioFrameMatcher.should_receive(:new).with("2345").and_return(matcher2)
-        MPEGAudioFrameMatcher.should_receive(:new).with("3456").and_return(matcher3)
+        expect(MPEGAudioFrameMatcher).to receive(:new).with("1234").and_return(matcher1)
+        expect(MPEGAudioFrameMatcher).to receive(:new).with("2345").and_return(matcher2)
+        expect(MPEGAudioFrameMatcher).to receive(:new).with("3456").and_return(matcher3)
 
         finder.find!
       end
 
       it "seeks the stream at the position of the found frame" do
-        matcher1 = stub("matcher", :match? => false)
-        matcher2 = stub("matcher", :match? => false)
-        matcher3 = stub("matcher", :match? => true)
+        matcher1 = double("matcher", :match? => false)
+        matcher2 = double("matcher", :match? => false)
+        matcher3 = double("matcher", :match? => true)
 
-        MPEGAudioFrameMatcher.stub(:new).with("1234").and_return(matcher1)
-        MPEGAudioFrameMatcher.stub(:new).with("2345").and_return(matcher2)
-        MPEGAudioFrameMatcher.stub(:new).with("3456").and_return(matcher3)
+        allow(MPEGAudioFrameMatcher).to receive(:new).with("1234").and_return(matcher1)
+        allow(MPEGAudioFrameMatcher).to receive(:new).with("2345").and_return(matcher2)
+        allow(MPEGAudioFrameMatcher).to receive(:new).with("3456").and_return(matcher3)
 
         finder.find!
 
-        stream.pos.should eql 2
+        expect(stream.pos).to eql 2
       end
 
       it "raises an error if no header could be found" do
-        matcher = stub("matcher", :match? => false)
+        matcher = double("matcher", :match? => false)
 
-        MPEGAudioFrameMatcher.stub(:new).and_return(matcher)
+        allow(MPEGAudioFrameMatcher).to receive(:new).and_return(matcher)
 
         expect {
           finder.find!

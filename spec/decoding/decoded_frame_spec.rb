@@ -5,13 +5,13 @@ module LAME
     describe DecodedFrame do
 
       it "is initialized with left and right samples" do
-        left = stub
-        right = stub
+        left = double("left")
+        right = double("right")
 
         decoded_frame = DecodedFrame.new(left, right)
 
-        decoded_frame.left.should eql left
-        decoded_frame.right.should eql right
+        expect(decoded_frame.left).to eql left
+        expect(decoded_frame.right).to eql right
       end
 
       it "can be built with FFI Buffers" do
@@ -23,8 +23,8 @@ module LAME
 
         decoded_frame = DecodedFrame.from_short_buffers(left_buffer, right_buffer)
 
-        decoded_frame.left.should eql [1,2,3,4]
-        decoded_frame.right.should eql [5,6,7,8]
+        expect(decoded_frame.left).to eql [1,2,3,4]
+        expect(decoded_frame.right).to eql [5,6,7,8]
       end
 
       describe "#samples" do
@@ -35,7 +35,7 @@ module LAME
 
           decoded_frame = DecodedFrame.new(left, right)
 
-          decoded_frame.samples.should eql [[1,5],[2,6],[3,7],[4,8]]
+          expect(decoded_frame.samples).to eql [[1,5],[2,6],[3,7],[4,8]]
         end
       end
 

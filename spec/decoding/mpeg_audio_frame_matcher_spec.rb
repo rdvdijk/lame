@@ -41,14 +41,14 @@ module LAME
       shared_examples_for "4 valid bytes" do
         it "matches" do
           bytes = [b1, b2, b3, b4].pack("C*")
-          MPEGAudioFrameMatcher.new(bytes).match?.should be_true
+          expect(MPEGAudioFrameMatcher.new(bytes).match?).to be_truthy
         end
       end
 
       shared_examples_for "4 invalid bytes" do
         it "does not match" do
           bytes = [b1, b2, b3, b4].pack("C*")
-          MPEGAudioFrameMatcher.new(bytes).match?.should be_false
+          expect(MPEGAudioFrameMatcher.new(bytes).match?).to be_falsy
         end
       end
 
