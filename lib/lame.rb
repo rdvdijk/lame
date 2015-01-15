@@ -1,4 +1,5 @@
 require "ffi"
+require "forwardable"
 require "lame/version"
 require "lame/ffi"
 require "lame/error"
