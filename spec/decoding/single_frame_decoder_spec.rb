@@ -88,11 +88,12 @@ module LAME
         }.to yield_control.exactly(2).times
       end
 
-      # TODO: figure out expected behavior
-      xit "yields if the decoder had a decoded frame " do
-        allow(LAME).to receive(:hip_decode1_headers).and_return(1, 1, 1, 0)
+      it "yields if the decoder still had a decoded frame " do
+        # the initial '1' indicates a frame was still in the internal buffer (flush)
+        # the subsequent '1's are newly decoded frames
+        allow(LAME).to receive(:hip_decode1_headers).and_return(1, 0, 1, 1, 0)
 
-        expect(LAME).to receive(:hip_decode1_headers).exactly(4).times
+        expect(LAME).to receive(:hip_decode1_headers).exactly(5).times
 
         expect { |block|
           decoder.decode(data, &block)

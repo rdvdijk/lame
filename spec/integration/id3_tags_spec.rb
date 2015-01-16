@@ -13,17 +13,17 @@ describe "ID3 tags", :slow => true do
     encode_wav_file(false)
 
     Mp3Info.open(mp3_id3_path) do |info|
-      info.hastag1?.should be_true
-      info.hastag2?.should be_false
+      expect(info.hastag1?).to be_truthy
+      expect(info.hastag2?).to be_falsy
 
       tags = info.tag1
-      tags["title"].should    eql "title"
-      tags["artist"].should   eql "artist"
-      tags["album"].should    eql "album"
-      tags["year"].should     eql 2013
-      tags["comments"].should eql "comment"
-      tags["tracknum"].should eql 42
-      tags["genre_s"].should  eql "Rock"
+      expect(tags["title"]).to    eql "title"
+      expect(tags["artist"]).to   eql "artist"
+      expect(tags["album"]).to    eql "album"
+      expect(tags["year"]).to     eql 2013
+      expect(tags["comments"]).to eql "comment"
+      expect(tags["tracknum"]).to eql 42
+      expect(tags["genre_s"]).to  eql "Rock"
     end
   end
 
@@ -31,17 +31,17 @@ describe "ID3 tags", :slow => true do
     encode_wav_file
 
     Mp3Info.open(mp3_id3_path) do |info|
-      info.hastag1?.should be_true
-      info.hastag2?.should be_true
+      expect(info.hastag1?).to be_truthy
+      expect(info.hastag2?).to be_truthy
 
       tags = info.tag2
-      tags["TIT2"].should eql "title"
-      tags["TPE1"].should eql "artist"
-      tags["TALB"].should eql "album"
-      tags["TYER"].should eql "2013"
-      tags["COMM"].should eql "comment"
-      tags["TRCK"].should eql "42"
-      tags["TCON"].should eql "Rock"
+      expect(tags["TIT2"]).to eql "title"
+      expect(tags["TPE1"]).to eql "artist"
+      expect(tags["TALB"]).to eql "album"
+      expect(tags["TYER"]).to eql "2013"
+      expect(tags["COMM"]).to eql "comment"
+      expect(tags["TRCK"]).to eql "42"
+      expect(tags["TCON"]).to eql "Rock"
     end
   end
 
