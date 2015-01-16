@@ -205,6 +205,16 @@ to decode an MP3 file to an WAV file.
 
 This section contains some references used during development of this gem.
 
+#### Testing
+
+Run the unit tests with rspec:
+
+    $ rspec
+
+Run the integration tests by using the `slow` tag:
+
+    $ rspec -t slow
+
 #### ID3v2 tags
 
 To use ID3v2 tags in files, see this post on the `lame-dev` mailing list:
