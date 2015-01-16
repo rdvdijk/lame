@@ -4,12 +4,18 @@ require 'wavefile'
 
 describe "Encoding", :slow => true do
 
+  # regular 16-bit, 44.1kHz sine wave:
   let(:wav_file) { WaveFileGenerator.new(:length => 2).generate }
   let(:wav_path) { wav_file.path }
+  let(:wav_reader) { WaveFile::Reader.new(wav_path) }
+
+  # 24-bit, 192kHz sine wave:
+  let(:wav_file_24) { WaveFileGenerator.new(length: 2, bits: 24, sample_rate: 192000).generate }
+  let(:wav_path_24) { wav_file_24.path }
+  let(:wav_reader_24) { WaveFile::Reader.new(wav_path_24) }
+
   let(:mp3_path_raw) { Tempfile.new("output-raw.mp3") }
   let(:mp3_path_api) { Tempfile.new("output-api.mp3") }
-
-  let(:wav_reader) { WaveFile::Reader.new(wav_path) }
 
   it "encodes a file by api" do
 
@@ -87,7 +93,7 @@ describe "Encoding", :slow => true do
     # Digest::MD5.hexdigest(File.read(mp3_path_api)).should eql "d1cd92c106e7aac4f5291fd141a19e10"
   end
 
-  # This test serves as an example how to use the LAME API
+  # This test serves as an example how to use the LAME C-API
   it "encodes a wav file" do
 
    # setup
@@ -146,6 +152,72 @@ describe "Encoding", :slow => true do
 
     # TODO: Need a better way to test output..
     # Digest::MD5.hexdigest(File.read(mp3_path_raw)).should eql "84a1ce7994bb4a54fc13fb5381ebac40"
+  end
+
+  it "encodes 24-bit source files using the long encoder" do
+    encoder = LAME::Encoder.new
+
+    encoder.configure do |config|
+      config.input_samplerate = 192000
+      config.id3.write_automatic = false
+      config.vbr.mode = :vbr_default
+      config.vbr.q = 0
+    end
+
+    File.open(mp3_path_api, "wb") do |file|
+
+      wav_reader_24.each_buffer(encoder.framesize) do |read_buffer|
+        # important: shift the 24-bit samples to the system's long-size (32/64-bit)
+        left  = read_buffer.samples.map { |s| s[0] << (::LAME::FFI::LONG_SIZE-24) }
+        right = read_buffer.samples.map { |s| s[1] << (::LAME::FFI::LONG_SIZE-24) }
+
+        encoder.encode_long(left, right) do |mp3|
+          file.write mp3
+        end
+      end
+      encoder.flush do |flush_frame|
+        file.write(flush_frame)
+      end
+
+      encoder.vbr_frame do |vbr_frame|
+        file.write(vbr_frame)
+      end
+
+    end
+  end
+
+  it "encodes 24-bit source files using the float encoder" do
+    encoder = LAME::Encoder.new
+
+    encoder.configure do |config|
+      config.input_samplerate = 192000
+      config.id3.write_automatic = false
+      config.vbr.mode = :vbr_default
+      config.vbr.q = 0
+    end
+
+    max24 = 2**24/2.0
+
+    File.open(mp3_path_api, "wb") do |file|
+
+      wav_reader_24.each_buffer(encoder.framesize) do |read_buffer|
+        # important: scale the 24-bit input values to floats between -1.0 and +1.0
+        left  = read_buffer.samples.map { |s| s[0] / max24 }
+        right = read_buffer.samples.map { |s| s[1] / max24 }
+
+        encoder.encode_float(left, right) do |mp3|
+          file.write mp3
+        end
+      end
+      encoder.flush do |flush_frame|
+        file.write(flush_frame)
+      end
+
+      encoder.vbr_frame do |vbr_frame|
+        file.write(vbr_frame)
+      end
+
+    end
   end
 
 end

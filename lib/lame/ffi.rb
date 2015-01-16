@@ -9,6 +9,8 @@ require 'lame/ffi/mp3_data'
 module LAME
   module FFI
 
+    LONG_SIZE = ::FFI.type_size(:long) * 8
+
     def self.included(base)
       base.class_eval do
         include Enums
