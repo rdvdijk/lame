@@ -85,7 +85,8 @@ module LAME
 
     describe LongBufferEncoder do
       it_should_behave_like "a stereo buffer encoder" do
-        let(:data_type) { :long }
+        # can be either int32 or int64 depending on system architecture
+        let(:data_type) { :"int#{::LAME::FFI::LONG_SIZE}" }
         let(:lame_function) { :lame_encode_buffer_long2 }
       end
     end

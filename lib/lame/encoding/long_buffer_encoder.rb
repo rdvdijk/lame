@@ -3,7 +3,7 @@ module LAME
     class LongBufferEncoder < StereoBufferEncoder
 
       def data_type
-        :long
+        :"int#{::LAME::FFI::LONG_SIZE}"
       end
 
       def lame_function

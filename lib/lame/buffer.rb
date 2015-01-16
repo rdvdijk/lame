@@ -3,7 +3,7 @@ module LAME
 
     def self.create(type, input)
       buffer = ::FFI::MemoryPointer.new(type, input.size)
-      buffer.put_array_of_short(0, input)
+      buffer.send(:"put_array_of_#{type}", 0, input)
       buffer
     end
 
