@@ -10,6 +10,8 @@ FFI powered library for the [LAME MP3 encoder](http://lame.sourceforge.net/).
 
 ## Installation
 
+### Installing the gem
+
 Add this line to your application's Gemfile:
 
     gem 'lame'
@@ -21,6 +23,16 @@ And then execute:
 Or install it yourself as:
 
     $ gem install lame
+
+### Installing LAME
+
+To use this gem, you need to have the LAME development library (`libmp3lame-dev`) installed.
+
+Ubuntu/Debian: `sudo apt-get install libmp3lame-dev`
+
+Mac OS X with Homebrew: `brew install lame`
+
+Or build it from source, visit the [LAME website](http://lame.sourceforge.net/).
 
 ## Usage
 
