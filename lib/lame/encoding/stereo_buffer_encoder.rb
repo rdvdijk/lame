@@ -1,3 +1,4 @@
+require 'forwardable'
 module LAME
   module Encoding
     class StereoBufferEncoder
