@@ -100,8 +100,8 @@ module LAME
 
       # fake JPG image
       buffer = ::FFI::MemoryPointer.new(:char, buffer_size)
-      buffer.put_char(0, 0xff)
-      buffer.put_char(1, 0xd8)
+      buffer.put_uint8(0, 0xff)
+      buffer.put_uint8(1, 0xd8)
 
       expect(LAME.id3tag_set_albumart(@flags_pointer, buffer, buffer_size)).to eql 0
     end
