@@ -436,7 +436,11 @@ module LAME
 
         context "numerical version" do
 
-          let(:version) { LAME.get_lame_version_numerical(@flags_pointer) }
+          let(:version) {
+            version = LAME::FFI::Version.new
+            LAME.get_lame_version_numerical(version)
+            version
+          }
           it "has a major version" do
             expect(version[:major]).to eql 3
           end

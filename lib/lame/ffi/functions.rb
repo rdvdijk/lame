@@ -174,7 +174,7 @@ module LAME
         attach_function :get_lame_url,                [], :string
         attach_function :get_lame_os_bitness,         [], :string
 
-        attach_function :get_lame_version_numerical,  [:global_flags], FFI::Version.by_value
+        attach_function :get_lame_version_numerical,  [:global_flags], :void
 
         # TODO: test when we have implemented lame_set_msgf
         attach_function :lame_print_config,    [:global_flags], :void
