@@ -1,4 +1,4 @@
-if RUBY_DESCRIPTION =~ /\Aruby 1.9/
+if RUBY_DESCRIPTION =~ /\Aruby 3.4/
   require 'simplecov'
   require 'coveralls'
 

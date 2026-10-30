@@ -277,10 +277,6 @@ module LAME
           native_id3tag_init(global_flags)
           nil
         end
-        def id3tag_init(global_flags)
-          native_id3tag_init(global_flags)
-          nil
-        end
         def id3tag_add_v2(global_flags)
           native_id3tag_add_v2(global_flags)
           nil
