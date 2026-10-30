@@ -41,6 +41,7 @@ jobs:
         run: bundle exec rake
 
       - name: Upload coverage to Coveralls
+        if: matrix.ruby-version == '3.4'
         uses: coverallsapp/github-action@v2
         with:
           file: coverage/lcov.info
