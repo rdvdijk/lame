@@ -1,7 +1,7 @@
 # LAME
 
 [![Gem Version](https://badge.fury.io/rb/lame.png)](http://badge.fury.io/rb/lame)
-[![Build Status](https://travis-ci.org/rdvdijk/lame.png?branch=master)](https://travis-ci.org/rdvdijk/lame)
+[![Build Status](https://github.com/rdvdijk/lame/actions/workflows/ci.yml/badge.svg)](https://github.com/rdvdijk/lame/actions/workflows/ci.yml)
 [![Code Climate](https://codeclimate.com/github/rdvdijk/lame.png)](https://codeclimate.com/github/rdvdijk/lame)
 [![Coverage Status](https://coveralls.io/repos/rdvdijk/lame/badge.png?branch=master)](https://coveralls.io/r/rdvdijk/lame)
 [![Dependency Status](https://gemnasium.com/rdvdijk/lame.png)](https://gemnasium.com/rdvdijk/lame)
