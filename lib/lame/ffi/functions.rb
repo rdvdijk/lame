@@ -75,22 +75,22 @@ module LAME
         attach_function :lame_get_strict_ISO,         [:global_flags],               :int
 
         # quantization/noise shaping
-        attach_function :lame_set_disable_reservoir, [:global_flags, :int],    :int
-        attach_function :lame_get_disable_reservoir, [:global_flags],          :int
-        attach_function :lame_set_quant_comp,        [:global_flags, :int],    :int
-        attach_function :lame_get_quant_comp,        [:global_flags],          :int
-        attach_function :lame_set_quant_comp_short,  [:global_flags, :int],    :int
-        attach_function :lame_get_quant_comp_short,  [:global_flags],          :int
-        attach_function :lame_set_experimentalX,     [:global_flags, :int],    :int
-        attach_function :lame_get_experimentalX,     [:global_flags],          :int
-        attach_function :lame_set_experimentalY,     [:global_flags, :int],    :int
-        attach_function :lame_get_experimentalY,     [:global_flags],          :int
-        attach_function :lame_set_experimentalZ,     [:global_flags, :int],    :int
-        attach_function :lame_get_experimentalZ,     [:global_flags],          :int
-        attach_function :lame_set_exp_nspsytune,     [:global_flags, :int],    :int
-        attach_function :lame_get_exp_nspsytune,     [:global_flags],          :int
-        attach_function :lame_set_msfix,             [:global_flags, :double], :void
-        attach_function :lame_get_msfix,             [:global_flags],          :float
+        attach_function :lame_set_disable_reservoir,             [:global_flags, :int],    :int
+        attach_function :lame_get_disable_reservoir,             [:global_flags],          :int
+        attach_function :lame_set_quant_comp,                    [:global_flags, :int],    :int
+        attach_function :lame_get_quant_comp,                    [:global_flags],          :int
+        attach_function :lame_set_quant_comp_short,              [:global_flags, :int],    :int
+        attach_function :lame_get_quant_comp_short,              [:global_flags],          :int
+        attach_function :lame_set_experimentalX,                 [:global_flags, :int],    :int
+        attach_function :lame_get_experimentalX,                 [:global_flags],          :int
+        attach_function :lame_set_experimentalY,                 [:global_flags, :int],    :int
+        attach_function :lame_get_experimentalY,                 [:global_flags],          :int
+        attach_function :lame_set_experimentalZ,                 [:global_flags, :int],    :int
+        attach_function :lame_get_experimentalZ,                 [:global_flags],          :int
+        attach_function :lame_set_exp_nspsytune,                 [:global_flags, :int],    :int
+        attach_function :lame_get_exp_nspsytune,                 [:global_flags],          :int
+        attach_function :native_lame_set_msfix, :lame_set_msfix, [:global_flags, :double], :void
+        attach_function :lame_get_msfix,                         [:global_flags],          :float
 
         # VBR
         attach_function :lame_set_VBR,                   [:global_flags, :vbr_mode], :int
@@ -174,7 +174,7 @@ module LAME
         attach_function :get_lame_url,                [], :string
         attach_function :get_lame_os_bitness,         [], :string
 
-        attach_function :get_lame_version_numerical,  [:global_flags], FFI::Version.by_value
+        attach_function :get_lame_version_numerical,  [:global_flags], :void
 
         # TODO: test when we have implemented lame_set_msgf
         attach_function :lame_print_config,    [:global_flags], :void
@@ -191,6 +191,7 @@ module LAME
         attach_function :lame_encode_buffer_long,                    [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
         attach_function :lame_encode_buffer_long2,                   [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
         attach_function :lame_encode_buffer_int,                     [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
+        attach_function :lame_encode_buffer_interleaved_int,         [:global_flags, :buffer_in,             :int, :buffer_out, :int], :int
 
         # flushing
         attach_function :lame_encode_flush,       [:global_flags, :pointer, :int], :int
@@ -233,27 +234,27 @@ module LAME
 
         # id3
         callback :genre_callback, [:int, :string, :pointer], :void
-        attach_function :id3tag_genre_list, [:genre_callback, :pointer], :void
-        attach_function :id3tag_init,                     [:global_flags], :void
-        attach_function :id3tag_add_v2,                   [:global_flags], :void
-        attach_function :id3tag_v1_only,                  [:global_flags], :void
-        attach_function :id3tag_v2_only,                  [:global_flags], :void
-        attach_function :id3tag_space_v1,                 [:global_flags], :void
-        attach_function :id3tag_pad_v2,                   [:global_flags], :void
-        attach_function :id3tag_set_pad,                  [:global_flags, :size_t], :void
-        attach_function :id3tag_set_title,                [:global_flags, :pointer], :void
-        attach_function :id3tag_set_artist,               [:global_flags, :pointer], :void
-        attach_function :id3tag_set_album,                [:global_flags, :pointer], :void
-        attach_function :id3tag_set_year,                 [:global_flags, :pointer], :void
-        attach_function :id3tag_set_comment,              [:global_flags, :pointer], :void
-        attach_function :id3tag_set_track,                [:global_flags, :pointer], :int
-        attach_function :id3tag_set_genre,                [:global_flags, :pointer], :int
-        attach_function :id3tag_set_fieldvalue,           [:global_flags, :pointer], :int
-        attach_function :id3tag_set_albumart,             [:global_flags, :buffer_in, :size_t], :int
-        attach_function :lame_get_id3v1_tag,              [:global_flags, :buffer_out, :size_t], :size_t
-        attach_function :lame_get_id3v2_tag,              [:global_flags, :buffer_out, :size_t], :size_t
-        attach_function :lame_set_write_id3tag_automatic, [:global_flags, :int], :void
-        attach_function :lame_get_write_id3tag_automatic, [:global_flags], :int
+        attach_function :id3tag_genre_list,                              [:genre_callback, :pointer], :void
+        attach_function :native_id3tag_init,        :id3tag_init,        [:global_flags], :void
+        attach_function :native_id3tag_add_v2,      :id3tag_add_v2,      [:global_flags], :void
+        attach_function :native_id3tag_v1_only,     :id3tag_v1_only,     [:global_flags], :void
+        attach_function :native_id3tag_v2_only,     :id3tag_v2_only,     [:global_flags], :void
+        attach_function :native_id3tag_space_v1,    :id3tag_space_v1,    [:global_flags], :void
+        attach_function :native_id3tag_pad_v2,      :id3tag_pad_v2,      [:global_flags], :void
+        attach_function :native_id3tag_set_pad,     :id3tag_set_pad,     [:global_flags, :size_t], :void
+        attach_function :native_id3tag_set_title,   :id3tag_set_title,   [:global_flags, :pointer], :void
+        attach_function :native_id3tag_set_artist,  :id3tag_set_artist,  [:global_flags, :pointer], :void
+        attach_function :native_id3tag_set_album,   :id3tag_set_album,   [:global_flags, :pointer], :void
+        attach_function :native_id3tag_set_year,    :id3tag_set_year,    [:global_flags, :pointer], :void
+        attach_function :native_id3tag_set_comment, :id3tag_set_comment, [:global_flags, :pointer], :void
+        attach_function :id3tag_set_track,                               [:global_flags, :pointer], :int
+        attach_function :id3tag_set_genre,                               [:global_flags, :pointer], :int
+        attach_function :id3tag_set_fieldvalue,                          [:global_flags, :pointer], :int
+        attach_function :id3tag_set_albumart,                            [:global_flags, :buffer_in, :size_t], :int
+        attach_function :lame_get_id3v1_tag,                             [:global_flags, :buffer_out, :size_t], :size_t
+        attach_function :lame_get_id3v2_tag,                             [:global_flags, :buffer_out, :size_t], :size_t
+        attach_function :native_lame_set_write_id3tag_automatic, :lame_set_write_id3tag_automatic, [:global_flags, :int], :void
+        attach_function :lame_get_write_id3tag_automatic,  [:global_flags], :int
         # experimental id3:
         # attach_function :id3tag_set_textinfo_latin1,      [:global_flags, :string, :string], :int
         # attach_function :id3tag_set_comment_latin1,       [:global_flags, :string, :string, :string], :int
@@ -264,6 +265,66 @@ module LAME
         # tables
         attach_function :lame_get_bitrate,    [:int, :int], :int
         attach_function :lame_get_samplerate, [:int, :int], :int
+      end
+
+      # for truffleruby compatibility, return nil explicitly
+      base.singleton_class.class_eval do
+        def lame_set_msfix(global_flags, double)
+          native_lame_set_msfix(global_flags, double)
+          nil
+        end
+        def id3tag_init(global_flags)
+          native_id3tag_init(global_flags)
+          nil
+        end
+        def id3tag_add_v2(global_flags)
+          native_id3tag_add_v2(global_flags)
+          nil
+        end
+        def id3tag_v1_only(global_flags)
+          native_id3tag_v1_only(global_flags)
+          nil
+        end
+        def id3tag_v2_only(global_flags)
+          native_id3tag_v2_only(global_flags)
+          nil
+        end
+        def id3tag_space_v1(global_flags)
+          native_id3tag_space_v1(global_flags)
+          nil
+        end
+        def id3tag_pad_v2(global_flags)
+          native_id3tag_pad_v2(global_flags)
+          nil
+        end
+        def id3tag_set_pad(global_flags, size_t)
+          native_id3tag_set_pad(global_flags, size_t)
+          nil
+        end
+        def id3tag_set_title(global_flags, pointer)
+          native_id3tag_set_title(global_flags, pointer)
+          nil
+        end
+        def id3tag_set_artist(global_flags, pointer)
+          native_id3tag_set_artist(global_flags, pointer)
+          nil
+        end
+        def id3tag_set_album(global_flags, pointer)
+          native_id3tag_set_album(global_flags, pointer)
+          nil
+        end
+        def id3tag_set_year(global_flags, pointer)
+          native_id3tag_set_year(global_flags, pointer)
+          nil
+        end
+        def id3tag_set_comment(global_flags, pointer)
+          native_id3tag_set_comment(global_flags, pointer)
+          nil
+        end
+        def lame_set_write_id3tag_automatic(global_flags, int)
+          native_lame_set_write_id3tag_automatic(global_flags, int)
+          nil
+        end
 
       end
     end

@@ -24,5 +24,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "pry"
   gem.add_development_dependency "wavefile"
   gem.add_development_dependency "ruby-mp3info"
-  gem.add_development_dependency "coveralls"
+  gem.add_development_dependency "simplecov", "~> 0.22"
+  gem.add_development_dependency "simplecov-lcov", "~> 0.8"
 end

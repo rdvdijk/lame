@@ -77,5 +77,12 @@ module LAME
         let(:lame_function) { :lame_encode_buffer_interleaved_ieee_float }
       end
     end
+
+    describe InterleavedIntBufferEncoder do
+      it_should_behave_like "a interleaved buffer encoder" do
+        let(:data_type) { :int }
+        let(:lame_function) { :lame_encode_buffer_interleaved_int }
+      end
+    end
   end
 end
