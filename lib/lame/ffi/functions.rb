@@ -191,6 +191,7 @@ module LAME
         attach_function :lame_encode_buffer_long,                    [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
         attach_function :lame_encode_buffer_long2,                   [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
         attach_function :lame_encode_buffer_int,                     [:global_flags, :buffer_in, :buffer_in, :int, :buffer_out, :int], :int
+        attach_function :lame_encode_buffer_interleaved_int,         [:global_flags, :buffer_in,             :int, :buffer_out, :int], :int
 
         # flushing
         attach_function :lame_encode_flush,       [:global_flags, :pointer, :int], :int
