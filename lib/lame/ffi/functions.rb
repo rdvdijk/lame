@@ -75,22 +75,22 @@ module LAME
         attach_function :lame_get_strict_ISO,         [:global_flags],               :int
 
         # quantization/noise shaping
-        attach_function :lame_set_disable_reservoir, [:global_flags, :int],    :int
-        attach_function :lame_get_disable_reservoir, [:global_flags],          :int
-        attach_function :lame_set_quant_comp,        [:global_flags, :int],    :int
-        attach_function :lame_get_quant_comp,        [:global_flags],          :int
-        attach_function :lame_set_quant_comp_short,  [:global_flags, :int],    :int
-        attach_function :lame_get_quant_comp_short,  [:global_flags],          :int
-        attach_function :lame_set_experimentalX,     [:global_flags, :int],    :int
-        attach_function :lame_get_experimentalX,     [:global_flags],          :int
-        attach_function :lame_set_experimentalY,     [:global_flags, :int],    :int
-        attach_function :lame_get_experimentalY,     [:global_flags],          :int
-        attach_function :lame_set_experimentalZ,     [:global_flags, :int],    :int
-        attach_function :lame_get_experimentalZ,     [:global_flags],          :int
-        attach_function :lame_set_exp_nspsytune,     [:global_flags, :int],    :int
-        attach_function :lame_get_exp_nspsytune,     [:global_flags],          :int
-        attach_function :lame_set_msfix,             [:global_flags, :double], :void
-        attach_function :lame_get_msfix,             [:global_flags],          :float
+        attach_function :lame_set_disable_reservoir,             [:global_flags, :int],    :int
+        attach_function :lame_get_disable_reservoir,             [:global_flags],          :int
+        attach_function :lame_set_quant_comp,                    [:global_flags, :int],    :int
+        attach_function :lame_get_quant_comp,                    [:global_flags],          :int
+        attach_function :lame_set_quant_comp_short,              [:global_flags, :int],    :int
+        attach_function :lame_get_quant_comp_short,              [:global_flags],          :int
+        attach_function :lame_set_experimentalX,                 [:global_flags, :int],    :int
+        attach_function :lame_get_experimentalX,                 [:global_flags],          :int
+        attach_function :lame_set_experimentalY,                 [:global_flags, :int],    :int
+        attach_function :lame_get_experimentalY,                 [:global_flags],          :int
+        attach_function :lame_set_experimentalZ,                 [:global_flags, :int],    :int
+        attach_function :lame_get_experimentalZ,                 [:global_flags],          :int
+        attach_function :lame_set_exp_nspsytune,                 [:global_flags, :int],    :int
+        attach_function :lame_get_exp_nspsytune,                 [:global_flags],          :int
+        attach_function :native_lame_set_msfix, :lame_set_msfix, [:global_flags, :double], :void
+        attach_function :lame_get_msfix,                         [:global_flags],          :float
 
         # VBR
         attach_function :lame_set_VBR,                   [:global_flags, :vbr_mode], :int
@@ -268,6 +268,10 @@ module LAME
 
       # for truffleruby compatibility, return nil explicitly
       base.singleton_class.class_eval do
+        def lame_set_msfix(global_flags, double)
+          native_lame_set_msfix(global_flags, double)
+          nil
+        end
         def id3tag_init(global_flags)
           native_id3tag_init(global_flags)
           nil
@@ -322,6 +326,7 @@ module LAME
         end
         def lame_set_write_id3tag_automatic(global_flags, int)
           native_lame_set_write_id3tag_automatic(global_flags, int)
+          nil
         end
 
       end
