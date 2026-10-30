@@ -97,7 +97,7 @@ module LAME
         expect(LAME).to be_able_to_set(:decode_only).to(1).for(@flags_pointer)
       end
 
-      it "has a quality" do
+      it "has a quality", skip: "setting quality should now be done with lame_set_quality" do
         expect(LAME).to have_flag(:quality).with_value(3).for(@flags_pointer)
         expect(LAME).to be_able_to_set(:quality).to(1).for(@flags_pointer)
       end
@@ -146,7 +146,7 @@ module LAME
         expect(LAME).to be_able_to_set(:brate).to(192).for(@flags_pointer)
       end
 
-      it "has a compression ratio" do
+      it "has a compression ratio", skip: "setting compression ratio should now be done ewith lame_set_compression_ratio" do
         expect(LAME).to have_flag(:compression_ratio).with_value(1).for(@flags_pointer)
         #expect(LAME).to be_able_to_set(:compression_ratio).to(11.025).for(@flags_pointer) # can't set it..?
       end
@@ -411,15 +411,15 @@ module LAME
 
       context "version" do
         it "has a version" do
-          expect(LAME.get_lame_version).to match /3\.\d\d\.\d/
+          expect(LAME.get_lame_version).to match /3\.\d{2,3}( \(beta \d, [^)]+\))?/
         end
 
         it "has a short version" do
-          expect(LAME.get_lame_short_version).to match /3\.\d\d\.\d/
+          expect(LAME.get_lame_short_version).to match /3\.\d{2,3}( beta \d\(\))?/
         end
 
         it "has a very short version" do
-          expect(LAME.get_lame_very_short_version).to match /LAME3\.\d\dr\d/
+          expect(LAME.get_lame_very_short_version).to match /LAME3\.\d{2,3}[rb]\d/
         end
 
         it "has a psy version" do
@@ -427,7 +427,7 @@ module LAME
         end
 
         it "has a url" do
-          expect(LAME.get_lame_url).to eql "http://lame.sf.net"
+          expect(LAME.get_lame_url).to eql "https://lame.sourceforge.io"
         end
 
         it "has os bitness" do
@@ -442,7 +442,7 @@ module LAME
           end
 
           it "has a minor version" do
-            expect(version[:minor]).to eql 99
+            expect(version[:minor]).to eql 101
           end
 
           it "has a alpha version" do
@@ -450,7 +450,7 @@ module LAME
           end
 
           it "has a beta version" do
-            expect(version[:beta]).to eql 0
+            expect(version[:beta]).to eql 3
           end
 
           it "has a psy_major version" do
